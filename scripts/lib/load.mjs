@@ -2,7 +2,7 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildContent } from '../../engine/content.js';
+import { buildContent, adversaryIdsFor } from '../../engine/content.js';
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const rd = (...p) => JSON.parse(readFileSync(path.join(root, ...p), 'utf8'));
@@ -25,7 +25,9 @@ export function loadScenario(id) { const p = path.join(root, 'content/packs', id
 export function listScenarios() { return readdirSync(path.join(root, 'content/packs')).filter(f => f.endsWith('.json')).map(f => f.replace('.json', '')); }
 
 let cache = null;
-export function loadContent(scenarioId = 'enterprise', extraIds = []) {
+export function loadContent(scenarioId = 'enterprise', extraIds = [], { allAdversaries = false } = {}) {
   cache ||= { core: loadCore(), attack: loadAttack(), adversaries: loadAdversaries() };
-  return buildContent({ core: cache.core, scenario: scenarioId ? loadScenario(scenarioId) : null, extras: extraIds.map(loadScenario), attack: cache.attack, adversaries: cache.adversaries });
+  const scenario = scenarioId ? loadScenario(scenarioId) : null;
+  const advs = scenario && !allAdversaries ? Object.fromEntries(adversaryIdsFor(scenario).map(id => [id, cache.adversaries[id]])) : cache.adversaries;
+  return buildContent({ core: cache.core, scenario, extras: extraIds.map(loadScenario), attack: cache.attack, adversaries: advs });
 }

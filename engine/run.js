@@ -258,8 +258,8 @@ export function finish(content, run, won, events) {
 }
 
 // ───────────────────────────── dispatcher ─────────────────────────────
-export function runAction(content, run0, action) {
-  const run = clone(run0);
+export function runAction(content, run0, action, { inPlace = false } = {}) {
+  const run = inPlace ? run0 : clone(run0);
   const events = [];
   const ph = run.phase;
   switch (action.type) {
@@ -359,8 +359,8 @@ export function runAction(content, run0, action) {
   return { run, events };
 }
 
-export function tryRunAction(content, run, action) {
-  try { return { ok: true, ...runAction(content, run, action) }; }
+export function tryRunAction(content, run, action, opts) {
+  try { return { ok: true, ...runAction(content, run, action, opts) }; }
   catch (e) { if (e instanceof RunError || e instanceof B.GameError) return { ok: false, error: e.message }; throw e; }
 }
 
@@ -369,7 +369,7 @@ export function replay(content, init, actions) {
   let run = newRun(content, init);
   const all = [];
   for (let i = 0; i < actions.length; i++) {
-    const r = tryRunAction(content, run, actions[i]);
+    const r = tryRunAction(content, run, actions[i], { inPlace: true });
     if (!r.ok) return { ok: false, at: i, error: r.error, run, events: all };
     run = r.run; all.push(...r.events);
   }

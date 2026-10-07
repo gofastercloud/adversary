@@ -62,3 +62,12 @@ export function buildContent({ core, scenario = null, extras = [], attack, adver
 
 export const cardOf = (content, id) => content.cards[id];
 export const isControl = c => c.type === 'control';
+
+/** The adversary data files that make up a scenario. Client and server must load exactly this set so fingerprints match. */
+export function adversaryIdsFor(scenario) {
+  const ids = new Set();
+  for (const a of scenario?.roster?.acts || []) { for (const x of [...a.battle, ...a.elite, a.boss]) ids.add(x); }
+  for (const t of scenario?.ttx || []) ids.add(t.adversary.id);
+  ids.add('G0092');   // the tutorial adversary
+  return [...ids].sort();
+}

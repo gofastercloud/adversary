@@ -9,7 +9,7 @@ import { evaluate, emptyProfile, clearanceOf, matches } from '../engine/achievem
 import { resolveRef } from '../engine/refs.js';
 import { validateAll } from '../scripts/validate-content.mjs';
 
-const content = loadContent('enterprise');
+const content = loadContent('enterprise', [], { allAdversaries: true });
 
 test('content validates with zero errors', () => {
   const { errs } = validateAll();

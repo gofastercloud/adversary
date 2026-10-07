@@ -20,7 +20,7 @@ export function newRun(content, { seed, doctrine = 'architect', assurance = 1, m
   const run = {
     v: RUN_VERSION, seed, mode, scenario: content.scenarioId, fp: content.fingerprint, doctrine, assurance, rng: {},
     phase: 'map', act: 1, step: 0, node: null, map: [], visited: [],
-    res: { cur: d.maxResilience + (as.resilienceBonus || 0), max: d.maxResilience + (as.resilienceBonus || 0) },
+    res: (() => { const m = Math.round(d.maxResilience * (content.tuning.balance?.resScale || 1)) + (as.resilienceBonus || 0); return { cur: m, max: m }; })(),
     money: d.money, deck: [], nextIid: 0, relics: [d.relic], flags: {}, modelBonus: 0,
     battle: null, reward: null, shop: null, rest: null, event: null, whiteboard: null, briefing: null,
     usedAdv: [], usedEvents: [], stats: { battles: 0, elites: 0, bosses: 0, evictions: 0, cardsAdded: 0, upgrades: 0, removed: 0, bought: 0, wbCorrect: 0, wbTotal: 0, wbPerfect: 0, resLost: 0, fastEvicts: 0, wins: 0, byLetter: {} },

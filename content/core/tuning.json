@@ -1,7 +1,7 @@
 {
  "schema": 2,
  "battle": {
-  "handSize": 5,
+  "handSize": 6,
   "energy": 3,
   "policySlots": 2,
   "assetSlots": 3,
@@ -184,50 +184,56 @@
   "tiers": {
    "1": {
     "name": "Opportunistic",
-    "exposureMax": 10,
+    "exposureMax": 7,
     "energy": [
-     3,
-     3,
-     4,
-     4,
-     4,
-     5
+     5,
+     5,
+     6,
+     6,
+     6,
+     7
     ],
     "hand": 5,
     "powerBonus": 0,
-    "rounds": 7
+    "rounds": 9
    },
    "2": {
     "name": "Targeted",
-    "exposureMax": 14,
+    "exposureMax": 11,
     "energy": [
-     4,
-     4,
-     5,
-     5,
-     5,
-     6
-    ],
-    "hand": 5,
-    "powerBonus": 0,
-    "rounds": 8
-   },
-   "3": {
-    "name": "Apex",
-    "exposureMax": 18,
-    "energy": [
-     5,
-     5,
      6,
      6,
      7,
-     7
+     7,
+     7,
+     8
+    ],
+    "hand": 5,
+    "powerBonus": 0,
+    "rounds": 10
+   },
+   "3": {
+    "name": "Apex",
+    "exposureMax": 15,
+    "energy": [
+     7,
+     7,
+     8,
+     8,
+     9,
+     9
     ],
     "hand": 6,
     "powerBonus": 1,
-    "rounds": 9
+    "rounds": 11
    }
-  }
+  },
+  "goalAI": false,
+  "baselineSlots": [
+   7,
+   5,
+   4
+  ]
  },
  "assurance": [
   {
@@ -322,5 +328,10 @@
   8200,
   10500,
   14000
- ]
+ ],
+ "balance": {
+  "wardAdd": 1,
+  "healAdd": 0,
+  "detectNAdd": 1
+ }
 }

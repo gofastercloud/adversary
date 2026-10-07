@@ -66,7 +66,7 @@ export function newBattle(content, o) {
     relics: o.relics || [], flags: { ...(o.flags || {}) }, intel: 0, powerUsed: false, discountUsed: false, policyFree: false, soarUsed: false, exfilShield: 0, resLostRound: 0, revived: false,
     nid: { f: 1, k: 1, a: 0 }, moneyDelta: 0,
     adv: { id: o.adversary.id, name: advData.name, tier: o.adversary.tier || 1, boss: !!o.adversary.boss, elite: !!o.adversary.elite, traits: meta.traits || [], cards: {}, draw: [], hand: [], discard: [], intent: null, prep: 0, creds: 0, mapped: false, harvested: 0, phaseFired: [], firstBreachDone: false, energyBonusNext: 0, played: [] },
-    doctrine: o.doctrine || null, ttx: null, assurance: o.assurance ?? 1, firstRevealRound: null, energyBonus: o.energyBonus || 0,
+    doctrine: o.doctrine || null, ttx: null, assurance: o.assurance ?? 1, firstRevealRound: null, energyBonus: o.energyBonus || 0, handSize: o.handSize ?? null,
     stats: { cardsPlayed: 0, reveals: 0, evictions: 0, blocked: 0, deploys: 0, assetsDown: 0, resLost: 0, dataLost: 0, maxExposure: 0, typesPlayed: {}, fnsPlayed: {}, propsPlayed: {}, augments: 0, fastEvict: 0, noReveal: true },
     events: []
   };
@@ -491,7 +491,7 @@ function startRound(content, b) {
     if (st.flags.has('regen1')) { const A = asset(b, k.asset); if (!A.down && A.hp < A.max) { A.hp++; ev(b, { t: 'heal', asset: A.id, n: 1 }); } }
   }
   // draw
-  drawCards(content, b, content.tuning.battle.handSize + relicPassive(content, b, 'draw'));
+  drawCards(content, b, (b.handSize ?? content.tuning.battle.handSize) + relicPassive(content, b, 'draw'));
   // detection
   monitorsStart(content, b);
   const au = auras(content, b);

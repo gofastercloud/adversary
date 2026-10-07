@@ -1,0 +1,62 @@
+{
+ "tuning": {
+  "battle": {
+   "energy": 3,
+   "handSize": 6
+  },
+  "balance": {
+   "wardAdd": 1,
+   "healAdd": 0,
+   "detectNAdd": 1
+  },
+  "adversary": {
+   "tiers": {
+    "1": {
+     "energy": [
+      5,
+      5,
+      6,
+      6,
+      6,
+      7
+     ],
+     "rounds": 9,
+     "exposureMax": 7,
+     "powerBonus": 0
+    },
+    "2": {
+     "energy": [
+      6,
+      6,
+      7,
+      7,
+      7,
+      8
+     ],
+     "rounds": 10,
+     "exposureMax": 11,
+     "powerBonus": 0
+    },
+    "3": {
+     "energy": [
+      7,
+      7,
+      8,
+      8,
+      9,
+      9
+     ],
+     "rounds": 11,
+     "exposureMax": 15,
+     "powerBonus": 1
+    }
+   },
+   "goalAI": false,
+   "baselineSlots": [
+    7,
+    5,
+    4
+   ]
+  }
+ }
+}

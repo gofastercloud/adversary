@@ -18,6 +18,6 @@ export function tutorialRun(content) {
   run.node = { type: 'battle', adv: TUT.adversary.id, tier: TUT.adversary.tier };
   run.visited.push({ act: 1, step: 0, type: 'battle' });
   run.phase = 'battle';
-  run.battle = B.newBattle(content, { seed: 'tutorial-battle', deck: run.deck, adversary: TUT.adversary, resilience: run.res, relics: [], doctrine: 'architect', assurance: 0, drawOrder: TUT.drawOrder, advOrder: TUT.advOrder, energyBonus: 1 });
+  run.battle = B.newBattle(content, { seed: 'tutorial-battle', deck: run.deck, adversary: TUT.adversary, resilience: run.res, relics: [], doctrine: 'architect', assurance: 0, drawOrder: TUT.drawOrder, advOrder: TUT.advOrder, energyBonus: 1, handSize: 5 });
   return run;
 }

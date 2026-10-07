@@ -23,7 +23,7 @@ export function deckAt(content, doctrineId, act, node, seed, { pol = RUN_POLICIE
     if (i % 4 === 3) { const up = run.deck.filter(c => c.ml < 3 && content.cards[c.id].type !== 'status').sort((a, b) => ((content.cards[b.id].ward ? 3 : 0) + (content.cards[b.id].detect ? 2 : 0)) - ((content.cards[a.id].ward ? 3 : 0) + (content.cards[a.id].detect ? 2 : 0)))[0]; if (up) up.ml++; }
   }
   run.act = act;
-  const maxRes = d.maxResilience + (act - 1) * 4 + (node === 'boss' ? 0 : 0);
+  const maxRes = Math.round(d.maxResilience * (content.tuning.balance?.resScale || 1)) + (act - 1) * 4;
   const relics = run.relics.slice(); const relicPool = content.relicPool;
   for (let i = 0; i < act - 1 + (node === 'boss' ? 1 : 0); i++) { const r = relicPool[rng.int(relicPool.length)]; if (!relics.includes(r)) relics.push(r); }
   return { deck: run.deck.map(c => ({ id: c.id, ml: c.ml })), res: { cur: Math.round(maxRes * (0.78 + 0.2 * rng())), max: maxRes }, relics, doctrine: doctrineId };

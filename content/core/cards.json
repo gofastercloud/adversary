@@ -660,7 +660,7 @@
    "fx": [
     {
      "op": "evict",
-     "n": 1
+     "n": 2
     },
     {
      "op": "clearCreds"
@@ -717,7 +717,7 @@
    "fx": [
     {
      "op": "evict",
-     "n": 1
+     "n": 2
     },
     {
      "op": "exposure",

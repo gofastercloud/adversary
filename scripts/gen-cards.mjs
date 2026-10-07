@@ -49,9 +49,9 @@ mon('dos',         { str: 2, n: 1, scope: 'asset' }, { ward: { D: 1 } });
 mon('elevation',   { str: 3, n: 1, scope: 'asset', privBonus: 1 });
 
 // RESPOND — actions
-base('respond', 'spoofing',    { type: 'action', cost: 1, target: 'foothold', fx: [{ op: 'evict', n: 1 }, { op: 'clearCreds' }] });
+base('respond', 'spoofing',    { type: 'action', cost: 1, target: 'foothold', fx: [{ op: 'evict', n: 2 }, { op: 'clearCreds' }] });
 base('respond', 'tampering',   { type: 'action', cost: 1, target: 'asset', fx: [{ op: 'isolate' }, { op: 'reveal', n: 1, str: 3 }] });
-base('respond', 'repudiation', { type: 'action', cost: 2, target: 'foothold', fx: [{ op: 'evict', n: 1 }, { op: 'exposure', n: 2 }] });
+base('respond', 'repudiation', { type: 'action', cost: 2, target: 'foothold', fx: [{ op: 'evict', n: 2 }, { op: 'exposure', n: 2 }] });
 base('respond', 'disclosure',  { type: 'action', cost: 1, fx: [{ op: 'resilience', n: 3 }, { op: 'shieldExfil', n: 2 }] });
 base('respond', 'dos',         { type: 'action', cost: 2, target: 'asset', fx: [{ op: 'shield', n: 3 }, { op: 'heal', n: 2 }] });
 base('respond', 'elevation',   { type: 'action', cost: 2, target: 'asset', fx: [{ op: 'unprivilege' }, { op: 'evictPrivileged', n: 2 }, { op: 'clearCreds' }] });

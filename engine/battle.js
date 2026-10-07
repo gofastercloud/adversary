@@ -65,8 +65,8 @@ export function newBattle(content, o) {
     assets: [], controls: [], footholds: [], ghosts: [], policies: [],
     relics: o.relics || [], flags: { ...(o.flags || {}) }, intel: 0, powerUsed: false, discountUsed: false, policyFree: false, soarUsed: false, exfilShield: 0, resLostRound: 0, revived: false,
     nid: { f: 1, k: 1, a: 0 }, moneyDelta: 0,
-    adv: { id: o.adversary.id, name: advData.name, tier: o.adversary.tier || 1, boss: !!o.adversary.boss, elite: !!o.adversary.elite, traits: meta.traits || [], cards: {}, draw: [], hand: [], discard: [], intent: null, prep: 0, creds: 0, mapped: false, harvested: 0, phaseFired: [], firstBreachDone: false, energyBonusNext: 0 },
-    doctrine: o.doctrine || null, ttx: null, assurance: o.assurance ?? 1, firstRevealRound: null,
+    adv: { id: o.adversary.id, name: advData.name, tier: o.adversary.tier || 1, boss: !!o.adversary.boss, elite: !!o.adversary.elite, traits: meta.traits || [], cards: {}, draw: [], hand: [], discard: [], intent: null, prep: 0, creds: 0, mapped: false, harvested: 0, phaseFired: [], firstBreachDone: false, energyBonusNext: 0, played: [] },
+    doctrine: o.doctrine || null, ttx: null, assurance: o.assurance ?? 1, firstRevealRound: null, energyBonus: o.energyBonus || 0,
     stats: { cardsPlayed: 0, reveals: 0, evictions: 0, blocked: 0, deploys: 0, assetsDown: 0, resLost: 0, dataLost: 0, maxExposure: 0, typesPlayed: {}, fnsPlayed: {}, propsPlayed: {}, augments: 0, fastEvict: 0, noReveal: true },
     events: []
   };
@@ -76,6 +76,7 @@ export function newBattle(content, o) {
   // player deck
   for (const c of o.deck) b.cards[c.iid] = { id: c.id, ml: c.ml || 1 };
   b.draw = shuffle(b.rng, seed, 'deck', o.deck.map(c => c.iid));
+  if (o.drawOrder) b.draw = [...o.drawOrder, ...b.draw.filter(i => !o.drawOrder.includes(i))];
   // adversary deck
   const deck = compileDeck(advData, { tier: b.adv.tier, size: 22, assessed: meta.assessed || [], techTable: content.techs });
   const bonus = tier.powerBonus + (assur.advPower || 0);
@@ -86,6 +87,7 @@ export function newBattle(content, o) {
     b.adv.cards[uid] = card;
   });
   b.adv.draw = shuffle(b.rng, seed, 'adv-deck', Object.keys(b.adv.cards));
+  if (o.advOrder) { const first = o.advOrder.map(t => Object.values(b.adv.cards).find(c => c.id === t)?.uid).filter(Boolean); b.adv.draw = [...first, ...b.adv.draw.filter(u => !first.includes(u))]; }
   b.adv.exposureBase = b.expo.max;
 
   // start-of-battle effects
@@ -446,7 +448,7 @@ function monitorsStart(content, b) {
 // ───────────────────────────── rounds ─────────────────────────────
 function startRound(content, b) {
   b.round++; b.phase = 'defender';
-  b.energy.max = content.tuning.battle.energy + relicPassive(content, b, 'energy');
+  b.energy.max = content.tuning.battle.energy + relicPassive(content, b, 'energy') + b.energyBonus;
   b.energy.cur = b.energy.max + b.energyNext; b.energyNext = 0;
   b.powerUsed = false; b.discountUsed = false; b.policyFree = false; b.soarUsed = false; b.exfilShield = 0; b.resLostRound = 0; b.resShieldUsedRound = false;
   b.intel = (b.intelBonus || 0) + relicPassive(content, b, 'intel'); b.intelBonus = 0;
@@ -636,6 +638,7 @@ function adversaryTurn(content, b) {
     const cost = advCost(content, b, c, pick.target);
     energy -= cost; plays++;
     A.hand.splice(A.hand.indexOf(pick.uid), 1); A.discard.push(pick.uid);
+    A.played.push(c.id);
     resolveAdv(content, b, c, pick.target, cost);
     checkEnd(content, b);
   }
@@ -674,7 +677,7 @@ function resolveAdv(content, b, c, target, cost) {
       if (w.total > 0) ev(b, { t: 'partial', tech: c.id, ward: w.total, why: w.why });
       break;
     }
-    case 'arm': f.grip = Math.min(4, f.grip + 1); ev(b, { t: 'grip', fid: f.id, asset: f.asset, grip: f.grip }); break;
+    case 'arm': f.grip = Math.min(4, f.grip + 1); ev(b, { t: 'grip', fid: f.id, asset: f.asset, grip: f.grip, revealed: f.revealed }); break;
     case 'persist': f.persistent = true; ev(b, { t: 'persist', fid: f.id, asset: f.asset }); break;
     case 'escalate': { const w = wardFor(content, b, asst.id, c); if (power - w.total <= 0) { blocked(w); break; } f.privileged = true; ev(b, { t: 'privileged', fid: f.id, asset: f.asset }); break; }
     case 'evade': { f.stealth = Math.min(8, f.stealth + 2); if (f.revealed) { f.revealed = false; ev(b, { t: 'rehide', fid: f.id, asset: f.asset }); } else ev(b, { t: 'stealth', fid: f.id, asset: f.asset }); break; }

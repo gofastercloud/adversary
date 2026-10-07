@@ -151,3 +151,24 @@ test('whiteboard rewards correct answers and carries a ward bonus', async () => 
   assert.equal(run.money, m0 + 36);
   assert.equal(run.phase, 'map');
 });
+
+test('tutorial script is reachable exactly as the coach describes it', async () => {
+  const { tutorialRun } = await import('../engine/tutorial.js');
+  let run = tutorialRun(content);
+  const A = (a) => { const r = R.tryRunAction(content, run, { type: 'BATTLE', action: a }); assert.ok(r.ok, r.error); run = r.run; return r.events; };
+  let b = () => run.battle;
+  assert.deepEqual(b().hand, ['d0', 'd1', 'd6', 'd2', 'd9']);
+  A({ type: 'PLAY', iid: 'd0', target: { asset: 'mail' } });           // MFA on the email gateway
+  A({ type: 'PLAY', iid: 'd1', target: {} });                          // log source inventory → intel
+  assert.ok(b().intel >= 2);
+  A({ type: 'END_TURN' });
+  assert.equal(b().round, 2);
+  assert.ok(b().footholds.length >= 1 && b().footholds.every(f => !f.revealed), 'a hidden foothold exists after round 1');
+  assert.equal(b().assets.find(a => a.id === 'mail').hp, 6);
+  assert.deepEqual(b().hand.slice().sort(), ['d3', 'd4', 'd5', 'd8', 'd10'].sort());
+  A({ type: 'PLAY', iid: 'd3', target: {} });                          // threat hunt
+  const f = b().footholds.find(x => x.revealed); assert.ok(f, 'hunt reveals it');
+  A({ type: 'PLAY', iid: 'd4', target: { fid: f.id } });               // credential revocation: evict 2
+  assert.ok(!b().footholds.some(x => x.id === f.id), 'evicted in one card');
+  assert.ok(b().expo.cur >= 3);
+});

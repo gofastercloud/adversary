@@ -51,3 +51,10 @@ export function cyrb53(str, seed = 0) {
   h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
 }
+
+/** Deterministic daily challenge configuration (identical in the SPA and the Lambda). Date is the Australia/Sydney calendar day. */
+export function dailyConfig(dateStr, scenarioIds, doctrineIds) {
+  const h = (k) => parseInt(cyrb53(dateStr + '|' + k).slice(0, 6), 36);
+  return { seed: dailySeed(dateStr), scenario: scenarioIds[h('scn') % scenarioIds.length], doctrine: doctrineIds[h('doc') % doctrineIds.length], assurance: 1, mode: 'run' };
+}
+export function sydneyDate(d = new Date()) { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Australia/Sydney', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d); }

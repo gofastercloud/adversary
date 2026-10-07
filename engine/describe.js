@@ -62,6 +62,7 @@ export function describeCard(content, def, ml = 1) {
     if (c.flags?.includes('autoEvict')) out.push({ k: 'fx', t: 'Each round: revealed footholds here lose 1 grip' });
     if (c.flags?.includes('segment')) out.push({ k: 'fx', t: 'Adversary Spread into/out of this asset costs +1 and has −1 power' });
     if (c.flags?.includes('stealthMinus1')) out.push({ k: 'fx', t: 'Footholds here are 1 stealth easier to detect' });
+    if (c.cov) { const n = (o) => Object.keys(o || {}).length; out.push({ k: 'mit', t: `CTID-scored coverage: ${n(c.cov.protect)} techniques protected, ${n(c.cov.detect)} detected (stronger on higher scores)` }); }
     if (c.mit?.length) out.push({ k: 'mit', t: 'Counters: ' + c.mit.map(m => `${m} ${content.mits[m]?.n || ''}`.trim()).join(', ') });
   } else if (c.type === 'policy') {
     out.push({ k: 'note', t: 'Policy — stays in play (2 slots)' });

@@ -141,7 +141,7 @@ export function activeControls(b, assetId) {
 }
 function ctrlStats(content, b, k) {
   const e = scaleCard(content.cards[k.card], k.ml);
-  const out = { ward: { ...(e.ward || {}) }, mit: new Set(e.mit || []), detect: e.detect ? { ...e.detect } : null, flags: new Set(e.flags || []), resists: new Set(), resistSrc: {}, ctl: new Set(content.cards[k.card].ctl || []), aegis: e.aegis ? { ...e.aegis } : null, privBonus: e.privBonus || 0, expert: [] };
+  const out = { ward: { ...(e.ward || {}) }, mit: new Set(e.mit || []), detect: e.detect ? { ...e.detect } : null, flags: new Set(e.flags || []), resists: new Set(), resistSrc: {}, ctl: new Set(content.cards[k.card].ctl || []), cov: content.cards[k.card].cov || null, aegis: e.aegis ? { ...e.aegis } : null, privBonus: e.privBonus || 0, expert: [] };
   for (const au of k.augs) {
     const ae = scaleCard(content.cards[au.card], au.ml).aug || {};
     for (const [s, v] of Object.entries(ae.ward || {})) out.ward[s] = (out.ward[s] || 0) + v;
@@ -149,6 +149,7 @@ function ctrlStats(content, b, k) {
     for (const c of content.cards[au.card].ctl || []) out.ctl.add(c);
     for (const r of ae.resists || []) { out.resists.add(r); out.resistSrc[r] = au.card; }
     for (const x of ae.expert || []) { out.resists.add(x.tech); out.resistSrc[x.tech] = au.card; }
+    for (const k of ['protect', 'detect']) for (const [t, sc] of Object.entries(ae.cov?.[k] || {})) { out.cov = out.cov || { protect: {}, detect: {} }; out.cov[k] = { ...out.cov[k], [t]: Math.max(sc, out.cov[k]?.[t] || 0) }; }
     for (const f of ae.flags || []) out.flags.add(f);
     if (out.detect) { out.detect.str += ae.detectStr || 0; out.detect.n += ae.detectN || 0; }
     out.privBonus += ae.privBonus || 0;
@@ -173,6 +174,9 @@ export function wardFor(content, b, assetId, card, opts = {}) {
     if (w) { total += w; why.push({ src: k.card, kid: k.kid, kind: 'ward', n: w }); }
     const mitHit = (card.mit || []).find(m => st.mit.has(m));
     if (mitHit && matched < 2) { total += 1; matched++; why.push({ src: k.card, kid: k.kid, kind: 'mitigation', n: 1, mit: mitHit }); }
+    else if (matched < 2 && covOf(st.cov?.protect, card.id)) {
+      const sc = covOf(st.cov.protect, card.id); total += covBonus(sc); matched++; why.push({ src: k.card, kid: k.kid, kind: 'mitigation', n: covBonus(sc), cov: sc, tech: card.id });
+    }
     else if (matched < 2 && st.ctl.size) {
       // CTID Mappings Explorer: NIST 800-53 controls that mitigate this technique (no ATT&CK mitigation overlap needed)
       const tt = content.techs?.[card.id] || content.techs?.[(card.id || '').split('.')[0]];
@@ -446,7 +450,7 @@ function assertDefender(b) {
 function monitorReveal(content, b, k, st) {
   const au = auras(content, b);
   let n = st.detect.n;
-  const cand = b.footholds.filter(f => !f.revealed && (st.detect.scope === 'global' || f.asset === k.asset) && effStealth(content, b, f, au) <= st.detect.str + (f.privileged ? st.privBonus : 0)).sort((x, y) => effStealth(content, b, x, au) - effStealth(content, b, y, au) || x.id.localeCompare(y.id));
+  const cand = b.footholds.filter(f => !f.revealed && (st.detect.scope === 'global' || f.asset === k.asset) && effStealth(content, b, f, au) <= st.detect.str + (f.privileged ? st.privBonus : 0) + covBonus(covOf(st.cov?.detect, f.tech))).sort((x, y) => effStealth(content, b, x, au) - effStealth(content, b, y, au) || x.id.localeCompare(y.id));
   const bonus = relicPassive(content, b, 'detectStr');
   let c = 0;
   for (const f of cand) { if (c >= n) break; if (revealFoothold(content, b, f, 'monitor')) c++; }
@@ -460,7 +464,7 @@ function monitorsStart(content, b) {
     const st = ctrlStats(content, b, k);
     if (!st.detect) continue;
     st.detect.str += bonus;
-    const cand = b.footholds.filter(f => !f.revealed && (st.detect.scope === 'global' || f.asset === k.asset) && effStealth(content, b, f, au) <= st.detect.str + (f.privileged ? st.privBonus : 0)).sort((x, y) => effStealth(content, b, x, au) - effStealth(content, b, y, au) || x.id.localeCompare(y.id));
+    const cand = b.footholds.filter(f => !f.revealed && (st.detect.scope === 'global' || f.asset === k.asset) && effStealth(content, b, f, au) <= st.detect.str + (f.privileged ? st.privBonus : 0) + covBonus(covOf(st.cov?.detect, f.tech))).sort((x, y) => effStealth(content, b, x, au) - effStealth(content, b, y, au) || x.id.localeCompare(y.id));
     let c = 0;
     for (const f of cand) { if (c >= st.detect.n) break; if (revealFoothold(content, b, f, 'monitor')) c++; }
     if (st.flags.has('autoEvict')) for (const f of b.footholds.filter(f => f.revealed && f.asset === k.asset)) evictFoothold(content, b, f, 1, 'auto');
@@ -827,6 +831,9 @@ export function decide(content, b, choiceId) {
 }
 
 // ───────────────────────────── end ─────────────────────────────
+/** CTID-style coverage lookup: exact technique, else its parent. Returns the 1-3 score (minimal/partial/significant) or 0. */
+const covOf = (map, id) => (map && id && (map[id] || map[id.split('.')[0]])) || 0;
+const covBonus = sc => (sc >= 3 ? 2 : sc >= 1 ? 1 : 0);
 const b0goal = (content, meta) => { const d = content.tuning.goals?.[meta.goal]; return d ? { key: meta.goal, kinds: d.rule === 'payoff' ? d.kinds : [] } : null; };
 function checkEnd(content, b) {
   if (b.over) return;

@@ -4,7 +4,7 @@ import { withPage } from './shot.mjs';
 const P = process.argv[2] || 'x', W = +(process.argv[3] || 1440), H = +(process.argv[4] || 900);
 const tag = `${P}-${W}`;
 await withPage(async (page, shot) => {
-  const s = (n) => shot(`${tag}-${n}`);
+  const s = async (n) => { await page.evaluate(() => { window.__adv.store.set({ levelup: null }); document.getElementById('toasts')?.replaceChildren(); }); await page.waitForTimeout(150); await shot(`${tag}-${n}`); };
   await page.waitForTimeout(1500); await s('01-title');
   await page.click('text=New run'); await page.waitForTimeout(800); await s('02-setup');
   await page.click('text=Begin operation'); await page.waitForTimeout(1200); await s('03-map');

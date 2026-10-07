@@ -234,7 +234,7 @@ test('goal payoffs: a ransom actor with too few observed impact cards gets goal-
 });
 
 test('every pack: loads, plays a full run, and every TTX completes with a score', () => {
-  for (const pack of ['enterprise', 'utilities', 'ot', 'appsec']) {
+  for (const pack of ['enterprise', 'utilities', 'ot', 'appsec', 'banking', 'cloud']) {
     const c = loadContent(pack, [], { allAdversaries: true });
     const r = playRun(c, { seed: 'smoke-' + pack, doctrine: 'phoenix', assurance: 0 }, {});
     assert.ok(['won', 'lost'].includes(r.run.phase), pack + ' run terminates');
@@ -244,4 +244,17 @@ test('every pack: loads, plays a full run, and every TTX completes with a score'
       assert.ok(x.run.ttx.result || x.run.phase === 'lost', t.id + ' produced a result or a loss');
     }
   }
+});
+
+test('CTID scored coverage (cloud pack): protect coverage adds ward, detect coverage raises reveal strength', () => {
+  const c = loadContent('cloud', [], { allAdversaries: true });
+  const iam = c.cards['cloud.iam'], gd = c.cards['cloud.guardduty'];
+  const pt = Object.entries(iam.cov.protect)[0]; assert.ok(pt, 'IAM has protect coverage');
+  const b = B.newBattle(c, { seed: 'cov-1', deck: starterDeck(c, 'phoenix'), adversary: { id: 'G1015', tier: 1 }, resilience: { cur: 20, max: 20 } });
+  const A = b.assets.find(a => a.id === 'idp');
+  b.controls.push({ kid: 'k1', iid: 'x1', card: 'cloud.iam', ml: 1, asset: A.id, augs: [], disabledBy: null });
+  const w = B.wardFor(c, b, A.id, { id: pt[0], stride: 'S', mit: [] });
+  assert.ok(w.why.some(x => x.cov), 'ward cites CTID coverage');
+  assert.ok(gd.cov.detect && Object.keys(gd.cov.detect).length > 10, 'GuardDuty has detect coverage');
+  assert.ok(gd.detect && gd.type === 'control');
 });

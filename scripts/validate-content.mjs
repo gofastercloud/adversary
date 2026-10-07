@@ -72,6 +72,7 @@ export function validateAll() {
     if (c.type === 'control' && c.target !== 'asset') E(f, 'controls target an asset');
     if (c.type === 'augment' && c.target !== 'control') E(f, 'augments target a control');
     for (const m of c.mit || []) mitExists(m, f, 'mit');
+    for (const k of ['protect', 'detect']) for (const [tid, sc] of Object.entries(c.cov?.[k] || {})) { if (!attack.techniques[tid]) E(f, `cov.${k} ${tid}: unknown technique`); if (![1, 2, 3].includes(sc)) E(f, `cov.${k} ${tid}: score must be 1-3`); }
     for (const s of Object.keys(c.ward || {})) if (!STR.includes(s)) E(f, 'bad ward stride ' + s);
     for (const fx of c.fx || []) if (!FX_OPS.has(fx.op)) E(f, 'unknown fx ' + fx.op);
     if (c.type === 'action' && !c.fx?.length) E(f, 'action needs fx');

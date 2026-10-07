@@ -1,0 +1,1420 @@
+{
+ "schema": 2,
+ "id": "tprm",
+ "kind": "scenario",
+ "name": "Third-Party Risk",
+ "tagline": "Your security is the minimum of yours and your suppliers’.",
+ "icon": "handshake",
+ "theme": {
+  "accent": "#f59e0b",
+  "accent2": "#ef4444",
+  "bg": [
+   "#160d04",
+   "#231305",
+   "#31180a"
+  ]
+ },
+ "org": {
+  "name": "Northgate Logistics",
+  "sector": "Freight, customs brokerage and warehousing (Australia)",
+  "brief": "A 1,800-person logistics company that outsources heavily: a managed service provider runs its endpoints and servers with domain-wide admin rights, a payroll SaaS and an ERP vendor feed the finance platform, customs lodgement runs through the ERP vendor’s integration, and a software vendor’s desktop client auto-updates on every warehouse PC. Contracts were signed by procurement; nobody has tested the exit clause.",
+  "crownJewels": [
+   "Finance & payroll platform",
+   "Customer & shipment data"
+  ],
+  "regimes": [
+   {
+    "name": "APRA CPS 230 (if you are a regulated customer) and customer contracts",
+    "note": "Regulated customers must manage material service providers and their sub-contractors, and will push the same obligations to you through contracts.",
+    "refs": [
+     "apra:cps230"
+    ]
+   },
+   {
+    "name": "Privacy Act 1988 (Cth) — Notifiable Data Breaches",
+    "note": "You remain accountable for personal information your suppliers hold on your behalf. A supplier breach can be your eligible data breach.",
+    "refs": [
+     "privacy:ndb"
+    ]
+   },
+   {
+    "name": "NIST SP 800-161 & ASD supply chain guidance",
+    "note": "Good-practice frameworks for cyber supply chain risk management: assess, contract, monitor and plan the exit.",
+    "refs": [
+     "nist:800-161",
+     "ism:overview"
+    ]
+   }
+  ]
+ },
+ "assets": [
+  {
+   "id": "mail",
+   "name": "Corporate Email",
+   "kind": "email",
+   "zone": "Corporate",
+   "hp": 6,
+   "jewel": false,
+   "exposed": true,
+   "icon": "mail",
+   "desc": "Staff email, including booking and customs correspondence.",
+   "adjacent": [
+    "ws",
+    "idp"
+   ]
+  },
+  {
+   "id": "ws",
+   "name": "Offices & Warehouse PCs",
+   "kind": "endpoint",
+   "zone": "Corporate",
+   "hp": 8,
+   "jewel": false,
+   "exposed": true,
+   "icon": "laptop",
+   "desc": "Managed endpoints that run the software vendor’s auto-updating client.",
+   "adjacent": [
+    "mail",
+    "idp",
+    "sup",
+    "msp"
+   ]
+  },
+  {
+   "id": "msp",
+   "name": "MSP Remote Management",
+   "kind": "vendor",
+   "zone": "Third parties",
+   "hp": 6,
+   "jewel": false,
+   "exposed": true,
+   "icon": "unplug",
+   "desc": "The managed service provider’s RMM and privileged-access tooling with admin rights across the estate.",
+   "adjacent": [
+    "ws",
+    "idp",
+    "erp",
+    "bk"
+   ]
+  },
+  {
+   "id": "sup",
+   "name": "Software Vendor Update Channel",
+   "kind": "vendor",
+   "zone": "Third parties",
+   "hp": 6,
+   "jewel": false,
+   "exposed": true,
+   "icon": "package",
+   "desc": "The vendor’s update service and signing infrastructure that Northgate trusts implicitly.",
+   "adjacent": [
+    "ws",
+    "erp"
+   ]
+  },
+  {
+   "id": "idp",
+   "name": "Directory & SSO",
+   "kind": "identity",
+   "zone": "Corporate",
+   "hp": 8,
+   "jewel": false,
+   "exposed": false,
+   "icon": "id-card",
+   "desc": "Active Directory and SSO, with MSP accounts in Domain Admins.",
+   "adjacent": [
+    "mail",
+    "ws",
+    "msp",
+    "erp",
+    "fin"
+   ]
+  },
+  {
+   "id": "erp",
+   "name": "ERP & Transport Management",
+   "kind": "app",
+   "zone": "Core",
+   "hp": 8,
+   "jewel": false,
+   "exposed": false,
+   "icon": "boxes",
+   "desc": "Bookings, billing and the vendor-maintained integrations to finance and customs.",
+   "adjacent": [
+    "msp",
+    "sup",
+    "idp",
+    "fin",
+    "dwh"
+   ]
+  },
+  {
+   "id": "fin",
+   "name": "Finance & Payroll",
+   "kind": "data",
+   "zone": "Finance",
+   "hp": 10,
+   "jewel": true,
+   "exposed": false,
+   "icon": "banknote",
+   "desc": "Payment runs, supplier bank details and payroll.",
+   "adjacent": [
+    "idp",
+    "erp"
+   ]
+  },
+  {
+   "id": "dwh",
+   "name": "Customer & Shipment Data",
+   "kind": "data",
+   "zone": "Core",
+   "hp": 10,
+   "jewel": true,
+   "exposed": false,
+   "icon": "database",
+   "desc": "Customer contracts, consignment details and customs records.",
+   "adjacent": [
+    "erp",
+    "bk"
+   ]
+  },
+  {
+   "id": "bk",
+   "name": "Backups (MSP-managed)",
+   "kind": "backup",
+   "zone": "Third parties",
+   "hp": 6,
+   "jewel": false,
+   "exposed": false,
+   "icon": "database-backup",
+   "desc": "Backups run and held by the MSP under the same admin credentials.",
+   "adjacent": [
+    "msp",
+    "dwh"
+   ]
+  }
+ ],
+ "roster": {
+  "acts": [
+   {
+    "name": "Act I — Opportunists Through the Side Door",
+    "battle": [
+     "G0092",
+     "G1043",
+     "G1051",
+     "G1032"
+    ],
+    "elite": [
+     "G0045"
+    ],
+    "boss": "C0057",
+    "tiers": {
+     "battle": 1,
+     "elite": 2,
+     "boss": 2
+    }
+   },
+   {
+    "name": "Act II — Trusted Relationships",
+    "battle": [
+     "G0102",
+     "G1057",
+     "G0114"
+    ],
+    "elite": [
+     "C0029"
+    ],
+    "boss": "X0001",
+    "tiers": {
+     "battle": 2,
+     "elite": 2,
+     "boss": 3
+    }
+   },
+   {
+    "name": "Act III — The Supply Chain Itself",
+    "battle": [
+     "G0096",
+     "G0016",
+     "G0007"
+    ],
+    "elite": [
+     "C0012"
+    ],
+    "boss": "C0024",
+    "tiers": {
+     "battle": 2,
+     "elite": 3,
+     "boss": 3
+    }
+   }
+  ]
+ },
+ "reading": [
+  {
+   "title": "NIST SP 800-161 Rev. 1 — Cybersecurity supply chain risk management",
+   "url": "https://csrc.nist.gov/pubs/sp/800/161/r1/final"
+  },
+  {
+   "title": "CISA — Protecting against malicious cyber activity targeting managed service providers",
+   "url": "https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-131a"
+  },
+  {
+   "title": "APRA CPS 230 — Operational Risk Management",
+   "url": "https://www.apra.gov.au/operational-risk-management"
+  },
+  {
+   "title": "ASD ISM — Guidelines for procurement and outsourcing",
+   "url": "https://www.cyber.gov.au/resources-business-and-government/essential-cyber-security/ism"
+  },
+  {
+   "title": "MITRE ATT&CK — Operation CuckooBees, SolarWinds Compromise, 3CX Supply Chain Attack",
+   "url": "https://attack.mitre.org/campaigns/"
+  }
+ ],
+ "systems": [
+  {
+   "id": "msp-access",
+   "name": "Managed service provider access",
+   "blurb": "The MSP’s engineers administer Northgate’s estate through a privileged-access gateway and an RMM platform whose agents run on every server and PC. Shared admin credentials are checked out of a vault.",
+   "elements": [
+    {
+     "id": "cust",
+     "type": "external",
+     "label": "Northgate IT",
+     "x": 110,
+     "y": 110
+    },
+    {
+     "id": "msp",
+     "type": "external",
+     "label": "MSP engineers",
+     "x": 110,
+     "y": 280
+    },
+    {
+     "id": "pam",
+     "type": "process",
+     "label": "Privileged access gateway",
+     "x": 320,
+     "y": 280
+    },
+    {
+     "id": "vault",
+     "type": "store",
+     "label": "Admin credential vault",
+     "x": 320,
+     "y": 450
+    },
+    {
+     "id": "rmm",
+     "type": "process",
+     "label": "RMM platform",
+     "x": 530,
+     "y": 110
+    },
+    {
+     "id": "fleet",
+     "type": "process",
+     "label": "Servers & endpoints",
+     "x": 530,
+     "y": 280
+    },
+    {
+     "id": "cmdb",
+     "type": "store",
+     "label": "Asset & config database",
+     "x": 530,
+     "y": 450
+    }
+   ],
+   "flows": [
+    {
+     "id": "f1",
+     "from": "msp",
+     "to": "pam",
+     "label": "Remote admin sessions"
+    },
+    {
+     "id": "f2",
+     "from": "pam",
+     "to": "fleet",
+     "label": "Admin protocols (RDP/SSH)"
+    },
+    {
+     "id": "f3",
+     "from": "vault",
+     "to": "pam",
+     "label": "Credential checkout"
+    },
+    {
+     "id": "f4",
+     "from": "rmm",
+     "to": "fleet",
+     "label": "Agent commands & patches"
+    },
+    {
+     "id": "f5",
+     "from": "fleet",
+     "to": "cmdb",
+     "label": "Inventory sync"
+    },
+    {
+     "id": "f6",
+     "from": "cust",
+     "to": "rmm",
+     "label": "Service requests"
+    }
+   ],
+   "boundaries": [
+    {
+     "id": "b1",
+     "label": "Northgate & MSP staff",
+     "x": 10,
+     "y": 20,
+     "w": 200,
+     "h": 520
+    },
+    {
+     "id": "b2",
+     "label": "Northgate environment",
+     "x": 235,
+     "y": 50,
+     "w": 405,
+     "h": 470
+    }
+   ],
+   "scenarios": [
+    {
+     "id": "tp1",
+     "target": {
+      "kind": "element",
+      "id": "msp"
+     },
+     "text": "An MSP engineer’s credentials are phished at a conference, and the attacker signs in to the gateway as that engineer.",
+     "answer": "S",
+     "why": "The attacker is accepted as a trusted supplier employee. Nothing has been changed yet; the failure is identity assurance for a third party.",
+     "refs": [
+      "attack:T1199",
+      "attack:T1078",
+      "attack:M1032"
+     ]
+    },
+    {
+     "id": "tp2",
+     "target": {
+      "kind": "flow",
+      "id": "f4"
+     },
+     "text": "An attacker who controls the RMM platform pushes a malicious script through the normal agent channel to every managed server at once.",
+     "answer": "T",
+     "why": "Legitimate-looking commands are altered or injected on the way to the fleet. Integrity of the flow failed; the channel itself worked as designed.",
+     "refs": [
+      "attack:T1072",
+      "attack:T1195.002",
+      "attack:M1051"
+     ]
+    },
+    {
+     "id": "tp3",
+     "target": {
+      "kind": "element",
+      "id": "vault"
+     },
+     "text": "The shared credential vault is readable by every MSP staff member and holds the admin passwords of all the MSP’s customers.",
+     "answer": "I",
+     "why": "Sensitive credentials are readable by people who should not hold them, across customer boundaries. Nothing is altered or taken down.",
+     "refs": [
+      "attack:T1555",
+      "attack:T1552",
+      "nist-800-53:AC-6"
+     ]
+    },
+    {
+     "id": "tp4",
+     "target": {
+      "kind": "element",
+      "id": "pam"
+     },
+     "text": "A junior MSP help-desk role can create new domain administrator accounts for any customer through the gateway.",
+     "answer": "E",
+     "why": "A role holds authority beyond what it needs. The failure is excessive privilege design, not impersonation or interception.",
+     "refs": [
+      "attack:M1026",
+      "attack:T1136",
+      "nist-800-53:AC-6"
+     ]
+    },
+    {
+     "id": "tp5",
+     "target": {
+      "kind": "element",
+      "id": "cmdb"
+     },
+     "text": "An intruder edits the asset database to mark compromised servers as decommissioned, so they drop out of patching and monitoring.",
+     "answer": "T",
+     "why": "Stored data that later decisions rely on is changed without authority. This is tampering with the store.",
+     "refs": [
+      "attack:T1565.001",
+      "attack:T1685",
+      "nist-800-53:SI-7"
+     ]
+    },
+    {
+     "id": "tp6",
+     "target": {
+      "kind": "flow",
+      "id": "f2"
+     },
+     "text": "Repeated failed administrative logins from a compromised supplier tool trigger account lockouts on hundreds of servers during month-end processing.",
+     "answer": "D",
+     "why": "The channel becomes unusable for legitimate administrators through lockout storms. Nothing is forged, altered or read.",
+     "refs": [
+      "attack:T1531",
+      "attack:T1110",
+      "nist-800-53:AC-7"
+     ]
+    },
+    {
+     "id": "tp7",
+     "target": {
+      "kind": "element",
+      "id": "rmm"
+     },
+     "text": "RMM scripts run as a shared service account and logs do not record which engineer launched them, so a destructive script cannot be attributed.",
+     "answer": "R",
+     "why": "There is no attributable record of who performed an action. That is the defining Repudiation problem.",
+     "refs": [
+      "nist-800-53:AU-10",
+      "nist-800-53:AU-3",
+      "nist-csf:PR.AA-01"
+     ]
+    },
+    {
+     "id": "tp8",
+     "target": {
+      "kind": "flow",
+      "id": "f1"
+     },
+     "text": "The MSP records remote sessions with a third-party screen-capture tool that stores screenshots, including Northgate customer data, in another country.",
+     "answer": "I",
+     "why": "The contents of the flow end up with a party and in a place nobody agreed to. Nothing is changed or blocked.",
+     "refs": [
+      "privacy:ndb",
+      "nist:800-161",
+      "nist-800-53:SC-8"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "software-saas",
+   "name": "Software vendors & SaaS integrations",
+   "blurb": "A vendor’s desktop client auto-updates from the vendor’s service and talks to the ERP. A payroll SaaS posts webhooks through an integration API into the ERP, which posts to finance.",
+   "elements": [
+    {
+     "id": "vendor",
+     "type": "external",
+     "label": "Software vendor",
+     "x": 110,
+     "y": 110
+    },
+    {
+     "id": "saas",
+     "type": "external",
+     "label": "Payroll SaaS",
+     "x": 110,
+     "y": 450
+    },
+    {
+     "id": "upd",
+     "type": "process",
+     "label": "Auto-update service",
+     "x": 320,
+     "y": 110
+    },
+    {
+     "id": "client",
+     "type": "process",
+     "label": "Vendor desktop client",
+     "x": 320,
+     "y": 280
+    },
+    {
+     "id": "api",
+     "type": "process",
+     "label": "Integration API",
+     "x": 320,
+     "y": 450
+    },
+    {
+     "id": "cfg",
+     "type": "store",
+     "label": "Integration secrets",
+     "x": 530,
+     "y": 110
+    },
+    {
+     "id": "erp",
+     "type": "process",
+     "label": "ERP",
+     "x": 530,
+     "y": 280
+    },
+    {
+     "id": "fin",
+     "type": "store",
+     "label": "Finance & payroll data",
+     "x": 740,
+     "y": 280
+    }
+   ],
+   "flows": [
+    {
+     "id": "f1",
+     "from": "vendor",
+     "to": "upd",
+     "label": "Update packages"
+    },
+    {
+     "id": "f2",
+     "from": "upd",
+     "to": "client",
+     "label": "Auto-update"
+    },
+    {
+     "id": "f3",
+     "from": "client",
+     "to": "erp",
+     "label": "Local integration calls"
+    },
+    {
+     "id": "f4",
+     "from": "saas",
+     "to": "api",
+     "label": "Payroll webhooks"
+    },
+    {
+     "id": "f5",
+     "from": "api",
+     "to": "erp",
+     "label": "Inbound data"
+    },
+    {
+     "id": "f6",
+     "from": "erp",
+     "to": "fin",
+     "label": "Postings"
+    },
+    {
+     "id": "f7",
+     "from": "cfg",
+     "to": "api",
+     "label": "API keys"
+    }
+   ],
+   "boundaries": [
+    {
+     "id": "b1",
+     "label": "Third parties",
+     "x": 10,
+     "y": 20,
+     "w": 200,
+     "h": 520
+    },
+    {
+     "id": "b2",
+     "label": "Northgate",
+     "x": 235,
+     "y": 50,
+     "w": 405,
+     "h": 470
+    },
+    {
+     "id": "b3",
+     "label": "Finance zone",
+     "x": 655,
+     "y": 200,
+     "w": 200,
+     "h": 160
+    }
+   ],
+   "scenarios": [
+    {
+     "id": "sc1",
+     "target": {
+      "kind": "element",
+      "id": "vendor"
+     },
+     "text": "An attacker steals the vendor’s code-signing credentials and publishes an update that every customer’s client installs as genuine.",
+     "answer": "S",
+     "why": "The attacker is accepted as the vendor. Nothing in Northgate has been changed yet; trust in the supplier’s identity is what failed.",
+     "refs": [
+      "attack:T1195.002",
+      "attack:T1553.002",
+      "attack:C0057"
+     ]
+    },
+    {
+     "id": "sc2",
+     "target": {
+      "kind": "flow",
+      "id": "f2"
+     },
+     "text": "The client downloads updates over plain HTTP and does not verify a signature, so a network attacker swaps the package for a malicious one.",
+     "answer": "T",
+     "why": "The content of the update is altered in transit and executed. Integrity of the flow failed, not secrecy or availability.",
+     "refs": [
+      "attack:T1195.002",
+      "attack:T1557",
+      "owasp-top10:A08"
+     ]
+    },
+    {
+     "id": "sc3",
+     "target": {
+      "kind": "element",
+      "id": "cfg"
+     },
+     "text": "Integration API keys sit in a plaintext configuration file readable by every IT contractor and by the vendor’s support staff.",
+     "answer": "I",
+     "why": "Sensitive stored secrets are readable by people who should not hold them. Nothing is altered; the failure is confidentiality.",
+     "refs": [
+      "attack:T1552.001",
+      "owasp-top10:A02",
+      "nist-800-53:SC-28"
+     ]
+    },
+    {
+     "id": "sc4",
+     "target": {
+      "kind": "element",
+      "id": "client"
+     },
+     "text": "The vendor client’s background service runs as SYSTEM and accepts commands from any local user, which a warehouse employee uses to gain administrator rights.",
+     "answer": "E",
+     "why": "A low-privileged user gains authority it was never granted. The employee is not impersonating anyone; the privilege boundary failed.",
+     "refs": [
+      "attack:T1068",
+      "attack:T1543",
+      "nist-800-53:AC-6"
+     ]
+    },
+    {
+     "id": "sc5",
+     "target": {
+      "kind": "element",
+      "id": "fin"
+     },
+     "text": "An attacker with access to the finance data changes a supplier’s bank account details, and the next payment run pays the attacker.",
+     "answer": "T",
+     "why": "Stored data that drives payments is changed without authority. This is tampering with the store, the core of business email compromise outcomes.",
+     "refs": [
+      "attack:T1565.001",
+      "attack:T1657",
+      "swift:CSP"
+     ]
+    },
+    {
+     "id": "sc6",
+     "target": {
+      "kind": "flow",
+      "id": "f4"
+     },
+     "text": "A flood of webhooks, whether an attack or a vendor bug, overwhelms the integration API and payroll cannot be processed before pay day.",
+     "answer": "D",
+     "why": "The channel is overwhelmed and unavailable to legitimate use at a critical time. Nothing is forged, altered or read.",
+     "refs": [
+      "attack:T1499",
+      "owasp-api:API4",
+      "apra:cps230"
+     ]
+    },
+    {
+     "id": "sc7",
+     "target": {
+      "kind": "element",
+      "id": "erp"
+     },
+     "text": "All vendor integrations use one service account, so when a batch of fraudulent postings appears nobody can tell which integration or person created them.",
+     "answer": "R",
+     "why": "There is no attributable evidence of which actor performed the action. That is the defining Repudiation problem.",
+     "refs": [
+      "nist-800-53:AU-10",
+      "nist-800-53:AU-3",
+      "nist-csf:PR.AA-01"
+     ]
+    },
+    {
+     "id": "sc8",
+     "target": {
+      "kind": "flow",
+      "id": "f7"
+     },
+     "text": "API keys are sent in URL query strings that appear in web proxy and CDN logs readable by several teams and a logging vendor.",
+     "answer": "I",
+     "why": "The contents of the flow are exposed in places that should never have them. Nothing is altered and the integration still works.",
+     "refs": [
+      "owasp-api:API8",
+      "attack:T1552.001",
+      "owasp-top10:A09"
+     ]
+    }
+   ]
+  }
+ ],
+ "ttx": [
+  {
+   "id": "tprm-msp-hop",
+   "name": "Cloud Hopper at Northgate",
+   "blurb": "Your managed service provider is compromised and its trusted access becomes the intruder’s. Modelled on the documented menuPass/APT10 campaigns against MSPs (MITRE G0045). Decide how much trust to cut, what your contract actually gives you, and what you must tell customers.",
+   "adversary": {
+    "id": "G0045",
+    "tier": 3
+   },
+   "rounds": 8,
+   "maxScore": 250,
+   "injects": [
+    {
+     "id": "i1",
+     "round": 1,
+     "at": "T+00:00",
+     "kind": "alert",
+     "title": "A 03:00 admin session from the MSP",
+     "text": "The SIEM flags a domain-admin session from the MSP’s gateway at 03:00 Sunday. No change ticket exists and the engineer named on the account is on leave.",
+     "fx": [],
+     "decision": {
+      "prompt": "What does the on-call analyst do?",
+      "choices": [
+       {
+        "id": "a",
+        "quality": "best",
+        "label": "Treat it as compromise of the supplier account: suspend that account and the MSP’s standing domain-admin access, preserve logs, and call the MSP’s named incident contact on the contractual emergency number.",
+        "fx": [
+         {
+          "op": "reveal",
+          "n": 1
+         },
+         {
+          "op": "shieldAll",
+          "n": 1
+         }
+        ],
+        "lesson": "A trusted account behaving out of pattern is an intrusion until proven otherwise. Act on the identity, not on the supplier relationship, and use the contract’s emergency channel.",
+        "refs": [
+         "attack:T1199",
+         "attack:T1078",
+         "nist:800-161"
+        ]
+       },
+       {
+        "id": "b",
+        "quality": "ok",
+        "label": "Email the MSP service desk and ask whether it was them.",
+        "fx": [
+         {
+          "op": "intel",
+          "n": 1
+         }
+        ],
+        "lesson": "Asking by email through the same potentially compromised channel wastes the hours that matter.",
+        "refs": [
+         "nist-csf:RS.MA-01"
+        ]
+       },
+       {
+        "id": "c",
+        "quality": "poor",
+        "label": "Assume it is a roster mix-up and check on Monday.",
+        "fx": [
+         {
+          "op": "plant"
+         },
+         {
+          "op": "resilience",
+          "n": -3
+         }
+        ],
+        "lesson": "Weekend, off-hours supplier access is exactly the window these actors use.",
+        "refs": [
+         "attack:T1199"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "i2",
+     "round": 2,
+     "at": "T+06:00",
+     "kind": "vendor",
+     "title": "The MSP says it is “looking into it”",
+     "text": "The MSP acknowledges the alert but says it cannot share logs until its own investigation is complete, and asks Northgate not to take any action that might “disrupt service”.",
+     "fx": [
+      {
+       "op": "intel",
+       "n": 1
+      }
+     ],
+     "decision": {
+      "prompt": "What do you do?",
+      "choices": [
+       {
+        "id": "a",
+        "quality": "best",
+        "label": "Invoke the incident and audit clauses in the contract, demand logs and a named responder within hours, and in parallel cut the MSP’s access paths and rotate any credential it held, running critical processes manually.",
+        "fx": [
+         {
+          "op": "reveal",
+          "n": 2
+         },
+         {
+          "op": "resilience",
+          "n": 2
+         }
+        ],
+        "lesson": "Your obligations to your customers do not wait on your supplier’s investigation. Use the contract, and protect yourself technically in parallel.",
+        "refs": [
+         "nist:800-161",
+         "apra:cps230",
+         "nist-csf:GV.SC-08"
+        ]
+       },
+       {
+        "id": "b",
+        "quality": "ok",
+        "label": "Wait for the MSP’s report.",
+        "fx": [],
+        "lesson": "Waiting hands the initiative to the intruder and to a supplier with its own interests.",
+        "refs": [
+         "nist-csf:RS.MA-01"
+        ]
+       },
+       {
+        "id": "c",
+        "quality": "poor",
+        "label": "Give the MSP more access so it can investigate faster.",
+        "fx": [
+         {
+          "op": "plant"
+         },
+         {
+          "op": "resilience",
+          "n": -4
+         }
+        ],
+        "lesson": "Handing more privilege to a possibly-compromised supplier is the intruder’s best case.",
+        "refs": [
+         "attack:T1199"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "i3",
+     "round": 4,
+     "at": "T+14:00",
+     "kind": "ops",
+     "title": "The freight stops",
+     "text": "Cutting the MSP’s access has stopped automated patching and the nightly backup. The warehouse management system’s remote support is also offline, and trucks are queuing.",
+     "fx": [
+      {
+       "op": "intel",
+       "n": 1
+      }
+     ],
+     "decision": {
+      "prompt": "How do you balance containment and operations?",
+      "choices": [
+       {
+        "id": "a",
+        "quality": "best",
+        "label": "Run critical flows on documented manual procedures, restore only the minimum supplier paths through a monitored, time-boxed bastion that Northgate controls, and communicate expected delays to customers.",
+        "fx": [
+         {
+          "op": "shieldAll",
+          "n": 1
+         },
+         {
+          "op": "score",
+          "n": 2
+         }
+        ],
+        "lesson": "You can rarely cut a supplier completely. Re-admit them through a path you control, scoped and watched, and tell customers early.",
+        "refs": [
+         "nist-csf:RS.MI-01",
+         "nist:800-161",
+         "e8:restrict-admin"
+        ]
+       },
+       {
+        "id": "b",
+        "quality": "ok",
+        "label": "Restore the MSP’s original access to get freight moving.",
+        "fx": [
+         {
+          "op": "plant"
+         }
+        ],
+        "lesson": "Restoring the same access restores the attacker’s access too.",
+        "refs": [
+         "attack:T1199"
+        ]
+       },
+       {
+        "id": "c",
+        "quality": "poor",
+        "label": "Do nothing and let the queue build.",
+        "fx": [
+         {
+          "op": "resilience",
+          "n": -3
+         }
+        ],
+        "lesson": "Inaction trades one harm for another with no containment benefit.",
+        "refs": [
+         "apra:cps230"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "i4",
+     "round": 5,
+     "at": "T+20:00",
+     "kind": "regulator",
+     "title": "Customer notification clocks",
+     "text": "Two large customers’ contracts require notice within 24 hours of a security incident that may affect their data. Forensics has not yet confirmed whether shipment data was accessed.",
+     "fx": [],
+     "decision": {
+      "prompt": "What do you send?",
+      "choices": [
+       {
+        "id": "a",
+        "quality": "best",
+        "label": "Notify both customers now with what is known, what is not, containment steps and next update time; begin the NDB assessment in parallel; ask counsel to review.",
+        "fx": [
+         {
+          "op": "score",
+          "n": 2
+         },
+         {
+          "op": "resilience",
+          "n": 2
+         }
+        ],
+        "lesson": "Contract clocks run from awareness. A candid early notice with caveats beats a perfect late one.",
+        "refs": [
+         "privacy:ndb",
+         "nist-csf:RS.CO-03",
+         "apra:cps230"
+        ]
+       },
+       {
+        "id": "b",
+        "quality": "poor",
+        "label": "Say nothing until forensics confirms access.",
+        "fx": [
+         {
+          "op": "resilience",
+          "n": -3
+         }
+        ],
+        "lesson": "Missing a contractual clock is a second incident layered on the first.",
+        "refs": [
+         "privacy:ndb"
+        ]
+       },
+       {
+        "id": "c",
+        "quality": "ok",
+        "label": "Send a vague “maintenance” notice.",
+        "fx": [],
+        "lesson": "A misleading notice is worse than a late one when the truth emerges.",
+        "refs": [
+         "nist-csf:RS.CO-03"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "i5",
+     "round": 7,
+     "at": "T+32:00",
+     "kind": "exec",
+     "title": "Do we stay with this MSP?",
+     "text": "The board asks whether to terminate the MSP, switch providers, or insource, and what the exit would cost.",
+     "fx": [],
+     "decision": {
+      "prompt": "What do you recommend?",
+      "choices": [
+       {
+        "id": "a",
+        "quality": "best",
+        "label": "Decide on evidence after the review, but start now: separate admin tiers and credentials per customer, own your backups and break-glass accounts, test an exit plan and consider a second provider for critical services.",
+        "fx": [
+         {
+          "op": "resilience",
+          "n": 3
+         },
+         {
+          "op": "score",
+          "n": 1
+         }
+        ],
+        "lesson": "Concentration risk is reduced by independence (your own backups and break-glass), segmentation of supplier privilege and a tested exit, whatever you decide about the supplier.",
+        "refs": [
+         "apra:cps230",
+         "nist:800-161",
+         "e8:backups"
+        ]
+       },
+       {
+        "id": "b",
+        "quality": "ok",
+        "label": "Terminate immediately and rebuild in-house.",
+        "fx": [
+         {
+          "op": "resilience",
+          "n": -2
+         }
+        ],
+        "lesson": "A rushed exit without capability transfers the risk rather than removing it.",
+        "refs": [
+         "apra:cps230"
+        ]
+       },
+       {
+        "id": "c",
+        "quality": "poor",
+        "label": "Renew with a discount and a stronger SLA.",
+        "fx": [
+         {
+          "op": "resilience",
+          "n": -2
+         }
+        ],
+        "lesson": "An SLA does not fix privilege design or the absence of an exit plan.",
+        "refs": [
+         "nist:800-161"
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "objectives": [
+    {
+     "id": "o1",
+     "kind": "detectBy",
+     "round": 2,
+     "text": "Detect the intrusion by round 2 (T+6h)",
+     "points": 30
+    },
+    {
+     "id": "o2",
+     "kind": "keepJewel",
+     "text": "Keep finance and customer data safe",
+     "points": 40
+    },
+    {
+     "id": "o3",
+     "kind": "decisions",
+     "n": 3,
+     "text": "Make at least 3 best-practice decisions",
+     "points": 30
+    },
+    {
+     "id": "o4",
+     "kind": "resilienceAbove",
+     "n": 20,
+     "text": "Finish with Resilience above 20",
+     "points": 20
+    },
+    {
+     "id": "o5",
+     "kind": "win",
+     "text": "Contain the operation",
+     "points": 20
+    }
+   ]
+  }
+ ],
+ "cardOverrides": {
+  "govern.spoofing": {
+   "name": "Supplier Access Policy",
+   "flavour": "Supplier staff are staff, only less known",
+   "desc": "Policy that treats supplier access like employee access: named accounts, MFA, approved windows, least privilege, joiner-mover-leaver, and recorded privileged sessions.",
+   "refs": [
+    "nist-csf:GV.SC-05",
+    "nist:800-161",
+    "attack:M1032"
+   ]
+  },
+  "govern.tampering": {
+   "name": "Third-party Assurance Programme",
+   "flavour": "Questionnaires are not controls",
+   "desc": "Tiered supplier assessments driven by criticality: evidence-based reviews for the few that matter, contract security schedules, audit rights and incident-notification clocks.",
+   "refs": [
+    "nist-csf:GV.SC-06",
+    "nist:800-161",
+    "apra:cps230"
+   ]
+  },
+  "identify.tampering": {
+   "name": "Supplier & Dependency Register",
+   "flavour": "Who touches what, and who do they use?",
+   "desc": "An inventory of suppliers, what each can access, which systems depend on them and their key sub-contractors (fourth parties), updated when contracts change.",
+   "refs": [
+    "nist-csf:ID.AM-04",
+    "nist:800-161",
+    "apra:cps230"
+   ]
+  },
+  "identify.disclosure": {
+   "name": "Supplier Data Flow Map",
+   "flavour": "Which supplier holds your customers’ data?",
+   "desc": "A map of what personal and sensitive data each supplier receives, where it is stored and processed, and how it returns or is destroyed on exit.",
+   "refs": [
+    "privacy:ndb",
+    "nist-csf:ID.AM-03",
+    "nist:800-161"
+   ]
+  },
+  "protect.spoofing": {
+   "name": "Just-in-time Supplier Access",
+   "flavour": "No standing admin for people you do not employ",
+   "desc": "Supplier accounts have no standing privilege: access is requested, approved, time-boxed and recorded, with phishing-resistant MFA.",
+   "refs": [
+    "attack:M1032",
+    "attack:T1199",
+    "e8:restrict-admin",
+    "nist-800-53:AC-2"
+   ]
+  },
+  "protect.tampering": {
+   "name": "Update Verification & Staging",
+   "flavour": "Trust the signature, not the sender",
+   "desc": "Vendor updates are verified (signature, hash, provenance), staged on a pilot ring and monitored before broad rollout, so a poisoned release does not reach every endpoint at once.",
+   "refs": [
+    "attack:T1195.002",
+    "attack:M1013",
+    "nist:800-218",
+    "e8:patch-apps"
+   ]
+  },
+  "protect.elevation": {
+   "name": "Tiered Admin & MSP Boundaries",
+   "flavour": "The MSP admins their world, not yours",
+   "desc": "Separate admin tiers and accounts per customer, no shared credentials across the MSP’s customers, and break-glass accounts that Northgate controls.",
+   "refs": [
+    "attack:M1026",
+    "nist-800-53:AC-6",
+    "e8:restrict-admin"
+   ]
+  },
+  "detect.tampering": {
+   "name": "Supplier Activity Monitoring",
+   "flavour": "Watch the people you trusted",
+   "desc": "Monitoring tuned to supplier behaviour: admin logins out of window, bulk commands from RMM tools, new accounts and remote tools appearing, with a baseline of normal MSP activity.",
+   "refs": [
+    "nist-csf:DE.CM-06",
+    "attack:T1199",
+    "attack:M1047"
+   ]
+  },
+  "respond.elevation": {
+   "name": "Supplier Containment Playbook",
+   "flavour": "Cut the supplier, keep the freight moving",
+   "desc": "A rehearsed procedure to suspend a supplier’s access, rotate shared secrets, run key processes manually and bring up an alternative, with decision rights agreed in advance.",
+   "refs": [
+    "nist-csf:RS.MI-01",
+    "nist:800-161",
+    "nist:800-61"
+   ]
+  },
+  "respond.disclosure": {
+   "name": "Joint Incident & Notification Runbook",
+   "flavour": "Who calls whom, in which hour",
+   "desc": "Contractual and practical incident-notification terms with suppliers (hours, not days), and a joint runbook for assessing and notifying customers, regulators and the OAIC.",
+   "refs": [
+    "privacy:ndb",
+    "apra:cps230",
+    "nist-csf:RS.CO-02"
+   ]
+  },
+  "recover.dos": {
+   "name": "Exit & Substitution Plan",
+   "flavour": "A tested exit clause is a control",
+   "desc": "Backups held independently of the supplier, documented data export, and a tested plan to move a critical service in-house or to a second supplier.",
+   "refs": [
+    "apra:cps230",
+    "e8:backups",
+    "nist:800-161"
+   ]
+  }
+ },
+ "cards": [
+  {
+   "id": "tprm.jit-vendor",
+   "name": "Just-in-time Vendor Sessions",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "spoofing",
+   "cost": 1,
+   "rarity": "uncommon",
+   "target": "control",
+   "base": [
+    "protect.spoofing",
+    "protect.elevation"
+   ],
+   "aug": {
+    "ward": {
+     "S": 1,
+     "E": 1
+    },
+    "mit": [
+     "M1032"
+    ],
+    "expert": [
+     {
+      "tech": "T1199",
+      "ref": "nist:800-161"
+     }
+    ]
+   },
+   "desc": "Supplier access is requested, approved, time-boxed and recorded. Counters Trusted Relationship abuse.",
+   "lesson": "Standing admin for a supplier is a standing target. When access exists only for an approved hour, a stolen credential is worth almost nothing the rest of the time.",
+   "refs": [
+    "attack:T1199",
+    "nist:800-161",
+    "nist-800-53:AC-2"
+   ]
+  },
+  {
+   "id": "tprm.update-ring",
+   "name": "Staged Update Rings",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "tampering",
+   "cost": 1,
+   "rarity": "uncommon",
+   "target": "control",
+   "base": [
+    "protect.tampering"
+   ],
+   "aug": {
+    "ward": {
+     "T": 1
+    },
+    "mit": [
+     "M1051"
+    ],
+    "expert": [
+     {
+      "tech": "T1195.002",
+      "ref": "nist:800-161"
+     }
+    ]
+   },
+   "desc": "Vendor updates reach a small pilot ring first and are watched before wider rollout. Counters poisoned releases.",
+   "lesson": "The 3CX and SolarWinds payloads reached customers as normal signed updates. A pilot ring turns “everyone at once” into “ten machines and an alert”.",
+   "refs": [
+    "attack:T1195.002",
+    "attack:C0057",
+    "nist:800-161"
+   ]
+  },
+  {
+   "id": "tprm.vendor-audit",
+   "name": "Invoke Contractual Incident Support",
+   "type": "action",
+   "fn": "respond",
+   "prop": "disclosure",
+   "cost": 2,
+   "rarity": "uncommon",
+   "consume": "run",
+   "fx": [
+    {
+     "op": "reveal",
+     "n": 3,
+     "str": 5
+    },
+    {
+     "op": "resilience",
+     "n": 2
+    },
+    {
+     "op": "draw",
+     "n": 1
+    }
+   ],
+   "desc": "Use the supplier’s contractual incident obligations: reveal up to 3 footholds (stealth ≤ 5), restore 2 Resilience, draw 1. Spent for the rest of the run.",
+   "lesson": "A contract is only a control if it gives you something at 3 a.m.: logs within hours, named incident contacts, audit rights and the supplier’s engineers on your bridge.",
+   "refs": [
+    "nist:800-161",
+    "apra:cps230",
+    "nist-csf:GV.SC-08"
+   ]
+  },
+  {
+   "id": "tprm.verify-vendor",
+   "name": "Vendor Software Verification",
+   "type": "action",
+   "fn": "identify",
+   "prop": "tampering",
+   "cost": 1,
+   "rarity": "common",
+   "target": "asset",
+   "fx": [
+    {
+     "op": "reveal",
+     "n": 1,
+     "str": 4
+    },
+    {
+     "op": "blockPath"
+    },
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "desc": "Check a vendor release against hashes and provenance: reveal a foothold (stealth ≤ 4), block spread into the asset this round, +1 intel.",
+   "lesson": "Verifying what the vendor actually shipped against a second source is cheap, and it is the step that caught several supply chain compromises before widespread impact.",
+   "refs": [
+    "nist:800-161",
+    "attack:T1195.002",
+    "nist:800-218"
+   ]
+  }
+ ],
+ "relics": [
+  {
+   "id": "tprm.exit-plan",
+   "name": "Tested Exit Plan",
+   "icon": "door-open",
+   "rarity": "uncommon",
+   "hooks": {
+    "passive": {
+     "maxResilience": 6
+    },
+    "roundStart": [
+     {
+      "op": "intel",
+      "n": 1
+     }
+    ]
+   },
+   "desc": "+6 max Resilience. +1 intel each round.",
+   "lesson": "A supplier you can leave is a supplier you can negotiate with, and one whose failure is survivable.",
+   "refs": [
+    "apra:cps230",
+    "nist:800-161"
+   ]
+  }
+ ]
+}

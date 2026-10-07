@@ -12,10 +12,13 @@ import pack_banking from '../../content/packs/banking.json' with { type: 'json' 
 import pack_cloud from '../../content/packs/cloud.json' with { type: 'json' };
 import pack_enterprise from '../../content/packs/enterprise.json' with { type: 'json' };
 import pack_ot from '../../content/packs/ot.json' with { type: 'json' };
+import pack_tprm from '../../content/packs/tprm.json' with { type: 'json' };
 import pack_utilities from '../../content/packs/utilities.json' with { type: 'json' };
+import adv_C0012 from '../../data/adversaries/C0012.json' with { type: 'json' };
 import adv_C0020 from '../../data/adversaries/C0020.json' with { type: 'json' };
 import adv_C0024 from '../../data/adversaries/C0024.json' with { type: 'json' };
 import adv_C0025 from '../../data/adversaries/C0025.json' with { type: 'json' };
+import adv_C0029 from '../../data/adversaries/C0029.json' with { type: 'json' };
 import adv_C0030 from '../../data/adversaries/C0030.json' with { type: 'json' };
 import adv_C0031 from '../../data/adversaries/C0031.json' with { type: 'json' };
 import adv_C0057 from '../../data/adversaries/C0057.json' with { type: 'json' };
@@ -27,6 +30,7 @@ import adv_G0032 from '../../data/adversaries/G0032.json' with { type: 'json' };
 import adv_G0034 from '../../data/adversaries/G0034.json' with { type: 'json' };
 import adv_G0035 from '../../data/adversaries/G0035.json' with { type: 'json' };
 import adv_G0037 from '../../data/adversaries/G0037.json' with { type: 'json' };
+import adv_G0045 from '../../data/adversaries/G0045.json' with { type: 'json' };
 import adv_G0046 from '../../data/adversaries/G0046.json' with { type: 'json' };
 import adv_G0049 from '../../data/adversaries/G0049.json' with { type: 'json' };
 import adv_G0080 from '../../data/adversaries/G0080.json' with { type: 'json' };
@@ -55,6 +59,6 @@ import attack_mitigations from '../../data/attack/mitigations.json' with { type:
 import attack_tactics from '../../data/attack/tactics.json' with { type: 'json' };
 
 export const core = { taxonomy: core_taxonomy, cards: core_cards, doctrines: core_doctrines, relics: core_relics, events: core_events, tuning: core_tuning, adversaryMeta: core_adversary_meta, achievements: core_achievements };
-export const packs = { "appsec": pack_appsec, "banking": pack_banking, "cloud": pack_cloud, "enterprise": pack_enterprise, "ot": pack_ot, "utilities": pack_utilities };
-export const adversaries = { C0020: adv_C0020, C0024: adv_C0024, C0025: adv_C0025, C0030: adv_C0030, C0031: adv_C0031, C0057: adv_C0057, C0058: adv_C0058, C0059: adv_C0059, G0007: adv_G0007, G0016: adv_G0016, G0032: adv_G0032, G0034: adv_G0034, G0035: adv_G0035, G0037: adv_G0037, G0046: adv_G0046, G0049: adv_G0049, G0080: adv_G0080, G0082: adv_G0082, G0088: adv_G0088, G0091: adv_G0091, G0092: adv_G0092, G0096: adv_G0096, G0102: adv_G0102, G0106: adv_G0106, G0114: adv_G0114, G0117: adv_G0117, G0125: adv_G0125, G0129: adv_G0129, G0139: adv_G0139, G1004: adv_G1004, G1015: adv_G1015, G1017: adv_G1017, G1032: adv_G1032, G1043: adv_G1043, G1051: adv_G1051, G1057: adv_G1057, X0001: adv_X0001 };
+export const packs = { "appsec": pack_appsec, "banking": pack_banking, "cloud": pack_cloud, "enterprise": pack_enterprise, "ot": pack_ot, "tprm": pack_tprm, "utilities": pack_utilities };
+export const adversaries = { C0012: adv_C0012, C0020: adv_C0020, C0024: adv_C0024, C0025: adv_C0025, C0029: adv_C0029, C0030: adv_C0030, C0031: adv_C0031, C0057: adv_C0057, C0058: adv_C0058, C0059: adv_C0059, G0007: adv_G0007, G0016: adv_G0016, G0032: adv_G0032, G0034: adv_G0034, G0035: adv_G0035, G0037: adv_G0037, G0045: adv_G0045, G0046: adv_G0046, G0049: adv_G0049, G0080: adv_G0080, G0082: adv_G0082, G0088: adv_G0088, G0091: adv_G0091, G0092: adv_G0092, G0096: adv_G0096, G0102: adv_G0102, G0106: adv_G0106, G0114: adv_G0114, G0117: adv_G0117, G0125: adv_G0125, G0129: adv_G0129, G0139: adv_G0139, G1004: adv_G1004, G1015: adv_G1015, G1017: adv_G1017, G1032: adv_G1032, G1043: adv_G1043, G1051: adv_G1051, G1057: adv_G1057, X0001: adv_X0001 };
 export const attack = { techniques: attack_techniques, mitigations: attack_mitigations, tactics: attack_tactics };

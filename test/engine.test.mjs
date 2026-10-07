@@ -234,7 +234,7 @@ test('goal payoffs: a ransom actor with too few observed impact cards gets goal-
 });
 
 test('every pack: loads, plays a full run, and every TTX completes with a score', () => {
-  for (const pack of ['enterprise', 'utilities', 'ot', 'appsec', 'banking', 'cloud']) {
+  for (const pack of ['enterprise', 'utilities', 'ot', 'appsec', 'banking', 'cloud', 'tprm']) {
     const c = loadContent(pack, [], { allAdversaries: true });
     const r = playRun(c, { seed: 'smoke-' + pack, doctrine: 'phoenix', assurance: 0 }, {});
     assert.ok(['won', 'lost'].includes(r.run.phase), pack + ' run terminates');

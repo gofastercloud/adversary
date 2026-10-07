@@ -232,3 +232,16 @@ test('goal payoffs: a ransom actor with too few observed impact cards gets goal-
   const pay = Object.values(b.adv.cards).filter(c => c.kind === 'strike');
   assert.ok(pay.length >= 2, 'at least two strike cards');
 });
+
+test('every pack: loads, plays a full run, and every TTX completes with a score', () => {
+  for (const pack of ['enterprise', 'utilities', 'ot', 'appsec']) {
+    const c = loadContent(pack, [], { allAdversaries: true });
+    const r = playRun(c, { seed: 'smoke-' + pack, doctrine: 'phoenix', assurance: 0 }, {});
+    assert.ok(['won', 'lost'].includes(r.run.phase), pack + ' run terminates');
+    for (const t of c.ttx) {
+      const x = playRun(c, { seed: 'ttx-' + t.id, doctrine: 'architect', assurance: 0, mode: 'ttx', ttxId: t.id }, {});
+      assert.ok(['won', 'lost'].includes(x.run.phase), t.id + ' terminates');
+      assert.ok(x.run.ttx.result || x.run.phase === 'lost', t.id + ' produced a result or a loss');
+    }
+  }
+});

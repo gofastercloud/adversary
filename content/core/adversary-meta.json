@@ -736,6 +736,46 @@
   ],
   "goal": "ransom"
  },
+ "X0001": {
+  "name": "TeamPCP",
+  "icon": "package",
+  "tier": 3,
+  "role": "supply chain / crime",
+  "color": "#ff9f1c",
+  "motive": "Credential theft at scale, monetised through ransomware and extortion partners.",
+  "blurb": "Financially motivated group behind the 2026 cascade of poisoned developer and security tools (Trivy, KICS, LiteLLM, Telnyx). Each victim’s stolen secrets seed the next compromise. Not yet in ATT&CK; this profile follows vendor reporting.",
+  "assessed": [
+   "T1486"
+  ],
+  "traits": [
+   {
+    "id": "cascade",
+    "name": "Cascading Compromise",
+    "text": "Credentials stolen from one victim open the next: starts with one hidden foothold on a trusted third party.",
+    "op": "startFootholds",
+    "n": 1
+   },
+   {
+    "id": "harvest",
+    "name": "Secret Harvesting",
+    "text": "Credential Access cards cost 1 less.",
+    "op": "discount",
+    "kinds": [
+     "creds"
+    ],
+    "n": 1
+   },
+   {
+    "id": "deaddrop",
+    "name": "Dead-Drop C2",
+    "text": "Uses public repositories as command-and-control: its footholds start harder to see.",
+    "op": "stealthBonus",
+    "n": 1
+   }
+  ],
+  "note": "Destructive impact is an *assessed* downstream step through a ransomware partner (Sophos), not observed in the TeamPCP intrusions themselves.",
+  "goal": "exfil"
+ },
  "C0025": {
   "name": "2016 Ukraine Electric Power Attack",
   "icon": "flag",

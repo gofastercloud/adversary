@@ -1,0 +1,26 @@
+{
+  "name": "adversary",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ADVERSARY — a roguelike deckbuilder that teaches threat modelling and blue-team concepts.",
+  "type": "module",
+  "license": "MIT",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "validate": "node scripts/validate-packs.mjs",
+    "test": "node --test test/",
+    "build": "node scripts/build-web.mjs",
+    "dev": "node scripts/dev-server.mjs",
+    "sim": "node scripts/simulate.mjs",
+    "links": "node scripts/check-links.mjs",
+    "synth": "npm run build && npm --prefix infra run synth",
+    "deploy": "npm run build && npm --prefix infra run deploy"
+  },
+  "devDependencies": {
+    "@fontsource/pixelify-sans": "^5.2.0",
+    "@fontsource/vt323": "^5.2.0",
+    "@fontsource/jetbrains-mono": "^5.2.0",
+    "esbuild": "^0.25.0",
+    "lucide-static": "^0.544.0"
+  }
+}

@@ -10,7 +10,7 @@
     "protect",
     "identify"
    ],
-   "maxResilience": 40,
+   "maxResilience": 48,
    "money": 60,
    "power": {
     "name": "Harden",
@@ -90,7 +90,7 @@
     "recover",
     "protect"
    ],
-   "maxResilience": 44,
+   "maxResilience": 52,
    "money": 60,
    "unlock": "ach.restore-hero",
    "power": {
@@ -150,11 +150,11 @@
    },
    "deck": [
     "c.govern.spoofing",
-    "c.govern.disclosure",
+    "c.respond.spoofing",
     "c.govern.repudiation",
     "c.govern.elevation",
     "c.identify.repudiation",
-    "c.identify.dos",
+    "c.protect.elevation",
     "x.training",
     "c.protect.spoofing",
     "c.protect.tampering",
@@ -173,7 +173,7 @@
     "respond",
     "recover"
    ],
-   "maxResilience": 40,
+   "maxResilience": 34,
    "money": 60,
    "unlock": "ach.contain-5",
    "power": {

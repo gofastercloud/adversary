@@ -63,3 +63,13 @@ run found a real bug (a replaced policy stayed listed as in play).
 - Bots are not people. Use the ladder for *shape* (monotonic, steep) and the matrix for *outliers*, then play the outliers.
 - Targets are design choices, not measurements. Change them in `TARGET` when the design intent changes.
 - `standard` and `sharp` share a policy; the gap to `expert` is the room a human has to be better than the heuristic.
+
+## Balance pass (current baseline)
+
+Rule baseline adopted from the variant search (`scripts/balance.json`): hand 6, ward +1, detection reach +1, adversary energy +2, rounds +2, adversary exposure −3, count-mode goals, no goalAI. Per-adversary goal clocks, energy, power and exposure are then calibrated by `node lab/tune.mjs --n 30 --apply` (RMSE 6.6pp against the standard-player targets).
+
+Full-run clear rate, 100 runs per skill, fresh seeds: random ≈ 1%, novice ≈ 22–25%, standard ≈ 36–38%, sharp ≈ 33–35%.
+
+Known gaps:
+- Doctrine spread is wide: responder ≈ 61–68%, hunter ≈ 29%, phoenix ≈ 14%, governor ≈ 10%, architect ≈ 6%. Resilience tweaks barely move it, so the cause is card economy and how the agents play each starter deck, not hit points. Treat as open design work.
+- `sharp` does not beat `standard`; the ceiling is the planner (`lite`/`expert`), not the heuristic agents.

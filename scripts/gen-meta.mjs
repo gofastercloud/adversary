@@ -4,19 +4,19 @@ const w = (n, o) => writeFileSync(new URL(`../content/core/${n}.json`, import.me
 
 // ───────── Doctrines (starting archetypes) ─────────
 const doctrines = [
-  { id: 'architect', name: 'Zero Trust Architect', icon: 'shield-ban', blurb: 'Build walls that hold. Strong wards, layered controls and intelligence about where attackers will push.', focus: ['protect', 'identify'], maxResilience: 40, money: 60,
+  { id: 'architect', name: 'Zero Trust Architect', icon: 'shield-ban', blurb: 'Build walls that hold. Strong wards, layered controls and intelligence about where attackers will push.', focus: ['protect', 'identify'], maxResilience: 48, money: 60,
     power: { name: 'Harden', cost: 1, target: 'asset', fx: [{ op: 'shield', n: 2 }], text: 'Target asset gains +2 ward against everything until the end of the adversary’s turn.' },
     deck: ['c.protect.spoofing', 'c.protect.tampering', 'c.protect.elevation', 'c.protect.disclosure', 'c.protect.dos', 'c.protect.repudiation', 'c.identify.spoofing', 'c.identify.repudiation', 'c.detect.spoofing', 'c.respond.tampering', 'c.recover.dos', 'x.patch'], relic: 'r.zero-trust-seed' },
   { id: 'hunter', name: 'Threat Hunter', icon: 'radar', blurb: 'Find them early. Layered detection and swift containment turn dwell time into an adversary’s problem.', focus: ['detect', 'respond'], maxResilience: 36, money: 60, unlock: 'ach.first-evict',
     power: { name: 'Hunt', cost: 1, target: 'none', fx: [{ op: 'reveal', n: 1, str: 4 }], text: 'Reveal one hidden foothold anywhere (stealth up to 4).' },
     deck: ['c.detect.spoofing', 'c.detect.tampering', 'c.detect.repudiation', 'c.respond.spoofing', 'c.respond.tampering', 'c.respond.elevation', 'c.protect.spoofing', 'c.protect.tampering', 'c.identify.repudiation', 'c.recover.dos', 'x.threathunt', 'c.protect.elevation'], relic: 'r.mdr' },
-  { id: 'phoenix', name: 'Resilience Engineer', icon: 'heart-pulse', blurb: 'Assume you will be hit and make it survivable: recovery, redundancy and graceful degradation.', focus: ['recover', 'protect'], maxResilience: 44, money: 60, unlock: 'ach.restore-hero',
+  { id: 'phoenix', name: 'Resilience Engineer', icon: 'heart-pulse', blurb: 'Assume you will be hit and make it survivable: recovery, redundancy and graceful degradation.', focus: ['recover', 'protect'], maxResilience: 52, money: 60, unlock: 'ach.restore-hero',
     power: { name: 'Failover', cost: 1, target: 'asset', fx: [{ op: 'heal', n: 2 }], text: 'Restore 2 integrity to an asset.' },
     deck: ['c.recover.dos', 'c.recover.dos', 'c.recover.spoofing', 'c.recover.disclosure', 'c.protect.dos', 'c.protect.spoofing', 'c.protect.elevation', 'c.detect.tampering', 'c.respond.dos', 'c.identify.dos', 'c.govern.dos', 'x.patch'], relic: 'r.golden-image' },
   { id: 'governor', name: 'GRC Lead', icon: 'scale', blurb: 'Win with policy. Cheap, broad, persistent effects and a steady drumbeat of cards — slow to start, hard to stop.', focus: ['govern', 'identify'], maxResilience: 38, money: 75, unlock: 'ach.policy-wonk',
     power: { name: 'Mandate', cost: 1, target: 'none', fx: [{ op: 'draw', n: 1 }, { op: 'nextPolicyFree' }], text: 'Draw a card; your next Policy this turn costs 0.' },
-    deck: ['c.govern.spoofing', 'c.govern.disclosure', 'c.govern.repudiation', 'c.govern.elevation', 'c.identify.repudiation', 'c.identify.dos', 'x.training', 'c.protect.spoofing', 'c.protect.tampering', 'c.detect.repudiation', 'c.respond.disclosure', 'c.recover.repudiation'], relic: 'r.board-sponsor' },
-  { id: 'responder', name: 'Incident Commander', icon: 'siren', blurb: 'Take the hit, then take control. Contain fast, scrub clean and keep the business running.', focus: ['respond', 'recover'], maxResilience: 40, money: 60, unlock: 'ach.contain-5',
+    deck: ['c.govern.spoofing', 'c.respond.spoofing', 'c.govern.repudiation', 'c.govern.elevation', 'c.identify.repudiation', 'c.protect.elevation', 'x.training', 'c.protect.spoofing', 'c.protect.tampering', 'c.detect.repudiation', 'c.respond.disclosure', 'c.recover.repudiation'], relic: 'r.board-sponsor' },
+  { id: 'responder', name: 'Incident Commander', icon: 'siren', blurb: 'Take the hit, then take control. Contain fast, scrub clean and keep the business running.', focus: ['respond', 'recover'], maxResilience: 34, money: 60, unlock: 'ach.contain-5',
     power: { name: 'Contain', cost: 1, target: 'asset', fx: [{ op: 'isolate' }], text: 'Isolate an asset until your next turn: nothing can spread into or out of it.' },
     deck: ['c.respond.spoofing', 'c.respond.tampering', 'c.respond.dos', 'c.respond.disclosure', 'c.detect.spoofing', 'c.detect.tampering', 'c.recover.spoofing', 'c.recover.dos', 'c.protect.spoofing', 'c.protect.elevation', 'c.identify.spoofing', 'x.soar'], relic: 'r.runbooks' }
 ];

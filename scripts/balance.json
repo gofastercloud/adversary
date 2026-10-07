@@ -57,6 +57,257 @@
     5,
     4
    ]
+  },
+  "goals": {
+   "preposition": {
+    "need": [
+     12,
+     12,
+     11
+    ]
+   },
+   "access": {
+    "need": [
+     9,
+     9,
+     9
+    ]
+   },
+   "exfil": {
+    "need": [
+     11,
+     11,
+     11
+    ]
+   },
+   "ransom": {
+    "need": [
+     15,
+     15,
+     15
+    ]
+   },
+   "destroy": {
+    "need": [
+     5,
+     5,
+     5
+    ]
+   },
+   "disrupt": {
+    "need": [
+     13,
+     13,
+     13
+    ]
+   },
+   "fraud": {
+    "need": [
+     16,
+     16,
+     16
+    ]
+   },
+   "resource": {
+    "need": [
+     9,
+     9,
+     9
+    ]
+   }
+  }
+ },
+ "adversaryMeta": {
+  "G1057": {
+   "balance": {
+    "energy": -1,
+    "power": -1,
+    "exposure": 2
+   }
+  },
+  "G1004": {
+   "balance": {
+    "energy": -1,
+    "power": 1
+   }
+  },
+  "G0139": {
+   "balance": {
+    "goalNeed": 1
+   }
+  },
+  "G1043": {
+   "balance": {
+    "goalNeed": 1,
+    "energy": -1
+   }
+  },
+  "G1015": {
+   "balance": {
+    "goalNeed": -1,
+    "power": -1
+   }
+  },
+  "C0058": {
+   "balance": {
+    "power": 1
+   }
+  },
+  "G0125": {
+   "balance": {
+    "power": 1,
+    "exposure": 2
+   }
+  },
+  "G0114": {
+   "balance": {
+    "goalNeed": -3,
+    "energy": 1,
+    "power": -1,
+    "exposure": -2
+   }
+  },
+  "G0096": {
+   "balance": {
+    "goalNeed": -2,
+    "energy": -2,
+    "power": -2,
+    "exposure": -2
+   }
+  },
+  "X0001": {
+   "balance": {
+    "energy": -1,
+    "power": -2,
+    "exposure": -2
+   }
+  },
+  "G0016": {
+   "balance": {
+    "goalNeed": 1,
+    "energy": -1,
+    "power": -2,
+    "exposure": -2
+   }
+  },
+  "G0032": {
+   "balance": {
+    "goalNeed": 1,
+    "energy": -1,
+    "power": -2
+   }
+  },
+  "C0057": {
+   "balance": {
+    "power": 1
+   }
+  },
+  "G0007": {
+   "balance": {
+    "goalNeed": -2,
+    "energy": 1
+   }
+  },
+  "G0092": {
+   "balance": {
+    "goalNeed": 2,
+    "power": -2,
+    "exposure": -2
+   }
+  },
+  "G1032": {
+   "balance": {
+    "goalNeed": -1,
+    "energy": -1,
+    "power": -1
+   }
+  },
+  "G1051": {
+   "balance": {
+    "energy": -2,
+    "power": -1,
+    "exposure": -2
+   }
+  },
+  "G0046": {
+   "balance": {
+    "power": -1
+   }
+  },
+  "G0037": {
+   "balance": {
+    "power": -1
+   }
+  },
+  "G0102": {
+   "balance": {
+    "energy": -1,
+    "power": -1,
+    "exposure": -4
+   }
+  },
+  "G0082": {
+   "balance": {
+    "energy": -1,
+    "power": -2
+   }
+  },
+  "G0049": {
+   "balance": {
+    "goalNeed": -1,
+    "energy": -1
+   }
+  },
+  "G0117": {
+   "balance": {
+    "goalNeed": -1
+   }
+  },
+  "G0129": {
+   "balance": {
+    "goalNeed": -1,
+    "power": 1
+   }
+  },
+  "C0031": {
+   "balance": {
+    "energy": 1,
+    "power": -1
+   }
+  },
+  "C0020": {
+   "balance": {
+    "goalNeed": -2
+   }
+  },
+  "G0088": {
+   "balance": {
+    "energy": 1,
+    "power": 2
+   }
+  },
+  "G0035": {
+   "balance": {
+    "energy": -2
+   }
+  },
+  "C0030": {
+   "balance": {
+    "power": 1
+   }
+  },
+  "G0034": {
+   "balance": {
+    "goalNeed": -1,
+    "energy": -2,
+    "power": -2,
+    "exposure": -4
+   }
+  },
+  "C0012": {
+   "balance": {
+    "energy": 1
+   }
   }
  }
 }

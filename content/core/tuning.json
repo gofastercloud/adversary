@@ -22,9 +22,9 @@
     "data"
    ],
    "need": [
-    4,
-    4,
-    3
+    12,
+    12,
+    11
    ],
    "blurb": "Sit undetected inside critical systems so access already exists when a crisis makes it useful.",
    "how": "+1 at the end of each adversary turn while it holds an undetected foothold on OT, a server, identity or data (or a crown jewel); −1 when it holds none.",
@@ -40,9 +40,9 @@
    "icon": "key-round",
    "rule": "reach",
    "need": [
-    5,
-    5,
-    5
+    9,
+    9,
+    9
    ],
    "blurb": "Establish broad, durable access across the estate to hand to ransomware affiliates or other buyers.",
    "how": "Breach if it holds undetected footholds on 5 different assets at the end of an adversary turn.",
@@ -61,9 +61,9 @@
     "exfil"
    ],
    "need": [
-    5,
-    5,
-    5
+    11,
+    11,
+    11
    ],
    "blurb": "Collect and remove sensitive data: espionage, extortion without encryption, or resale.",
    "how": "Each successful exfiltration scores 1 (2 from a crown jewel). Reaching the target is a breach.",
@@ -81,9 +81,9 @@
     "strike"
    ],
    "need": [
-    5,
-    5,
-    5
+    15,
+    15,
+    15
    ],
    "blurb": "Encrypt systems and destroy recovery options to force payment.",
    "how": "Each successful impact scores 1 (2 on a crown jewel). Reaching the target is a breach.",
@@ -125,9 +125,9 @@
     "inhibit"
    ],
    "need": [
-    5,
-    5,
-    5
+    13,
+    13,
+    13
    ],
    "blurb": "Take down a service or the physical process: grid, water, telco, or a public-facing service.",
    "how": "Each successful disruptive action scores 1 (2 on OT or a crown jewel). Reaching the target is a breach.",
@@ -148,9 +148,9 @@
    ],
    "jewelOnly": true,
    "need": [
-    6,
-    6,
-    6
+    16,
+    16,
+    16
    ],
    "blurb": "Reach the system that moves money (payments, SWIFT, exchange) and make a fraudulent transaction.",
    "how": "Only actions against a crown jewel score (2 each). Two successes is a breach.",
@@ -167,9 +167,9 @@
    "targets": "any",
    "minFootholds": 2,
    "need": [
-    5,
-    5,
-    5
+    9,
+    9,
+    9
    ],
    "blurb": "Quietly burn the victim’s compute for mining or botnet use.",
    "how": "+1 at the end of each adversary turn while it holds 2 or more undetected footholds; −1 otherwise.",

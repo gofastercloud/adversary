@@ -85,7 +85,13 @@
     "n": 1
    }
   ],
-  "goal": "disrupt"
+  "goal": "disrupt",
+  "balance": {
+   "goalNeed": -1,
+   "energy": -2,
+   "power": -2,
+   "exposure": -4
+  }
  },
  "G0016": {
   "name": "APT29",
@@ -119,7 +125,13 @@
     "note": "Illustrates the general harvest-now-decrypt-later risk for strategic collectors; not an APT29-specific finding."
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "goalNeed": 1,
+   "energy": -1,
+   "power": -2,
+   "exposure": -2
+  }
  },
  "G0032": {
   "name": "Lazarus Group",
@@ -154,7 +166,12 @@
     "n": 1
    }
   ],
-  "goal": "fraud"
+  "goal": "fraud",
+  "balance": {
+   "goalNeed": 1,
+   "energy": -1,
+   "power": -2
+  }
  },
  "G0096": {
   "name": "APT41",
@@ -183,7 +200,13 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "goalNeed": -2,
+   "energy": -2,
+   "power": -2,
+   "exposure": -2
+  }
  },
  "G0007": {
   "name": "APT28",
@@ -210,7 +233,11 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "goalNeed": -2,
+   "energy": 1
+  }
  },
  "G0045": {
   "name": "menuPass",
@@ -262,7 +289,11 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "goalNeed": -1,
+   "power": 1
+  }
  },
  "G0046": {
   "name": "FIN7",
@@ -284,7 +315,10 @@
     "n": 1
    }
   ],
-  "goal": "fraud"
+  "goal": "fraud",
+  "balance": {
+   "power": -1
+  }
  },
  "G0102": {
   "name": "Wizard Spider",
@@ -314,7 +348,12 @@
     "n": 1
    }
   ],
-  "goal": "ransom"
+  "goal": "ransom",
+  "balance": {
+   "energy": -1,
+   "power": -1,
+   "exposure": -4
+  }
  },
  "G1015": {
   "name": "Scattered Spider",
@@ -341,7 +380,11 @@
     "n": 1
    }
   ],
-  "goal": "ransom"
+  "goal": "ransom",
+  "balance": {
+   "goalNeed": -1,
+   "power": -1
+  }
  },
  "G0035": {
   "name": "Dragonfly",
@@ -367,7 +410,10 @@
     "n": 1
    }
   ],
-  "goal": "preposition"
+  "goal": "preposition",
+  "balance": {
+   "energy": -2
+  }
  },
  "G0117": {
   "name": "Fox Kitten",
@@ -389,7 +435,10 @@
     "n": 1
    }
   ],
-  "goal": "access"
+  "goal": "access",
+  "balance": {
+   "goalNeed": -1
+  }
  },
  "G0082": {
   "name": "APT38",
@@ -409,7 +458,11 @@
     "round": 3
    }
   ],
-  "goal": "fraud"
+  "goal": "fraud",
+  "balance": {
+   "energy": -1,
+   "power": -2
+  }
  },
  "G1057": {
   "name": "ShinyHunters",
@@ -432,7 +485,12 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "energy": -1,
+   "power": -1,
+   "exposure": 2
+  }
  },
  "G0125": {
   "name": "HAFNIUM",
@@ -461,7 +519,11 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "power": 1,
+   "exposure": 2
+  }
  },
  "G0114": {
   "name": "Chimera",
@@ -483,7 +545,13 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "goalNeed": -3,
+   "energy": 1,
+   "power": -1,
+   "exposure": -2
+  }
  },
  "G0049": {
   "name": "OilRig",
@@ -502,7 +570,11 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "goalNeed": -1,
+   "energy": -1
+  }
  },
  "G0088": {
   "name": "TEMP.Veles",
@@ -526,7 +598,11 @@
     "n": 1
    }
   ],
-  "goal": "disrupt"
+  "goal": "disrupt",
+  "balance": {
+   "energy": 1,
+   "power": 2
+  }
  },
  "G0139": {
   "name": "TeamTNT",
@@ -545,7 +621,10 @@
     "n": -1
    }
   ],
-  "goal": "resource"
+  "goal": "resource",
+  "balance": {
+   "goalNeed": 1
+  }
  },
  "G0106": {
   "name": "Rocke",
@@ -586,7 +665,12 @@
     "n": 1
    }
   ],
-  "goal": "ransom"
+  "goal": "ransom",
+  "balance": {
+   "goalNeed": 2,
+   "power": -2,
+   "exposure": -2
+  }
  },
  "G0037": {
   "name": "FIN6",
@@ -608,7 +692,10 @@
     "n": 1
    }
   ],
-  "goal": "fraud"
+  "goal": "fraud",
+  "balance": {
+   "power": -1
+  }
  },
  "G0091": {
   "name": "Silence",
@@ -670,7 +757,11 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "energy": -1,
+   "power": 1
+  }
  },
  "G1051": {
   "name": "Medusa Group",
@@ -690,7 +781,12 @@
     "round": 4
    }
   ],
-  "goal": "ransom"
+  "goal": "ransom",
+  "balance": {
+   "energy": -2,
+   "power": -1,
+   "exposure": -2
+  }
  },
  "G1043": {
   "name": "BlackByte",
@@ -712,7 +808,11 @@
     "n": 1
    }
   ],
-  "goal": "ransom"
+  "goal": "ransom",
+  "balance": {
+   "goalNeed": 1,
+   "energy": -1
+  }
  },
  "G1032": {
   "name": "INC Ransom",
@@ -734,7 +834,12 @@
     "n": 1
    }
   ],
-  "goal": "ransom"
+  "goal": "ransom",
+  "balance": {
+   "goalNeed": -1,
+   "energy": -1,
+   "power": -1
+  }
  },
  "X0001": {
   "name": "TeamPCP",
@@ -774,7 +879,12 @@
    }
   ],
   "note": "Destructive impact is an *assessed* downstream step through a ransomware partner (Sophos), not observed in the TeamPCP intrusions themselves.",
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "energy": -1,
+   "power": -2,
+   "exposure": -2
+  }
  },
  "C0025": {
   "name": "2016 Ukraine Electric Power Attack",
@@ -837,7 +947,10 @@
     "n": 1
    }
   ],
-  "goal": "disrupt"
+  "goal": "disrupt",
+  "balance": {
+   "power": 1
+  }
  },
  "C0024": {
   "name": "SolarWinds Compromise",
@@ -922,7 +1035,10 @@
     "n": 1
    }
   ],
-  "goal": "fraud"
+  "goal": "fraud",
+  "balance": {
+   "power": 1
+  }
  },
  "C0029": {
   "name": "Cutting Edge",
@@ -966,7 +1082,10 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "energy": 1
+  }
  },
  "C0059": {
   "name": "Salesforce Data Exfiltration",
@@ -1011,7 +1130,10 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "power": 1
+  }
  },
  "C0020": {
   "name": "Maroochy Water Breach",
@@ -1033,7 +1155,10 @@
     "n": 1
    }
   ],
-  "goal": "disrupt"
+  "goal": "disrupt",
+  "balance": {
+   "goalNeed": -2
+  }
  },
  "C0031": {
   "name": "Unitronics Defacement Campaign",
@@ -1062,7 +1187,11 @@
     "n": 1
    }
   ],
-  "goal": "disrupt"
+  "goal": "disrupt",
+  "balance": {
+   "energy": 1,
+   "power": -1
+  }
  },
  "C0049": {
   "name": "Leviathan Australian Intrusions",

@@ -5,7 +5,7 @@ import { newRun, tryRunAction, replay } from '../../engine/run.js';
 import { evaluate, emptyProfile, clearanceOf } from '../../engine/achievements.js';
 import { dailyConfig, sydneyDate } from '../../engine/rng.js';
 import { setAudio, sfx, unlock } from './audio.js';
-import { setPalette, initBg, setBgEnabled, setBgQuality, setIntensity, flashBg } from './bg.js';
+import { setPalette, initBg, setBgEnabled, setBgQuality, setRain, setBgMotion, setIntensity, flashBg } from './bg.js';
 import { toastAchievement, setFxSettings, confetti, banner, flash } from './fx.js';
 import * as api from './api.js';
 
@@ -14,7 +14,8 @@ const jget = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch 
 const jset = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* quota / private */ } };
 export const S = () => store.get();
 
-export const DEFAULT_SETTINGS = { volume: 0.5, mute: false, crt: true, motion: true, shake: true, bg: 'medium', hints: true, handle: null, tutorialSeen: false };
+const prefersReduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+export const DEFAULT_SETTINGS = { volume: 0.5, mute: false, crt: true, motion: !prefersReduced, shake: !prefersReduced, rain: true, glitch: true, typing: true, bg: 'medium', hints: true, handle: null, tutorialSeen: false };
 
 export async function boot() {
   await api.initApi();
@@ -25,7 +26,7 @@ export async function boot() {
   initBg(document.getElementById('bg'));
   const manifest = await loadBase();
   store.set({ manifest });
-  setPalette(manifest.scenarios[0].theme);
+  setPalette(null);
   loadContent(manifest.scenarios[0].id).then(content => { if (!S().run) store.set({ content }); });
   const saved = jget(K.run);
   store.set({ screen: 'title', saved: saved && saved.fp ? { scenario: saved.scenario, ts: saved.ts, doctrine: saved.init.doctrine, n: saved.log.length } : null });
@@ -38,8 +39,10 @@ export async function boot() {
 export function applySettings(s) {
   setAudio({ volume: s.volume, mute: s.mute });
   document.body.classList.toggle('no-crt', !s.crt);
-  setFxSettings({ motion: s.motion, shake: s.shake });
-  setBgEnabled(s.motion); setBgQuality(s.bg);
+  document.body.classList.toggle('no-motion', !s.motion);
+  document.body.classList.toggle('no-glitch', !s.glitch || !s.motion);
+  setFxSettings({ motion: s.motion, shake: s.shake, glitch: s.glitch });
+  setBgQuality(s.bg); setBgMotion(s.motion); setRain(s.rain); setBgEnabled(true);
 }
 export function saveSettings(patch) { const settings = { ...S().settings, ...patch }; store.set({ settings }); jset(K.settings, settings); applySettings(settings); }
 

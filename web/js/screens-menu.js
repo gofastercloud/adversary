@@ -5,6 +5,7 @@ import { setPalette } from './bg.js';
 import { sfx, unlock } from './audio.js';
 import { clearanceOf } from '../../engine/achievements.js';
 import { Card } from './components.js';
+import { Typed, Art } from './term.js';
 
 const FNCOL = { govern: 'var(--fn-govern)', identify: 'var(--fn-identify)', protect: 'var(--fn-protect)', detect: 'var(--fn-detect)', respond: 'var(--fn-respond)', recover: 'var(--fn-recover)' };
 
@@ -33,28 +34,29 @@ export function Title() {
   const s = useStore(); const [fi, setFi] = useState(0);
   useEffect(() => { const t = setInterval(() => setFi(x => (x + 1) % FACTS.length), 6500); return () => clearInterval(t); }, []);
   const core = getCore();
-  const decor = useMemo(() => core ? ['c.protect.spoofing', 'c.detect.tampering', 'a.fido2', 'c.respond.tampering', 'x.edr', 'a.pqc'].map((id, i) => ({ id, left: 6 + i * 16, top: i % 2 ? 62 : 10, r: (i - 2.5) * 7 })) : [], [core]);
+  const decor = useMemo(() => core ? ['c.protect.spoofing', 'a.fido2', 'c.detect.tampering', 'x.edr'].map((id, i) => ({ id, left: [1, 87, 2, 86][i], top: [6, 8, 56, 54][i], r: [-8, 7, 6, -6][i] })) : [], [core]);
   const c = s.content;
   const streak = s.profile.daily?.streak || 0;
   return html`<div class="screen title"><div class="title-cards">${c && decor.map(d => html`<div style=${`position:absolute;left:${d.left}%;top:${d.top}%;--r:${d.r}deg;transform:rotate(${d.r}deg);animation:floaty 9s ${d.r}s ease-in-out infinite`}><${Card} content=${c} def=${c.cards[d.id]} tiltOn=${false}/></div>`)}</div>
-    <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:1.2rem">
+    <div class="title-main">
     <div class="logo" data-t="ADVERSARY">ADVERSARY</div>
-    <div class="tagline">Threat modelling · Blue team · Card battler</div>
+    <div class="tagline"><${Typed} text="Threat modelling // Blue team // Card battler" cps=${60} keep=${true}/></div>
+    <div class="title-row"><${Art} kind="hacker" cls="art-title"/>
     <div class="menu">
       ${s.saved && html`<button class="btn good big pulse" onClick=${async () => { unlock(); if (!(await app.resumeRun())) return; }}><${Icon} n="play"/>Continue run</button>`}
       <button class="btn primary big" onClick=${() => { unlock(); app.goto('setup'); }}><${Icon} n="swords"/>New run</button>
-      <button class="btn violet" onClick=${() => { unlock(); app.goto('daily'); }}><${Icon} n="flame"/>Daily challenge${streak > 1 ? html` <span class="chip" style="margin-left:.4em">🔥 ${streak}</span>` : ''}</button>
+      <button class="btn violet" onClick=${() => { unlock(); app.goto('daily'); }}><${Icon} n="flame"/>Daily challenge${streak > 1 ? html` <span class="chip" style="margin-left:.4em">${streak} day streak</span>` : ''}</button>
       <button class="btn warn" onClick=${() => app.goto('ttx')}><${Icon} n="clipboard-check"/>Tabletop exercises</button>
       <div class="row" style="gap:.6rem"><button class="btn ghost" style="flex:1" onClick=${() => app.goto('tutorial')}><${Icon} n="graduation-cap"/>Tutorial</button><button class="btn ghost" style="flex:1" onClick=${() => app.goto('docs')}><${Icon} n="book-open"/>Guide</button></div>
-    </div>
-    <div class="ticker" key=${fi}><b class="glowtext" style="color:var(--accent)">${FACTS[fi][0]}</b> — ${FACTS[fi][1]}</div>
+    </div></div>
+    <div class="ticker" key=${fi}><b class="glowtext" style="color:var(--accent)">${FACTS[fi][0]}</b> <span class="dimmer">//</span> <${Typed} text=${FACTS[fi][1]} cps=${150}/></div>
     ${s.notice && html`<div class="chip warn">${s.notice}</div>`}
     </div></div>`;
 }
 
 export function Setup() {
   const s = useStore(); const core = getCore(); const man = getManifest();
-  const [scn, setScn] = useState(s.scenario || man.scenarios[0].id);
+  const [scn, setScn] = useState(s.scenario || (man.scenarios.find(x => x.id === 'enterprise') || man.scenarios[0]).id);
   const [doc, setDoc] = useState('architect'); const [as, setAs] = useState(1); const [seed, setSeed] = useState('');
   const sc = man.scenarios.find(x => x.id === scn);
   useEffect(() => { setPalette(sc.theme); }, [scn]);
@@ -63,7 +65,7 @@ export function Setup() {
   useEffect(() => { let live = true; fetch(`content/packs/${scn}.json?v=${man.version}`).then(r => r.json()).then(p => live && setOrg(p)); return () => { live = false; }; }, [scn]);
   const D = core.doctrines.doctrines;
   const start = async () => { unlock(); sfx.turn(); await app.startRun({ scenario: scn, doctrine: doc, assurance: as, seed: seed.trim() || undefined }); };
-  return html`<div class="screen setup"><div class="row"><button class="btn ghost small" onClick=${() => app.goto('title')}><${Icon} n="chevron-right" cls="" style="transform:rotate(180deg)"/>Back</button><h2>New run</h2></div>
+  return html`<div class="screen setup"><${Art} kind="analyst" cls="art-setup"/><div class="row"><button class="btn ghost small" onClick=${() => app.goto('title')}><${Icon} n="chevron-right" cls="" style="transform:rotate(180deg)"/>Back</button><h2>New run</h2></div>
     <h3 class="dim">1 · Scenario — whose network are you defending?</h3>
     <div class="picker">${man.scenarios.map(x => html`<button class=${cx('pick', scn === x.id && 'on')} style=${`--c:${x.theme.accent}`} onClick=${() => { sfx.click(); setScn(x.id); }}><h3><span class="pk-ic"><${Icon} n=${x.icon}/></span>${x.name}</h3><p>${x.tagline}</p><p class="dimmer">${x.org || ''}</p></button>`)}</div>
     ${org && html`<div class="panel" style="padding:.9rem 1.1rem"><b>${org.org.name}</b> — ${org.org.sector}<p class="dim" style="margin:.4em 0">${org.org.brief}</p><div class="row wrap">${org.org.regimes.map(r => html`<span class="chip" title=${r.note}><${Icon} n="gavel"/>${r.name}</span>`)}</div></div>`}
@@ -84,7 +86,7 @@ export function DailyScreen() {
   return html`<div class="screen result"><div class="row"><button class="btn ghost small" onClick=${() => app.goto('title')}>Back</button></div>
     <h1>Daily Challenge</h1><div class="tagline">${cfg.date} · Australia/Sydney</div>
     <div class="panel" style="padding:1.2rem;max-width:640px"><div class="row" style="justify-content:center;gap:1.2rem"><span class="pk-ic" style="width:60px;height:60px;display:grid;place-items:center"><${Icon} n=${sc.icon} cls="xl"/></span><div style="text-align:left"><h3>${sc.name}</h3><div class="dim">${d.name} · Assurance ML1</div><div class="dimmer mono">seed ${cfg.seed}</div></div></div>
-      <p class="dim" style="margin-top:.8rem">Everyone plays the same seed. Your run is replayed on the server to verify the score. Keep your streak alive: 🔥 ${s.profile.daily.streak || 0} day${(s.profile.daily.streak || 0) === 1 ? '' : 's'}.</p>
+      <p class="dim" style="margin-top:.8rem">Everyone plays the same seed. Your run is replayed on the server to verify the score. Keep your streak alive: ${s.profile.daily.streak || 0} day${(s.profile.daily.streak || 0) === 1 ? '' : 's'}.</p>
       ${done != null && html`<p class="chip good">Completed today: ${done} pts</p>`}
       <button class="btn violet big" onClick=${() => app.startRun({ scenario: cfg.scenario, doctrine: cfg.doctrine, assurance: 1, seed: cfg.seed, daily: true })}><${Icon} n="flame"/>${done != null ? 'Play again' : 'Start daily'}</button></div>
     ${board?.entries?.length ? html`<div class="panel lb" style="padding:1rem"><h3>Today’s leaderboard</h3><table><tbody>${board.entries.map((e, i) => html`<tr class=${e.playerId === (JSON.parse(localStorage.getItem('adversary.player.v1') || '{}').id) ? 'me' : ''}><td>${i + 1}</td><td>${e.handle}</td><td class="right mono">${e.points}</td></tr>`)}</tbody></table></div>` : html`<p class="dimmer">Leaderboard unavailable offline (the game is fully playable without it).</p>`}</div>`;
@@ -105,10 +107,12 @@ export function Settings() {
       <label>Volume <input type="range" min="0" max="1" step=".05" value=${st.volume} onInput=${e => set({ volume: +e.target.value })}/><span>${Math.round(st.volume * 100)}%</span></label>
       <label><input type="checkbox" checked=${st.mute} onChange=${e => set({ mute: e.target.checked })}/> Mute</label>
       <label><input type="checkbox" checked=${st.crt} onChange=${e => set({ crt: e.target.checked })}/> CRT scanlines & vignette</label>
-      <label><input type="checkbox" checked=${st.motion} onChange=${e => set({ motion: e.target.checked })}/> Animated background & effects</label>
+      <label><input type="checkbox" checked=${st.rain} onChange=${e => set({ rain: e.target.checked })}/> Digital rain background</label>
+      <label><input type="checkbox" checked=${st.motion} onChange=${e => set({ motion: e.target.checked })}/> Animation (moving rain, card flourishes, typing, effects)</label>
+      <label><input type="checkbox" checked=${st.glitch} onChange=${e => set({ glitch: e.target.checked })}/> Glitch and chromatic effects</label>
       <label><input type="checkbox" checked=${st.shake} onChange=${e => set({ shake: e.target.checked })}/> Screen shake</label>
       <label><input type="checkbox" checked=${st.hints} onChange=${e => set({ hints: e.target.checked })}/> Show “suspicious activity” hints on assets</label>
-      <label>Background quality <select value=${st.bg} onChange=${e => set({ bg: e.target.value })}><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+      <label>Rain density <select value=${st.bg} onChange=${e => set({ bg: e.target.value })}><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
       <label>Leaderboard handle <input value=${st.handle || ''} placeholder="Defender-XXXX" maxlength="20" onChange=${e => { import('./api.js').then(a => a.setHandle(e.target.value)); set({ handle: e.target.value }); }} style="padding:.4em .7em;border-radius:8px;border:1px solid var(--line2);background:rgba(0,0,0,.4);color:var(--ink)"/></label>
       <p class="dimmer" style="font-size:.78rem">Progress is stored in your browser. If the backend is reachable, verified runs and your profile are also saved to the cloud under an anonymous player id — no email or personal data.</p>
       <div class="row"><button class="btn bad small" onClick=${() => { if (confirm('Erase all local progress?')) { localStorage.clear(); location.reload(); } }}>Erase local data</button></div>

@@ -5,9 +5,10 @@ import { logLine, whySummary } from './eventlog.js';
 import * as B from '../../engine/battle.js';
 import { describeCard } from '../../engine/describe.js';
 import { sfx } from './audio.js';
-import { burst, floater, stamp, banner, shake, flash, combo, centerOf, assetEl, confetti } from './fx.js';
+import { burst, glyphBurst, ripple, glitchScreen, flyClone, accessBanner, bossEntrance, floater, stamp, banner, shake, flash, combo, centerOf, assetEl, confetti, motionOK } from './fx.js';
 import { flashBg } from './bg.js';
 import { tutAllows, tutAllowsEnd } from './docs.js';
+import { Count, Decrypt } from './term.js';
 
 const TACTIC_ICON = { 'reconnaissance': 'search', 'resource-development': 'package', 'initial-access': 'door-open', 'execution': 'terminal', 'persistence': 'anchor', 'privilege-escalation': 'trending-up', 'stealth': 'ghost', 'defense-evasion': 'ghost', 'defense-impairment': 'shield-off', 'credential-access': 'key-round', 'discovery': 'radar', 'lateral-movement': 'route', 'collection': 'archive', 'command-and-control': 'radio-tower', 'exfiltration': 'upload', 'impact': 'bomb', 'inhibit-response-function': 'siren', 'impair-process-control': 'factory' };
 const tname = (content, t) => content.tactics[t]?.name || t;
@@ -38,6 +39,7 @@ export function BattleScreen() {
   // ── log
   const addLog = (evs, bb = b) => setLog(l => [...l, ...evs.map(e => logLine(content, bb, e)).filter(Boolean)].slice(-80));
   useEffect(() => { if (b.round === 1 && !log.length) addLog([{ t: 'round', n: 1 }]); }, []);
+  useEffect(() => { const t = run.node?.type; if (b.round !== 1 || (t !== 'boss' && t !== 'elite')) return; const id = setTimeout(() => { bossEntrance(b.adv.name.toUpperCase(), t === 'boss' ? 'APEX ADVERSARY DETECTED' : 'ELITE INTRUSION SET'); sfx.stinger(); }, 450); return () => clearTimeout(id); }, []);
   const logRef = useRef(); useEffect(() => { if (logRef.current) logRef.current.scrollTop = 1e9; }, [log]);
 
   // ── adjacency links + scale-to-fit (the battlefield always fits its panel, whatever the scenario)
@@ -45,7 +47,7 @@ export function BattleScreen() {
   useLayoutEffect(() => {
     const calc = () => {
       const box = fieldRef.current, inner = innerRef.current; if (!box || !inner) return;
-      const k = Math.min(1, (box.clientWidth - 12) / inner.offsetWidth, (box.clientHeight - 12) / inner.offsetHeight);
+      const k = Math.min(1.18, (box.clientWidth - 12) / inner.offsetWidth, (box.clientHeight - 12) / inner.offsetHeight);
       setFit(k);
       const ir = inner.getBoundingClientRect(); const pos = {};
       inner.querySelectorAll('[data-asset]').forEach(el => { const r = el.getBoundingClientRect(); pos[el.dataset.asset] = { x: (r.left - ir.left + r.width / 2) / (ir.width / inner.offsetWidth), y: (r.top - ir.top + r.height / 2) / (ir.height / inner.offsetHeight) }; });
@@ -64,12 +66,12 @@ export function BattleScreen() {
     for (const e of events) {
       const at = e.asset ? centerOf(assetEl(e.asset)) : { x: innerWidth / 2, y: innerHeight / 2 };
       switch (e.t) {
-        case 'reveal': stamp('DETECTED', at.x, at.y - 10, '#5ad1ff'); burst(at.x, at.y, { colors: ['#5ad1ff', '#fff'], n: 18 }); sfx.reveal(); break;
-        case 'evict': evictCount++; stamp(e.quick ? 'EVICTED!' : 'EVICTED', at.x, at.y, '#4ade80'); burst(at.x, at.y, { colors: ['#4ade80', '#d6ffe4', '#fff'], n: 40, speed: 380 }); sfx.evict(); shake(); if (e.quick) combo('QUICK RESPONSE', 'kill chain broken'); break;
-        case 'deploy': case 'augment': burst(at.x, at.y, { colors: ['#58e07a', '#fff'], n: 14, speed: 160, shape: 'circle' }); sfx.deploy(); break;
-        case 'blocked': floater('BLOCKED', at.x, at.y - 30, '#4ade80'); burst(at.x, at.y, { colors: ['#4ade80', '#fff'], n: 16, speed: 200 }); sfx.block(); break;
+        case 'reveal': stamp('DETECTED', at.x, at.y - 10, '#3ad6ff'); ripple(at.x, at.y, { color: '#3ad6ff', size: 170 }); burst(at.x, at.y, { colors: ['#3ad6ff', '#fff'], n: 14 }); sfx.reveal(); break;
+        case 'evict': evictCount++; stamp(e.quick ? 'EVICTED!' : 'EVICTED', at.x, at.y, '#4ade80'); glyphBurst(at.x, at.y, { colors: ['#39ff88', '#d6ffe4', '#fff'], n: 44, speed: 420 }); ripple(at.x, at.y, { color: '#39ff88', size: 220, ms: 800 }); sfx.evict(); shake(); if (e.quick) combo('QUICK RESPONSE', 'kill chain broken'); break;
+        case 'deploy': case 'augment': ripple(at.x, at.y, { color: '#00ff9c', size: 190, square: true }); burst(at.x, at.y, { colors: ['#00ff9c', '#fff'], n: 14, speed: 160, shape: 'circle' }); sfx.deploy(); break;
+        case 'blocked': floater('BLOCKED', at.x, at.y - 30, '#39ff88'); ripple(at.x, at.y, { color: '#39ff88', size: 200, ms: 650, square: true }); ripple(at.x, at.y, { color: '#d6ffe8', size: 120, ms: 500, square: true }); burst(at.x, at.y, { colors: ['#39ff88', '#fff'], n: 12, speed: 200 }); sfx.block(); break;
         case 'damage': floater('−' + e.n, at.x, at.y - 20, '#ff5470'); setHit(h => ({ ...h, [e.asset]: Date.now() })); sfx.hit(); shake(); flashBg(0.6); break;
-        case 'asset_down': stamp('DOWN', at.x, at.y, '#ff5470'); shake(true); sfx.big(); flash('#ff2e4e'); break;
+        case 'asset_down': stamp('DOWN', at.x, at.y, '#ff5470'); shake(true); glitchScreen(700); sfx.big(); flash('#ff2e4e'); break;
         case 'exfil': floater('DATA LOST −' + e.n, at.x, at.y - 10, '#ffb02e'); sfx.hit(); break;
         case 'heal': if (e.n > 0) { floater('+' + e.n, at.x, at.y - 10, '#7dff9b'); sfx.coin(); } break;
         case 'isolate': stamp('ISOLATED', at.x, at.y, '#7be0ff'); sfx.deploy(); break;
@@ -93,25 +95,41 @@ export function BattleScreen() {
     const full = { type: 'BATTLE', action };
     const r = app.step(full); if (!r.ok) { floater(r.error, innerWidth / 2, 120, '#ff9aad'); return; }
     const evs = r.events.filter(e => e.from === 'battle');
+    if (action.type === 'PLAY') flyPlayed(action);
     if (action.type === 'END_TURN') {
       const plays = groupPlays(evs);
-      setSel(null); sfx.turn();
+      setSel(null); sfx.turn(); flyHandOut();
       store.set({ stage: { plays, i: -1, intro: true } });
       await sleep(550);
       for (let i = 0; i < plays.length; i++) { store.set({ stage: { plays, i } }); sfx.adv(); await sleep(plays[i].outcome === 'unseen' ? 650 : 1050); }
       store.set({ stage: null });
     }
     app.commit(r, full);
+    document.querySelectorAll('.hand .card').forEach(el => { el.style.visibility = ''; });
     logEvents(evs, r.run.battle);
     present(evs, b);
     if (r.run.battle.over) endOfBattle(r.run.battle);
     else if (action.type !== 'END_TURN') sfx.card();
   };
+  // card flourishes: the played card flies to its target and dissolves; the hand is swept to the deck at end of turn
+  const targetPoint = (t = {}) => {
+    const asset = t.asset || b.footholds.find(f => f.id === t.fid)?.asset || b.controls.find(k => k.kid === t.kid)?.asset;
+    return asset ? centerOf(assetEl(asset)) : { x: innerWidth / 2, y: innerHeight * 0.38 };
+  };
+  const flyPlayed = (action) => {
+    if (!motionOK()) return; const el = document.querySelector(`.hand .card[data-iid="${action.iid}"]`); if (!el) return;
+    const to = targetPoint(action.target); const d = content.cards[b.cards[action.iid].id];
+    flyClone(el, to, { ms: 440, scale: .35, rot: 10 }).then(() => { if (d.type === 'action') glyphBurst(to.x, to.y, { n: 18, colors: ['#ffd23d', '#fff'], speed: 260 }); });
+  };
+  const flyHandOut = () => {
+    if (!motionOK()) return; const pile = document.querySelector('.pile .stack'); const to = pile ? centerOf(pile) : { x: 60, y: innerHeight - 100 };
+    document.querySelectorAll('.hand .card').forEach((el, i) => { flyClone(el, to, { ms: 380, scale: .22, rot: -14, delay: i * 45 }); el.style.visibility = 'hidden'; });
+  };
   const endOfBattle = (nb) => {
     store.set({ holdBattle: true });
     const res = nb.result;
-    if (res.won) { banner(res.how === 'evicted' ? 'ADVERSARY EVICTED' : 'OPERATION CONTAINED', res.how === 'evicted' ? 'Exposure maxed — the operation is burned' : 'The window closed with your crown jewels intact', '#4ade80', 2400); sfx.win(); confetti(120); flashBg(1); }
-    else { banner('BREACH', res.how === 'goal' ? `The adversary achieved its goal: ${content.tuning.goals[b.goal?.kind]?.name || ''}` : res.how === 'jewel' ? 'A crown jewel was lost' : res.how === 'resilience' ? 'Resilience exhausted' : 'Operation abandoned', '#ff2e4e', 2400); sfx.lose(); shake(true); }
+    if (res.won) { accessBanner(false, res.how === 'evicted' ? 'Adversary evicted: exposure maxed, the operation is burned' : 'Operation contained: the window closed with your crown jewels intact'); sfx.win(); confetti(120); flashBg(1); }
+    else { accessBanner(true, res.how === 'goal' ? `Breach. The adversary achieved its goal: ${content.tuning.goals[b.goal?.kind]?.name || ''}` : res.how === 'jewel' ? 'Breach. A crown jewel was lost' : res.how === 'resilience' ? 'Breach. Resilience exhausted' : 'Operation abandoned'); sfx.lose(); shake(true); flashBg(1); }
   };
 
   // ── targeting
@@ -156,7 +174,7 @@ export function BattleScreen() {
         <div class="hud-row"><span class="lbl">Clock</span><span class="clock">${clock(b.round)}</span><span class="spacer"/><div class="round-pips">${Array.from({ length: content.tuning.adversary.tiers[b.adv.tier].rounds }, (_, i) => html`<i class=${i + 1 < b.round ? 'done' : i + 1 === b.round ? 'now' : ''}/>`)}</div></div>
       </div>
       <div class="panel hud-adv glow" style=${`--accent:${advc}`}>
-        <div style="cursor:pointer" onClick=${dossier} ...${tip('Click to open the adversary dossier')}><${Sigil} id=${b.adv.id} color=${advc} icon=${adv.icon || 'skull'}/></div>
+        <div style="cursor:pointer" onClick=${dossier} ...${tip('Click to open the adversary dossier')}><${Sigil} id=${b.adv.id} color=${advc} icon=${adv.icon || 'hood'}/></div>
         <div style="flex:1;min-width:0"><div class="row"><span class=${'tier-badge t' + b.adv.tier}>${content.tuning.adversary.tiers[b.adv.tier].name}</span><span class="dimmer mono" style="font-size:.72rem">${b.adv.id}</span><span class="spacer"/><span class="chip"><${Icon} n="zap"/>${b.adv.hand.length} cards</span></div>
           <div class="nm">${b.adv.name}</div><div class="sub">${adv.role || ''} · ${adv.motive || ''}</div>
           <div class=${cx('meter expo seg')} style="--seg:${100 / b.expo.max}%"><i style=${`width:${exP}%`}/><b>EXPOSURE ${b.expo.cur} / ${b.expo.max}</b></div>
@@ -165,7 +183,7 @@ export function BattleScreen() {
       <div class="panel hud-me">
         ${b.goal && html`<${GoalMeter} b=${b} content=${content}/>`}
         <div class=${cx('intent', intent?.level < 1 && 'hidden-intent')}>
-          <${Icon} n=${TACTIC_ICON[intent?.tactic] || 'help-circle'} cls="lg"/>
+          <${Icon} n=${TACTIC_ICON[intent?.tactic] || 'circle-help'} cls="lg"/>
           <div><div class="iv">${intent ? (intent.level >= 1 ? `${intent.tech} ${intent.name}` : tname(content, intent.tactic)) : 'No move planned'}</div>
           <small>${intent ? `${tname(content, intent.tactic)}${intent.level >= 2 && intent.asset ? ' → ' + b.assets.find(a => a.id === intent.asset)?.name : ''}${intent.level >= 3 ? ` · ${intent.stride} · power ${intent.power}` : ''}${intent.origin === 'baseline' ? ' · baseline tradecraft' : intent.origin === 'signature' ? ' · signature' : intent.origin === 'assessed' ? ' · assessed intent' : ''}` : ''}</small></div>
           <span class="spacer"/><div class="fid" ...${tip('Intel level: how much of the adversary’s next move you can see. Identify cards, relics and Assume Breach raise it.')}>${[1, 2, 3].map(i => html`<i class=${i <= (intent?.level || 0) ? 'on' : ''}/>`)}</div></div>
@@ -191,7 +209,7 @@ export function BattleScreen() {
 
     <div class="bottom">
       <div class="pile" ...${tip('Draw pile · cards left before your discard is reshuffled')}>Deck<div class="stack"><i/><b>${b.draw.length}</b></div><span class="dimmer">${b.discard.length} discard</span></div>
-      <div class="hand">${b.hand.map((id, i) => { const d = content.cards[b.cards[id].id]; const c = B.cardCost(content, b, id); const base = B.effCard(content, b, id).cost; const ok = !d.unplayable && c <= b.energy.cur; const rot = (i - (n - 1) / 2) * Math.min(4, 22 / Math.max(n, 1)); const lift = Math.abs(i - (n - 1) / 2) ** 2 * 1.6; return html`<${Card} key=${id} content=${content} def=${d} ml=${b.cards[id].ml} cost=${c} discounted=${c < base} playable=${ok} unaffordable=${!ok} selected=${sel?.iid === id} onClick=${() => clickCard(id)} onContext=${(e) => { e.preventDefault(); setInspect(id); }} cls="deal" i=${i} style=${{ '--rot': rot + 'deg', '--lift': lift + 'px' }}/>`; })}</div>
+      <div class="hand">${b.hand.map((id, i) => { const d = content.cards[b.cards[id].id]; const c = B.cardCost(content, b, id); const base = B.effCard(content, b, id).cost; const ok = !d.unplayable && c <= b.energy.cur; const rot = (i - (n - 1) / 2) * Math.min(4, 22 / Math.max(n, 1)); const lift = Math.abs(i - (n - 1) / 2) ** 2 * 1.6; return html`<${Card} key=${id} content=${content} def=${d} ml=${b.cards[id].ml} cost=${c} discounted=${c < base} playable=${ok} unaffordable=${!ok} selected=${sel?.iid === id} onClick=${() => clickCard(id)} onContext=${(e) => { e.preventDefault(); setInspect(id); }} cls="deal" i=${i} iid=${id} style=${{ '--rot': rot + 'deg', '--lift': lift + 'px' }}/>`; })}</div>
       <div class="energy-wrap"><div class=${cx('energy', b.energy.cur === 0 && 'empty')} ...${tip('Energy: spent to play cards. Resets each round.')}>${b.energy.cur}<small>/ ${b.energy.max}</small></div>
         ${b.doctrine && html`<div class="power"><button ...${tip(content.doctrines[b.doctrine].power.text)} class=${cx('btn small violet', sel?.power && 'pulse')} disabled=${b.powerUsed || b.energy.cur < content.doctrines[b.doctrine].power.cost || !!s.stage} onClick=${() => { if (sel?.power) setSel(null); else { const p = content.doctrines[b.doctrine].power; if (p.target === 'none') doAction({ type: 'POWER', target: {} }); else setSel({ power: true }); } }}><${Icon} n=${content.doctrines[b.doctrine].icon}/>${content.doctrines[b.doctrine].power.name} · ${content.doctrines[b.doctrine].power.cost}</button></div>`}
         <button class=${cx('btn good big', noMoves && !s.stage && 'pulse')} disabled=${!!s.stage || b.over || !!b.ttx?.pending} onClick=${() => doAction({ type: 'END_TURN' })}>End turn <span class="kbd">E</span></button></div>
@@ -225,13 +243,13 @@ function DecisionModal({ d, content, onChoose, b }) {
 function BattleEnd({ b, content, run }) {
   const r = b.result; const adv = content.adversaryMeta[b.adv.id] || {};
   const next = run.phase;
-  return html`<div class="modal-back" style="z-index:600;background:rgba(3,5,12,.6)"><div class="modal panel glow rise center" style="max-width:640px"><div class=${'tier-badge t' + b.adv.tier}>${b.adv.name}</div><h2 style=${`font-size:2.2rem;color:${r.won ? '#4ade80' : '#ff5470'}`}>${r.won ? (r.how === 'evicted' ? 'Adversary evicted' : 'Operation contained') : 'Breach'}</h2>
-    <div class="statgrid" style="margin:1rem 0"><div class="stat"><b>${r.rounds}</b><span>Rounds</span></div><div class="stat"><b>${r.evictions}</b><span>Evictions</span></div><div class="stat"><b>${r.blocked}</b><span>Blocked</span></div><div class="stat"><b>${r.resLost}</b><span>Resilience lost</span></div></div>
+  return html`<div class="modal-back" style="z-index:600;background:rgba(3,5,12,.6)"><div class="modal panel glow rise center" style="max-width:640px"><div class=${'tier-badge t' + b.adv.tier}>${b.adv.name}</div><h2 class="verdict-h" style=${`font-size:2.2rem;color:${r.won ? 'var(--good)' : '#ff5470'}`}><${Decrypt} text=${r.won ? (r.how === 'evicted' ? 'Adversary evicted' : 'Operation contained') : 'Breach'} ms=${700}/></h2>
+    <div class="statgrid" style="margin:1rem 0"><div class="stat"><b><${Count} to=${r.rounds}/></b><span>Rounds</span></div><div class="stat"><b><${Count} to=${r.evictions} delay=${120}/></b><span>Evictions</span></div><div class="stat"><b><${Count} to=${r.blocked} delay=${240}/></b><span>Blocked</span></div><div class="stat"><b><${Count} to=${r.resLost} delay=${360}/></b><span>Resilience lost</span></div></div>
     ${r.debt > 0 && html`<p class="warn">⚠ Quantum debt: ${r.debt} Resilience will be lost to future decryption of stolen data. Post-quantum hybrid crypto would have prevented it.</p>`}
     <button class="btn primary big" onClick=${() => { store.set({ holdBattle: false }); sfx.click(); }}>${r.won ? 'Debrief' : 'See what happened'}</button></div></div>`;
 }
 
 function GoalMeter({ b, content }) {
   const G = b.goal, d = content.tuning.goals[G.kind]; const pct = Math.min(100, Math.round(100 * G.prog / G.need));
-  return html`<div class=${cx('goalbar', pct >= 70 && 'hot')} ...${tip(d.how + ' ' + d.blurb)}><${Icon} n=${d.icon}/><b>Goal: ${d.name}</b><div class="gm"><i style=${`width:${pct}%`}/></div><span>${G.prog}/${G.need}</span></div>`;
+  return html`<div class=${cx('goalbar', pct >= 60 && 'hot', pct >= 85 && 'crit')} role="meter" aria-label=${'Adversary goal: ' + d.name} aria-valuemin="0" aria-valuemax=${G.need} aria-valuenow=${G.prog} ...${tip(d.how + ' ' + d.blurb)}><${Icon} n=${d.icon}/><b>Goal: ${d.name}</b><div class="gm"><i style=${`width:${pct}%`}/></div><span class="gv">${G.prog}/${G.need}</span></div>`;
 }

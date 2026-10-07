@@ -6,12 +6,14 @@
 @font-face { font-family: 'JetBrains Mono'; src: url('../fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2'); font-weight: 700; font-display: swap; }
 
 :root {
-  --bg0: #070a14; --bg1: #0b1020; --bg2: #151a3a; --bg3: #241a52;
-  --accent: #5ad1ff; --accent2: #8b7bff;
-  --ink: #eaeeff; --ink2: #aab3d8; --ink3: #6f7aa6;
-  --panel: rgba(11, 15, 32, .78); --panel2: rgba(20, 26, 56, .82); --panel3: rgba(32, 40, 82, .86);
-  --line: rgba(255, 255, 255, .09); --line2: rgba(255, 255, 255, .18);
-  --good: #4ade80; --bad: #ff5470; --warn: #ffb02e; --info: #5ad1ff;
+  /* Phosphor palette. --accent/--accent2/--bg1 are overridden per scenario by setPalette() (bg.js). */
+  --bg1: #04120b; --bg2: #06200f; --bg3: #0a2e18;
+  --bg0: color-mix(in srgb, var(--bg1) 38%, #000);
+  --accent: #00ff9c; --accent2: #3ad6ff;
+  --ink: #e8fff4; --ink2: #a9d9c0; --ink3: #7db398;
+  --panel: color-mix(in srgb, var(--bg1) 84%, transparent); --panel2: color-mix(in srgb, var(--bg2) 88%, transparent); --panel3: color-mix(in srgb, var(--bg3) 90%, transparent);
+  --line: color-mix(in srgb, var(--accent) 16%, transparent); --line2: color-mix(in srgb, var(--accent) 34%, transparent);
+  --good: #39ff88; --bad: #ff4d6d; --warn: #ffb02e; --info: #3ad6ff;
   --fn-govern: #f5c542; --fn-identify: #5ad1ff; --fn-protect: #58e07a; --fn-detect: #ffa94d; --fn-respond: #ff5a6e; --fn-recover: #b58cff;
   --st-S: #ff5470; --st-T: #ffb02e; --st-R: #a78bfa; --st-I: #38bdf8; --st-D: #4ade80; --st-E: #f472d0;
   --tier-bronze: #cd8a4b; --tier-silver: #cfd8f0; --tier-gold: #ffd23d; --tier-platinum: #8ff3ff;
@@ -19,9 +21,9 @@
   --font-num: 'VT323', 'Pixelify Sans', ui-monospace, monospace;
   --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --radius: 14px; --radius-s: 8px;
-  --shadow: 0 10px 40px rgba(0, 0, 0, .55);
-  --glow: 0 0 22px color-mix(in srgb, var(--accent) 45%, transparent);
+  --radius: 12px; --radius-s: 8px;
+  --shadow: 0 10px 40px rgba(0, 0, 0, .6);
+  --glow: 0 0 22px color-mix(in srgb, var(--accent) 40%, transparent);
   --card-w: 148px; --card-h: 212px;
   --ease: cubic-bezier(.2, .9, .25, 1.15);
 }

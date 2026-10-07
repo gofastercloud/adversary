@@ -53,7 +53,7 @@ export function Modal({ onClose, children, wide, cls }) {
 export const hash01 = (s, k = 0) => { let h = 2166136261 ^ k; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return ((h >>> 0) % 100000) / 100000; };
 
 /** Procedural adversary portrait. */
-export function Sigil({ id, color = '#ff5470', icon = 'skull', size = '', glitch = true }) {
+export function Sigil({ id, color = '#ff5470', icon = 'hood', size = '', glitch = true }) {
   const polys = [0, 1, 2].map(i => { const n = 3 + Math.floor(hash01(id, i) * 5), r = 44 - i * 11, rot = hash01(id, i + 9) * 360; const pts = Array.from({ length: n }, (_, k) => { const a = (k / n) * Math.PI * 2 + rot * Math.PI / 180; return `${50 + r * Math.cos(a)},${50 + r * Math.sin(a)}`; }).join(' '); return html`<polygon points=${pts} fill="none" stroke=${color} stroke-width=${i === 0 ? 1.6 : 1} opacity=${0.85 - i * 0.2}/>`; });
   const rays = Array.from({ length: 7 }, (_, i) => { const a = hash01(id, 30 + i) * Math.PI * 2, l = 14 + hash01(id, 40 + i) * 30; return html`<line x1=${50} y1=${50} x2=${50 + l * Math.cos(a)} y2=${50 + l * Math.sin(a)} stroke=${color} stroke-width="0.8" opacity="0.5"/>`; });
   return html`<div class=${cx('sigil', size, glitch && 'glitch')} style=${`--c:${color}`}><svg class="pat" viewBox="0 0 100 100">${polys}${rays}</svg><${Icon} n=${icon} cls="ico"/></div>`;

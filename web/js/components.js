@@ -1,4 +1,5 @@
 import { html, Icon, tip, cx, Refs, hash01 } from './ui.js';
+import { Decrypt } from './term.js';
 import { describeCard, strideName } from '../../engine/describe.js';
 import { scaleCard, wardMap } from '../../engine/battle.js';
 
@@ -15,7 +16,7 @@ export const CARD_ICONS = {
 const CELL_ICON = { 'protect.spoofing': 'fingerprint', 'protect.tampering': 'badge-check', 'protect.repudiation': 'file-lock', 'protect.disclosure': 'lock', 'protect.dos': 'gauge', 'protect.elevation': 'key-round', 'detect.spoofing': 'scan-face', 'detect.tampering': 'file-search', 'detect.repudiation': 'activity', 'detect.disclosure': 'eye-off', 'detect.dos': 'radar', 'detect.elevation': 'trending-up', 'respond.spoofing': 'user-x', 'respond.tampering': 'fence', 'respond.repudiation': 'microscope', 'respond.disclosure': 'megaphone', 'respond.dos': 'waves', 'respond.elevation': 'ban', 'recover.spoofing': 'id-card', 'recover.tampering': 'copy-plus', 'recover.repudiation': 'clipboard-check', 'recover.disclosure': 'key-round', 'recover.dos': 'database-backup', 'recover.elevation': 'castle', 'govern.spoofing': 'id-card', 'govern.tampering': 'gavel', 'govern.repudiation': 'scroll-text', 'govern.disclosure': 'file-lock', 'govern.dos': 'hourglass', 'govern.elevation': 'scale', 'identify.spoofing': 'users', 'identify.tampering': 'package', 'identify.repudiation': 'file-search', 'identify.disclosure': 'workflow', 'identify.dos': 'route', 'identify.elevation': 'map' };
 export const cardIcon = (def) => CARD_ICONS[def.id] || CELL_ICON[def.cell] || 'shield';
 
-export function Card({ content, def, ml = 1, cost, discounted, cls, style, onClick, onContext, selected, playable, unaffordable, back, i, tiltOn = true, children, tipOff, extra }) {
+export function Card({ content, def, ml = 1, cost, discounted, cls, style, onClick, onContext, selected, playable, unaffordable, back, i, tiltOn = true, children, tipOff, extra, iid }) {
   if (back) return html`<div class=${cx('card back', cls)} style=${style}><div class="card-in"></div></div>`;
   const d = def; const e = scaleCard(d, ml);
   const lines = describeCard(content, d, ml);
@@ -24,7 +25,7 @@ export function Card({ content, def, ml = 1, cost, discounted, cls, style, onCli
   const onLeave = tiltOn ? (ev) => { const el = ev.currentTarget; el.style.setProperty('--ry', '0deg'); el.style.setProperty('--rx', '0deg'); } : null;
   const typeLbl = { control: 'Control', action: 'Action', policy: 'Policy', augment: 'Augment', status: 'Status' }[d.type];
   const fnName = content.fns.find(f => f.id === d.fn)?.name, propName = content.props.find(p => p.id === d.prop);
-  return html`<div class=${cx('card', 'fn-' + d.fn, 'st-' + d.stride, 'rar-' + d.rarity, d.type === 'status' && 'status', playable && 'playable', selected && 'selected', unaffordable && 'unaffordable', cls)} style=${{ ...(style || {}), '--i': i }} onClick=${onClick} onContextMenu=${onContext} onMouseMove=${onMove} onMouseLeave=${onLeave} data-card=${d.id} data-ml=${ml}>
+  return html`<div class=${cx('card', 'fn-' + d.fn, 'st-' + d.stride, 'rar-' + d.rarity, d.type === 'status' && 'status', playable && 'playable', selected && 'selected', unaffordable && 'unaffordable', cls)} style=${{ ...(style || {}), '--i': i }} onClick=${onClick} onContextMenu=${onContext} onMouseMove=${onMove} onMouseLeave=${onLeave} data-card=${d.id} data-ml=${ml} data-iid=${iid}>
     <div class="card-in">
       <div class=${cx('cost', c === 0 && 'zero', discounted && 'disc')}>${d.type === 'status' ? '–' : c}</div>
       <div class="ml">${[1, 2, 3].map(k => html`<i class=${k <= ml ? 'on' : ''}/>`)}</div>
@@ -47,7 +48,7 @@ export const FNCOL = { govern: 'var(--fn-govern)', identify: 'var(--fn-identify)
 export function Foothold({ f, content, targetable, onClick, hint }) {
   const t = content.techs[f.tech];
   const cls = cx('fh', targetable && 'targetable', hint && 'hidden-hint');
-  const body = hint ? html`<${Icon} n="help-circle"/>?` : html`<${Icon} n="skull"/>${f.tech}<span class="grip">${Array.from({ length: f.grip }, () => html`<i/>`)}</span>${f.privileged && html`<span class="fl" title="Privileged">P</span>`}${f.c2 && html`<span class="fl" title="C2 beacon">C2</span>`}${f.persistent && html`<span class="fl" title="Persistent">∞</span>`}`;
+  const body = hint ? html`<${Icon} n="circle-help"/>?` : html`<${Icon} n="skull"/><${Decrypt} text=${f.tech} ms=${700}/><span class="grip">${Array.from({ length: f.grip }, () => html`<i/>`)}</span>${f.privileged && html`<span class="fl" title="Privileged">P</span>`}${f.c2 && html`<span class="fl" title="C2 beacon">C2</span>`}${f.persistent && html`<span class="fl" title="Persistent">∞</span>`}`;
   return html`<span class=${cls} onClick=${onClick} ...${hint ? {} : tip(() => html`<div style="width:280px"><h4>${f.tech} ${t?.n || f.name}</h4><div class="dim" style="font-size:.78rem">${f.tactic} · stealth ${f.stealth} · grip ${f.grip}${f.privileged ? ' · privileged' : ''}${f.c2 ? ' · C2 beacon' : ''}${f.persistent ? ' · persistent' : ''}</div><p style="margin:.4em 0">Revealed. Evict it before it spreads, stages data or strikes.</p><div class="refs"><${Refs} list=${['attack:' + f.tech]}/></div></div>`)}>${body}</span>`;
 }
 

@@ -6,10 +6,11 @@ import { NODE_LABEL, wbQuestion } from '../../engine/run.js';
 import { compileDeck } from '../../engine/tactics.js';
 import { strideName } from '../../engine/describe.js';
 import { sfx } from './audio.js';
+import { Typed, Decrypt, Count } from './term.js';
 import { burst, confetti, banner, floater } from './fx.js';
 import { clearanceOf } from '../../engine/achievements.js';
 
-const NODE_ICON = { battle: 'swords', elite: 'skull', boss: 'crown', shop: 'coins', rest: 'heart-pulse', event: 'help-circle', whiteboard: 'workflow', ttx: 'clipboard-check' };
+const NODE_ICON = { battle: 'swords', elite: 'skull', boss: 'crown', shop: 'coins', rest: 'heart-pulse', event: 'circle-help', whiteboard: 'workflow', ttx: 'clipboard-check' };
 
 export function RunHeader({ onDeck }) {
   const { run, content } = useStore();
@@ -49,10 +50,10 @@ export function Briefing() {
   const have = new Set(deck.map(c => c.tactic));
   const col = meta.color || '#ff5470';
   return html`<div class="screen"><div class="brief panel glow" style=${`--advc:${col};--accent:${col}`}>
-    <div class="col" style="align-items:center"><${Sigil} id=${br.adv} color=${col} icon=${meta.icon || 'skull'} size="lg"/><span class=${'tier-badge t' + br.tier}>${content.tuning.adversary.tiers[br.tier].name}${br.type === 'boss' ? ' · BOSS' : br.type === 'elite' ? ' · ELITE' : ''}</span><${RefLink} r=${'attack:' + br.adv} label="MITRE page"/>
+    <div class="col" style="align-items:center"><${Sigil} id=${br.adv} color=${col} icon=${meta.icon || 'hood'} size="lg"/><span class=${'tier-badge t' + br.tier}>${content.tuning.adversary.tiers[br.tier].name}${br.type === 'boss' ? ' · BOSS' : br.type === 'elite' ? ' · ELITE' : ''}</span><${RefLink} r=${'attack:' + br.adv} label="MITRE page"/>
       <button class="btn ghost small" onClick=${() => { store.set({ modal: { type: 'dossier', id: br.adv } }); }}><${Icon} n="file-search"/>Dossier</button></div>
-    <div><div class="dimmer" style="font-family:var(--font-display);letter-spacing:.25em;font-size:.75rem">INTELLIGENCE BRIEFING</div><h2>${br.name}</h2>
-      <div class="dim">${(advData.aliases || []).slice(0, 4).join(' · ')}</div><p style="margin-top:.6rem">${br.blurb}</p>
+    <div><div class="dimmer" style="font-family:var(--font-display);letter-spacing:.25em;font-size:.75rem">INTELLIGENCE BRIEFING</div><h2><${Decrypt} text=${br.name} ms=${800}/></h2>
+      <div class="dim">${(advData.aliases || []).slice(0, 4).join(' · ')}</div><${Typed} tag="p" cls="brief-blurb" text=${br.blurb} cps=${130}/>
       ${br.note && html`<p class="chip warn" style="white-space:normal">⚠ ${br.note}</p>`}
       <div class="trait-l">${br.traits.filter(t => t.name).map(t => html`<div><b>${t.name}.</b> ${t.text}</div>`)}</div>
       ${meta.goal && html`<div class="goalbrief"><${Icon} n=${content.tuning.goals[meta.goal].icon}/> <b>Goal: ${content.tuning.goals[meta.goal].name}.</b> ${content.tuning.goals[meta.goal].blurb} <span class="dim">${content.tuning.goals[meta.goal].how}</span></div>`}
@@ -71,8 +72,8 @@ export function RewardScreen() {
   const lines = [['Contained ' + (rw.how === 'evicted' ? '(evicted)' : '(survived)'), '+$' + (rw.money - rw.fast - rw.noDamage)], rw.fast ? ['Early eviction bonus', '+$' + rw.fast] : null, rw.noDamage ? ['Flawless defence', '+$' + rw.noDamage] : null].filter(Boolean);
   useEffect(() => { sfx.coin(); }, []);
   const takeCard = (id) => { sfx.buy(); burst(innerWidth / 2, innerHeight / 2, { colors: ['#ffd23d', '#fff'], n: 40 }); app.act({ type: 'TAKE_CARD', id }); };
-  return html`<div class="screen"><div class="reward panel glow rise"><h1 class="glowtext" style="color:#ffd23d">${rw.type === 'boss' ? 'Apex adversary defeated' : 'Victory'}</h1>
-    <div class="tally">${lines.map(([a, c], i) => html`<div style=${`--i:${i}`}><span>${a}</span><span>${c}</span></div>`)}<div class="tot" style=${`--i:${lines.length}`}><span>Total budget</span><span>+$${rw.money}</span></div></div>
+  return html`<div class="screen"><div class="reward panel glow rise"><h1 class="glowtext" style="color:var(--good)"><${Decrypt} text=${rw.type === 'boss' ? 'Apex adversary defeated' : 'Victory'} ms=${800}/></h1>
+    <div class="tally">${lines.map(([a, c], i) => html`<div style=${`--i:${i}`}><span>${a}</span><${Count} to=${+String(c).replace(/\D/g, '')} prefix="+$" delay=${i * 140}/></div>`)}<div class="tot" style=${`--i:${lines.length}`}><span>Total budget</span><${Count} to=${rw.money} prefix="+$" delay=${lines.length * 140} ms=${1000}/></div></div>
     ${rw.debt > 0 && html`<p class="chip warn" style="white-space:normal">⚠ ${rw.debt} quantum debt applied: data stolen without post-quantum protection will be readable later.</p>`}
     <div class="debrief panel"><h4><${Icon} n="book-open"/> Debrief — what ${advData.name} actually did</h4><ul>${played.slice(0, 8).map(tid => { const t = content.techs[tid]; const mits = (t?.m || []).slice(0, 4); return html`<li><b>${tid}</b> ${t?.n} <${RefLink} r=${'attack:' + tid} label="↗"/> <span class="dimmer">mitigations:</span> ${mits.map(m => html`<a class="chip" style="font-size:.68rem" href=${`https://attack.mitre.org/mitigations/${m}/`} target="_blank" rel="noopener noreferrer">${m} ${content.mits[m]?.n}</a>`)}</li>`; })}${!played.length && html`<li class="dimmer">The adversary never got a move in.</li>`}</ul><p class="dimmer" style="font-size:.78rem;margin-top:.6rem">Source: MITRE ATT&CK ${advData.id}. Open the dossier from the Codex for procedure examples and primary-source advisories.</p></div>
     ${!run.reward.cardTaken ? html`<h3>Choose a control to add to your deck</h3><div class="cards">${rw.cards.map((id, i) => html`<${Card} content=${content} def=${content.cards[id]} cls="flip" i=${i} onClick=${() => takeCard(id)}/>`)}</div><div class="row" style="justify-content:center"><button class="btn ghost" onClick=${() => app.act({ type: 'SKIP_CARD' })}>Skip (keep the deck lean)</button></div>` : null}
@@ -143,8 +144,8 @@ export function ResultScreen() {
   useEffect(() => { if (r.won) { confetti(160); } }, []);
   const letters = ['S', 'T', 'R', 'I', 'D', 'E'];
   const seen = (runTechs || []).slice(0, 14);
-  return html`<div class="screen result ${r.won ? 'won' : 'lost'}"><h1>${run.mode === 'ttx' ? 'Exercise complete' : r.won ? 'Campaign won' : 'Breach'}</h1><div class="tagline">${content.org?.name} · ${content.doctrines[r.doctrine].name} · ML${r.assurance}</div>
-    <div class="statgrid"><div class="stat"><b>${r.points}</b><span>Points</span></div><div class="stat"><b>${s.battles}</b><span>Battles won</span></div><div class="stat"><b>${s.evictions}</b><span>Evictions</span></div><div class="stat"><b>${r.act}</b><span>Act reached</span></div><div class="stat"><b>${s.wbCorrect}/${s.wbTotal}</b><span>STRIDE correct</span></div><div class="stat"><b>${run.deck.length}</b><span>Deck size</span></div></div>
+  return html`<div class="screen result ${r.won ? 'won' : 'lost'}"><h1><${Decrypt} text=${run.mode === 'ttx' ? 'Exercise complete' : r.won ? 'Campaign won' : 'Breach'} ms=${900}/></h1><div class="tagline">${content.org?.name} · ${content.doctrines[r.doctrine].name} · ML${r.assurance}</div>
+    <div class="statgrid"><div class="stat"><b><${Count} to=${r.points}/></b><span>Points</span></div><div class="stat"><b><${Count} to=${s.battles}/></b><span>Battles won</span></div><div class="stat"><b><${Count} to=${s.evictions}/></b><span>Evictions</span></div><div class="stat"><b><${Count} to=${r.act}/></b><span>Act reached</span></div><div class="stat"><b>${s.wbCorrect}/${s.wbTotal}</b><span>STRIDE correct</span></div><div class="stat"><b><${Count} to=${run.deck.length}/></b><span>Deck size</span></div></div>
     ${run.ttx?.result && html`<div class="panel" style="padding:1rem;max-width:760px;text-align:left"><h3>Exercise scorecard — ${run.ttx.result.score} points</h3>${run.ttx.result.objectives.map(o => html`<div class="row"><span class=${o.ok ? 'good' : 'bad'}>${o.ok ? '✓' : '✗'}</span><span>${o.text}</span><span class="spacer"/><b>${o.points}</b></div>`)}</div>`}
     <div class="panel debrief" style="max-width:900px"><h4><${Icon} n="graduation-cap"/> What you learned</h4><div class="row wrap">${letters.map(l => { const x = s.byLetter[l]; return x ? html`<span class="chip"><span class=${'stride tag-' + l}>${l}</span> ${x.ok}/${x.n}</span>` : null; })}</div>
       ${seen.length > 0 && html`<p class="dim" style="margin-top:.6rem">Techniques you faced:</p><div>${seen.map(t => html`<${RefLink} r=${'attack:' + t} label=${`${t} ${content.techs[t]?.n || ''}`.slice(0, 44)}/>`)}</div>`}

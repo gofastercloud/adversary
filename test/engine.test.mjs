@@ -258,3 +258,9 @@ test('CTID scored coverage (cloud pack): protect coverage adds ward, detect cove
   assert.ok(gd.cov.detect && Object.keys(gd.cov.detect).length > 10, 'GuardDuty has detect coverage');
   assert.ok(gd.detect && gd.type === 'control');
 });
+
+test('APRA standards resolve to their own pages, other apra ids to the landing page', () => {
+  assert.equal(resolveRef('apra:cps234').url, 'https://www.apra.gov.au/standards/cps-234');
+  assert.equal(resolveRef('apra:cps230').url, 'https://www.apra.gov.au/standards/cps-230');
+  assert.ok(resolveRef('apra:overview').url.startsWith('https://www.apra.gov.au/'));
+});

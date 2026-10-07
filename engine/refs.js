@@ -74,6 +74,8 @@ const LANDING = {
 
 const CTID_SETS = { nist: 'NIST SP 800-53 → ATT&CK', aws: 'AWS security services → ATT&CK', azure: 'Azure security controls → ATT&CK', gcp: 'GCP security controls → ATT&CK', m365: 'Microsoft 365 → ATT&CK', cis: 'CIS Controls → ATT&CK', kev: 'CISA KEV → ATT&CK', veris: 'VERIS → ATT&CK', csa_ccm: 'CSA CCM → ATT&CK', cri_profile: 'CRI Profile → ATT&CK' };
 
+const APRA_STD = { cps234: ['CPS 234 Information Security', 'https://www.apra.gov.au/standards/cps-234'], cps230: ['CPS 230 Operational Risk Management', 'https://www.apra.gov.au/standards/cps-230'] };
+
 const RE = {
   attack: /^(T\d{4}(\.\d{3})?|M\d{4}|TA\d{4}|G\d{4}|S\d{4}|C\d{4}|DS\d{4}|A\d{4})$/,
   ics: /^(T0\d{3}|M0\d{3}|TA0\d{3}|G0\d{3}|S0\d{3})$/,
@@ -127,6 +129,7 @@ export function resolveRef(ref) {
     case 'e8': return E8[id] ? { label: `Essential Eight: ${E8[id]}`, url: E8_URL, kind: 'au' } : null;
     case 'iec62443': return /^(overview|\d-\d)$/.test(id) ? { label: id === 'overview' ? 'IEC 62443' : `IEC 62443-${id}`, url: 'https://www.isa.org/standards-and-publications/isa-standards/isa-iec-62443-series-of-standards', kind: 'std' } : null;
     default: {
+      if (src === 'apra' && APRA_STD[id]) return { label: `APRA ${APRA_STD[id][0]}`, url: APRA_STD[id][1], kind: 'au' };
       const l = LANDING[src];
       if (!l || !/^[\w .\-/()]+$/.test(id)) return null;
       const kind = ['aescsf', 'soci', 'apra', 'ism', 'privacy'].includes(src) ? 'au' : 'std';

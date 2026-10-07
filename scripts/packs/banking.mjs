@@ -30,8 +30,8 @@ export const base = {
     { name: 'Act III — Social Engineering and Supply Chain', battle: ['G1057', 'C0059', 'G0096'], elite: ['C0057'], boss: 'G1015', tiers: { battle: 2, elite: 3, boss: 3 } }
   ] },
   reading: [
-    { title: 'APRA CPS 234 — Information Security', url: 'https://www.apra.gov.au/consolidated-prudential-standard-cps-234-information-security' },
-    { title: 'APRA CPS 230 — Operational Risk Management', url: 'https://www.apra.gov.au/operational-risk-management' },
+    { title: 'APRA CPS 234 — Information Security', url: 'https://www.apra.gov.au/standards/cps-234' },
+    { title: 'APRA CPS 230 — Operational Risk Management', url: 'https://www.apra.gov.au/standards/cps-230' },
     { title: 'SWIFT Customer Security Programme', url: 'https://www.swift.com/myswift/customer-security-programme-csp' },
     { title: 'CISA AA20-239A — FASTCash 2.0: North Korea’s BeagleBoyz robbing banks', url: 'https://www.cisa.gov/news-events/cybersecurity-advisories/aa20-239a' },
     { title: 'PCI DSS v4.0 — document library', url: 'https://www.pcisecuritystandards.org/document_library/' }

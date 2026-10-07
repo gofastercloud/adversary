@@ -32,7 +32,7 @@ export const base = {
   reading: [
     { title: 'NIST SP 800-161 Rev. 1 — Cybersecurity supply chain risk management', url: 'https://csrc.nist.gov/pubs/sp/800/161/r1/final' },
     { title: 'CISA — Protecting against malicious cyber activity targeting managed service providers', url: 'https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-131a' },
-    { title: 'APRA CPS 230 — Operational Risk Management', url: 'https://www.apra.gov.au/operational-risk-management' },
+    { title: 'APRA CPS 230 — Operational Risk Management', url: 'https://www.apra.gov.au/standards/cps-230' },
     { title: 'ASD ISM — Guidelines for procurement and outsourcing', url: 'https://www.cyber.gov.au/resources-business-and-government/essential-cyber-security/ism' },
     { title: 'MITRE ATT&CK — Operation CuckooBees, SolarWinds Compromise, 3CX Supply Chain Attack', url: 'https://attack.mitre.org/campaigns/' }
   ]

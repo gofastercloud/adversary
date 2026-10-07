@@ -118,6 +118,7 @@ camp('C0012', 2, 'Operation CuckooBees: long-running theft of intellectual prope
 camp('C0059', 1, 'Salesforce data exfiltration: extortion following bulk export from SaaS tenants.', [t('saas', 'SaaS Bulk Export', 'Collection and Exfiltration cards cost 1 less.', { op: 'discount', kinds: ['stage', 'exfil'], n: 1 })]);
 camp('C0058', 2, 'SharePoint ToolShell exploitation (2025): remote code execution against on-premises SharePoint.', [t('exploit', 'Server Exploitation', 'Breach cards cost 1 less.', { op: 'discount', kinds: ['breach'], n: 1 })]);
 camp('C0020', 1, 'Maroochy Water Breach (2000): an insider used radio-controlled equipment to release sewage in Queensland — an Australian ICS case study.', [t('insider', 'Insider Knowledge', 'Impair cards cost 1 less.', { op: 'discount', kinds: ['impair'], n: 1 })]);
+camp('C0031', 2, 'Documented 2023 defacement of internet-exposed Unitronics PLCs, including at water utilities, using default credentials on exposed HMIs.', [t('default', 'Default Credentials', 'Breach cards cost 1 less.', { op: 'discount', kinds: ['breach'], n: 1 }), t('exposed', 'Internet-Exposed OT', 'Starts with one hidden foothold.', { op: 'startFootholds', n: 1 })]);
 camp('C0049', 2, 'Leviathan Australian Intrusions (2022): a documented campaign against Australian targets.', [t('web', 'Web-Facing Exploitation', 'Breach cards cost 1 less.', { op: 'discount', kinds: ['breach'], n: 1 })]);
 camp('C0014', 2, 'Operation Wocao (2017–2019): wide-ranging intrusions using legitimate tools and credentials.', [t('tools', 'Legitimate Tooling', 'Execute cards cost 1 less.', { op: 'discount', kinds: ['arm'], n: 1 })]);
 camp('C0041', 1, 'FrostyGoop incident (2024): ICS malware manipulating Modbus on heating controllers.', [t('modbus', 'Modbus Manipulation', 'Impair cards cost 1 less.', { op: 'discount', kinds: ['impair'], n: 1 })]);
@@ -125,7 +126,7 @@ camp('C0022', 2, 'Operation Dream Job: fake job offers used to deliver malware a
 
 
 // ── Goals (see tuning.goals). Editorial: based on each actor's documented objectives; see dossier and ATT&CK pages.
-const GOAL = { G1017: 'preposition', G0035: 'preposition', G0034: 'disrupt', G0088: 'disrupt', C0025: 'disrupt', C0028: 'disrupt', C0034: 'disrupt', C0030: 'disrupt', C0020: 'disrupt', C0041: 'disrupt',
+const GOAL = { G1017: 'preposition', G0035: 'preposition', G0034: 'disrupt', G0088: 'disrupt', C0025: 'disrupt', C0028: 'disrupt', C0034: 'disrupt', C0030: 'disrupt', C0020: 'disrupt', C0031: 'disrupt', C0041: 'disrupt',
   G0016: 'exfil', G0096: 'exfil', G0007: 'exfil', G0045: 'exfil', G0129: 'exfil', G1057: 'exfil', G0125: 'exfil', G0114: 'exfil', G0049: 'exfil', G1004: 'exfil', C0024: 'exfil', C0012: 'exfil', C0049: 'exfil', C0014: 'exfil', C0022: 'exfil', C0059: 'exfil', C0058: 'exfil', C0029: 'access',
   G0032: 'fraud', G0046: 'fraud', G0082: 'fraud', G0037: 'fraud', G0091: 'fraud', G0080: 'fraud', C0057: 'fraud',
   G0102: 'ransom', G1015: 'ransom', G0092: 'ransom', G1051: 'ransom', G1043: 'ransom', G1032: 'ransom', C0063: 'destroy',

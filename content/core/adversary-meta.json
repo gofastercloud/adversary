@@ -995,6 +995,35 @@
   ],
   "goal": "disrupt"
  },
+ "C0031": {
+  "name": "Unitronics Defacement Campaign",
+  "icon": "flag",
+  "tier": 2,
+  "role": "campaign",
+  "color": "#f5c542",
+  "motive": "Replay of a documented campaign.",
+  "blurb": "Documented 2023 defacement of internet-exposed Unitronics PLCs, including at water utilities, using default credentials on exposed HMIs.",
+  "traits": [
+   {
+    "id": "default",
+    "name": "Default Credentials",
+    "text": "Breach cards cost 1 less.",
+    "op": "discount",
+    "kinds": [
+     "breach"
+    ],
+    "n": 1
+   },
+   {
+    "id": "exposed",
+    "name": "Internet-Exposed OT",
+    "text": "Starts with one hidden foothold.",
+    "op": "startFootholds",
+    "n": 1
+   }
+  ],
+  "goal": "disrupt"
+ },
  "C0049": {
   "name": "Leviathan Australian Intrusions",
   "icon": "flag",

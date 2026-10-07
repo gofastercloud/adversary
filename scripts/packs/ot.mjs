@@ -1,0 +1,222 @@
+export const base = {
+  schema: 2, id: 'ot', kind: 'scenario', name: 'OT & ICS', version: '1.0.0',
+  tagline: 'Water, pumps and PLCs. Safety and availability before everything else.',
+  icon: 'factory',
+  theme: { accent: '#3dd6c6', accent2: '#2f8cff', bg: ['#04141a', '#06222b', '#0a2a3a'] },
+  org: {
+    name: 'Ironbridge Water', sector: 'Water supply & wastewater (Australia)',
+    brief: 'A regional water utility serving about 300,000 people. Treatment plants, pump stations and reservoirs are run from a SCADA master through PLCs and RTUs, with a hard-wired safety layer for chemical dosing. An integrator maintains the PLC logic remotely, a few HMIs were exposed to the internet years ago “temporarily”, and the corporate network trusts the same Active Directory as the DMZ.',
+    crownJewels: ['SCADA / HMI servers', 'Treatment PLCs & chemical dosing', 'Drinking-water quality records'],
+    regimes: [
+      { name: 'Security of Critical Infrastructure Act 2018 (Cth)', note: 'Water is a critical infrastructure sector. Responsible entities must maintain a critical infrastructure risk management program and report significant cyber incidents to the ACSC (12 hours if availability is significantly impacted, otherwise 72).', refs: ['soci:cirmp', 'soci:csirp'] },
+      { name: 'Australian Drinking Water Guidelines & state water regulators', note: 'Drinking-water quality obligations are why chemical dosing and its safety interlocks are the real crown jewel: an integrity attack here is a public-health event, not a data breach.', refs: ['nist:800-82'] },
+      { name: 'IEC 62443 / NIST SP 800-82', note: 'Zones and conduits, security levels, and the OT-specific guidance this scenario follows. Reference architecture assets are from CTID’s Defending OT with ATT&CK.', refs: ['iec62443:3-2', 'nist:800-82'] }
+    ]
+  },
+  assets: [
+    { id: 'mail', name: 'Corporate Email', kind: 'email', zone: 'Corporate IT', hp: 6, jewel: false, exposed: true, icon: 'mail', desc: 'Staff email and rostering.', adjacent: ['ws', 'ad'] },
+    { id: 'vpn', name: 'Integrator Remote Access', kind: 'vendor', zone: 'Corporate IT', hp: 6, jewel: false, exposed: true, icon: 'unplug', desc: 'VPN and remote-support portal for the SCADA integrator and field crews.', adjacent: ['ad', 'jump'] },
+    { id: 'ws', name: 'Corporate Endpoints', kind: 'endpoint', zone: 'Corporate IT', hp: 8, jewel: false, exposed: true, icon: 'laptop', desc: 'Office laptops, including engineers’ machines that also hold project files.', adjacent: ['mail', 'ad'] },
+    { id: 'ad', name: 'Active Directory', kind: 'identity', zone: 'Corporate IT', hp: 8, jewel: false, exposed: false, icon: 'id-card', desc: 'Directory trusted by the DMZ jump host (CTID A0017).', adjacent: ['mail', 'vpn', 'ws', 'jump'] },
+    { id: 'jump', name: 'IT/OT Jump Host', kind: 'server', zone: 'DMZ', hp: 8, jewel: false, exposed: false, icon: 'server', desc: 'The one sanctioned path into the control network (CTID A0012).', adjacent: ['vpn', 'ad', 'hist', 'scada'] },
+    { id: 'hist', name: 'Process Historian', kind: 'server', zone: 'DMZ', hp: 8, jewel: false, exposed: false, icon: 'database', desc: 'Years of flow, level and dosing data (CTID A0006).', adjacent: ['jump', 'scada'] },
+    { id: 'scada', name: 'SCADA / HMI Servers', kind: 'ot', zone: 'OT', hp: 12, jewel: true, exposed: false, icon: 'monitor', desc: 'Operators see and command the plant here (CTID A0007, A0002).', adjacent: ['jump', 'hist', 'plc', 'sis'] },
+    { id: 'plc', name: 'Treatment PLCs & Dosing', kind: 'ot', zone: 'OT', hp: 10, jewel: true, exposed: false, icon: 'cpu', desc: 'Controllers that meter chemicals and run pumps (CTID A0003).', adjacent: ['scada', 'sis'] },
+    { id: 'sis', name: 'Safety Interlocks (SIS)', kind: 'ot', zone: 'OT', hp: 8, jewel: false, exposed: false, icon: 'octagon-alert', desc: 'Independent safety controllers that trip dosing and pumps (CTID A0010).', adjacent: ['scada', 'plc'] }
+  ],
+  roster: { acts: [
+    { name: 'Act I — Exposed and Opportunistic', battle: ['C0031', 'G1043', 'G1032', 'G0139'], elite: ['G0117'], boss: 'C0020', tiers: { battle: 1, elite: 2, boss: 2 } },
+    { name: 'Act II — Targeted Intrusions', battle: ['G0049', 'G0125', 'G1051'], elite: ['G0088'], boss: 'G0035', tiers: { battle: 2, elite: 2, boss: 3 } },
+    { name: 'Act III — Pre-positioned and Destructive', battle: ['G0007', 'G0129', 'C0030'], elite: ['G0034'], boss: 'G1017', tiers: { battle: 2, elite: 3, boss: 3 } }
+  ] },
+  reading: [
+    { title: 'CTID — Defending OT with ATT&CK (reference architecture and threat collection)', url: 'https://ctid.mitre.org/projects/defending-ot-with-attack/' },
+    { title: 'MITRE EMB3D — Embedded device threat model', url: 'https://emb3d.mitre.org/' },
+    { title: 'NIST SP 800-82 Rev. 3 — Guide to OT Security', url: 'https://csrc.nist.gov/pubs/sp/800/82/r3/final' },
+    { title: 'CISA/EPA — Top cyber actions for securing water systems', url: 'https://www.cisa.gov/resources-tools/resources/top-cyber-actions-securing-water-systems' },
+    { title: 'CISA AA23-335A — IRGC-affiliated actors exploit PLCs (Unitronics)', url: 'https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-335a' }
+  ]
+};
+
+export const overrides = {
+  'govern.spoofing': { name: 'Integrator Access Policy', flavour: 'No vendor session without a work order', desc: 'Policy for who may reach the control network, when and how: named integrator accounts, approved maintenance windows, MFA and session recording, with the PLC logic repository under change control.', refs: ['nist-csf:GV.SC-07', 'iec62443:2-4', 'attack:M1032'] },
+  'govern.dos': { name: 'CIRMP & Safe-State Tolerances', flavour: 'How long can a reservoir feed on manual?', desc: 'A risk management program that sets how long each treatment and pumping function can run degraded or manually, and funds the controls to meet it. The foundation of SOCI compliance for water.', refs: ['soci:cirmp', 'nist-csf:GV.OC-04'] },
+  'identify.dos': { name: 'Process & Dependency Register', flavour: 'Every pump, valve and the radio link that feeds it', desc: 'An inventory of treatment, pumping and storage assets and what each depends on (power, telemetry, chemicals, people) so a single failure is understood before it happens.', refs: ['soci:cirmp', 'nist-csf:ID.AM-05', 'nist-800-53:RA-9'] },
+  'identify.disclosure': { name: 'Reference Architecture & Flow Map', flavour: 'If a pipe is not on the diagram, nobody secured it', desc: 'Current Purdue-level diagrams of assets, zones and data flows from corporate IT to field devices, including the HMI nobody remembers exposing.', refs: ['purdue:model', 'iec62443:3-2', 'ctid:nist'] },
+  'identify.tampering': { name: 'Exposure Scan of OT Edge', flavour: 'Shodan sees your PLC before you do', desc: 'Regular external scanning for internet-exposed HMIs, PLCs and remote-access services, with removal or hardening of anything found.', refs: ['ics:T0883', 'nist:800-82', 'nist-csf:ID.RA-01'] },
+  'protect.spoofing': { name: 'No Default Credentials + MFA', flavour: 'Default passwords are on the vendor’s website', desc: 'Unique credentials per device, no defaults, and multi-factor authentication on every remote path and engineering workstation.', refs: ['attack:M1032', 'ics:M0932', 'emb3d:MID-043', 'nist-csf:PR.AA-03'] },
+  'protect.tampering': { name: 'Logic Integrity & Signed Firmware', flavour: 'Only engineering-approved logic reaches a PLC', desc: 'Signed firmware and controller logic verified at load, with baselines of running programs compared against the repository.', refs: ['ics:M0813', 'emb3d:MID-040', 'iec62443:4-2', 'nist-800-53:SI-7'] },
+  'protect.elevation': { name: 'Zone & Conduit Segmentation', flavour: 'Access ends at the conduit', desc: 'IEC 62443 zones and conduits: the jump host is the only way in, vendors have no standing access, and IT privilege never implies OT privilege.', refs: ['iec62443:3-2', 'ics:M0930', 'attack:M1030'] },
+  'detect.tampering': { name: 'Passive OT Network Monitoring', flavour: 'Listen; never probe a fragile PLC', desc: 'Passive monitoring of OT protocols that flags new devices, new commands, firmware changes and logic downloads, without sending packets into fragile controllers.', refs: ['nist:800-82', 'ics:M0947', 'nist-csf:DE.CM-01'] },
+  'respond.tampering': { name: 'Isolate & Run Manual', flavour: 'Cut the link; run the plant by hand', desc: 'Pre-agreed ability to sever the IT/OT conduit and run treatment and pumping under local manual control while the investigation proceeds. Safety and water quality outrank forensic purity.', refs: ['iec62443:3-2', 'ics:M0811', 'nist-csf:RS.MI-01'] },
+  'recover.dos': { name: 'Offline PLC & HMI Backups', flavour: 'The logic exists somewhere an attacker cannot reach', desc: 'Offline, tested backups of PLC programs, HMI projects and SCADA configuration, with a rehearsed rebuild of the control system from bare metal.', refs: ['ics:M0953', 'e8:backups', 'nist-csf:RC.RP-03'] }
+};
+
+export const cards = [
+  { id: 'ot.chem-interlock', name: 'Hard-wired Chemical Interlocks', type: 'control', fn: 'protect', prop: 'tampering', cost: 2, rarity: 'uncommon', target: 'asset', ward: { T: 2, D: 1 }, mit: ['M0812'], desc: 'Independent, hard-wired limits on dosing and pump speed that no software setpoint can override. +2 Integrity ward, +1 Availability ward.', lesson: 'Process safety is engineered to hold even when the control system lies. The Oldsmar-style “raise the caustic setpoint” attack fails against a hard limit that does not care what the HMI says.', refs: ['ics:M0812', 'nist:800-82', 'iec62443:3-3'] },
+  { id: 'ot.safe-state', name: 'Fail-Safe State Procedure', type: 'action', fn: 'respond', prop: 'dos', cost: 2, rarity: 'uncommon', target: 'asset', fx: [{ op: 'isolate' }, { op: 'shield', n: 2 }, { op: 'resilience', n: 2 }], desc: 'Drive the process to a pre-agreed safe state (stop dosing, divert flow, hand over to manual) and isolate the asset. Restores 2 Resilience.', lesson: 'In OT the response to uncertainty is a designed safe state, not a reboot. It must be rehearsed, because the first time is never calm.', refs: ['nist:800-82', 'ics:M0811', 'iec62443:3-3'] },
+  { id: 'ot.keyswitch', name: 'Key-Switch RUN Mode Lock', type: 'augment', fn: 'protect', prop: 'elevation', cost: 1, rarity: 'uncommon', target: 'control', base: ['protect.elevation', 'protect.tampering'], aug: { ward: { E: 1 }, expert: [{ tech: 'T0858', ref: 'emb3d:MID-031' }] }, desc: 'Controllers only accept program or mode changes while a physical key is in PROGRAM. Counters Change Operating Mode.', lesson: 'Triton reached safety controllers left in PROGRAM mode. A physical presence requirement turns a remote attack into a site visit.', refs: ['emb3d:MID-031', 'attack:T0858', 'attack:C0030'] }
+];
+export const relics = [
+  { id: 'ot.manual-drill', name: 'Quarterly Manual-Operations Drill', icon: 'hard-hat', rarity: 'uncommon', hooks: { passive: { maxResilience: 6 }, battleStart: [{ op: 'wardRandomAsset', n: 1 }] }, desc: '+6 max Resilience. At the start of each battle one random asset gains +1 permanent ward.', lesson: 'Operators who have switched the plant to manual in a drill do it calmly in an incident. The drill is the control.', refs: ['ics:M0811', 'nist:800-82'] }
+];
+
+export const systems = [
+  {
+    id: 'treatment-control', name: 'Treatment plant control network',
+    blurb: 'An integrator reaches the plant through a DMZ jump host. SCADA sends setpoints to PLCs over Modbus, and PLC logic is stored in a repository the integrator updates.',
+    elements: [
+      { id: 'vendor', type: 'external', label: 'Integrator remote support', x: 110, y: 110 },
+      { id: 'operator', type: 'external', label: 'Plant operators', x: 110, y: 450 },
+      { id: 'gateway', type: 'process', label: 'Remote access gateway', x: 320, y: 110 },
+      { id: 'jump', type: 'process', label: 'Engineering jump host', x: 320, y: 280 },
+      { id: 'hist', type: 'store', label: 'Process historian', x: 530, y: 280 },
+      { id: 'proj', type: 'store', label: 'PLC logic repository', x: 530, y: 450 },
+      { id: 'hmi', type: 'process', label: 'SCADA / HMI server', x: 740, y: 280 },
+      { id: 'plc', type: 'process', label: 'Treatment PLCs', x: 740, y: 450 },
+      { id: 'bom', type: 'external', label: 'Weather & rainfall feed', x: 740, y: 110 }
+    ],
+    flows: [
+      { id: 'f1', from: 'vendor', to: 'gateway', label: 'Remote support session' },
+      { id: 'f2', from: 'gateway', to: 'jump', label: 'Tunnelled remote desktop' },
+      { id: 'f3', from: 'jump', to: 'hist', label: 'Data replication' },
+      { id: 'f4', from: 'proj', to: 'plc', label: 'Logic downloads' },
+      { id: 'f5', from: 'hmi', to: 'plc', label: 'Setpoints (Modbus/TCP)' },
+      { id: 'f6', from: 'bom', to: 'hmi', label: 'Rainfall forecast feed' },
+      { id: 'f7', from: 'operator', to: 'hmi', label: 'Operator commands' }
+    ],
+    boundaries: [
+      { id: 'b1', label: 'Corporate & third parties', x: 10, y: 20, w: 200, h: 520 },
+      { id: 'b2', label: 'IT/OT DMZ', x: 228, y: 60, w: 190, h: 270 },
+      { id: 'b3', label: 'OT zone', x: 440, y: 225, w: 395, h: 270 }
+    ],
+    scenarios: [
+      { id: 'ow1', target: { kind: 'element', id: 'vendor' }, text: 'Credentials reused from a breached marketing site let an attacker open the integrator’s remote-support session as a trusted engineer.', answer: 'S', why: 'The attacker is accepted as someone they are not. Nothing has been changed or taken yet; the failure is identity assurance for a third party.', refs: ['ics:T0859', 'attack:T1199', 'nist-csf:GV.SC-07'] },
+      { id: 'ow2', target: { kind: 'flow', id: 'f5' }, text: 'An attacker on the OT network edits the sodium hydroxide setpoint inside Modbus write requests from the HMI to the dosing PLC.', answer: 'T', why: 'Legitimate commands are modified in transit, so the PLC acts on altered values. This is integrity, and the reason hard interlocks exist.', refs: ['ics:T0836', 'ics:M0802', 'emb3d:MID-034'] },
+      { id: 'ow3', target: { kind: 'element', id: 'hist' }, text: 'The historian, readable from corporate IT with a default account, holds years of dosing data and a full tag list that tells an attacker exactly what to target.', answer: 'I', why: 'Sensitive operational data is exposed to people who do not need it. Nothing is altered and nothing is down; it is disclosure that aids planning.', refs: ['ics:T0801', 'attack:T1005', 'nist:800-82'] },
+      { id: 'ow4', target: { kind: 'element', id: 'jump' }, text: 'A vendor account limited to file transfer exploits a local misconfiguration on the jump host to become administrator and reach the SCADA zone.', answer: 'E', why: 'A low-privilege identity gains rights it was never granted. The technician is not impersonating anyone (Spoofing); the privilege boundary failed.', refs: ['attack:T1068', 'attack:T1548', 'ics:M0801'] },
+      { id: 'ow5', target: { kind: 'element', id: 'proj' }, text: 'Someone with write access to the logic repository quietly removes a high-level alarm from a PLC program that will be deployed at the next maintenance window.', answer: 'T', why: 'Stored data the plant will later trust is altered without authority. This is integrity of the store, not disclosure or denial.', refs: ['ics:T0889', 'attack:T1565.001', 'emb3d:MID-040'] },
+      { id: 'ow6', target: { kind: 'flow', id: 'f6' }, text: 'A flood of malformed packets to the rainfall feed interface makes the HMI’s polling thread hang, and operators lose their live displays during a storm.', answer: 'D', why: 'The service becomes unavailable to legitimate users when it is needed. Nothing is forged, changed or read.', refs: ['ics:T0814', 'attack:T1499', 'emb3d:TID-405'] },
+      { id: 'ow7', target: { kind: 'element', id: 'operator' }, text: 'All operators use the shared “operator” login. After an unexplained valve closure, nobody can show who issued the command.', answer: 'R', why: 'Individuals can deny actions because the shared identity leaves no attributable evidence. The fix is named accounts and audit logging, not a longer password.', refs: ['nist-800-53:AU-10', 'ics:M0801', 'nist-csf:PR.AA-01'] },
+      { id: 'ow8', target: { kind: 'flow', id: 'f2' }, text: 'The integrator’s tunnel uses a legacy cleartext remote-control protocol, and credentials typed during a support session can be captured on the corporate network.', answer: 'I', why: 'The contents of the flow are readable by an eavesdropper. Modifying or blocking it would be a different threat.', refs: ['attack:T1040', 'attack:M1041', 'ics:M0808'] }
+    ]
+  },
+  {
+    id: 'distribution-telemetry', name: 'Distribution telemetry & customer data',
+    blurb: 'Pump-station RTUs report over radio and cellular to the SCADA server. Customers use a portal for accounts, and billing and water-quality records are stored in the platform.',
+    elements: [
+      { id: 'cust', type: 'external', label: 'Customers', x: 110, y: 110 },
+      { id: 'crew', type: 'external', label: 'Field crews & contractors', x: 110, y: 450 },
+      { id: 'portal', type: 'process', label: 'Customer portal', x: 320, y: 110 },
+      { id: 'rtu', type: 'process', label: 'Pump-station RTUs', x: 320, y: 450 },
+      { id: 'radio', type: 'process', label: 'Telemetry gateway', x: 530, y: 450 },
+      { id: 'lab', type: 'store', label: 'Water-quality records', x: 530, y: 280 },
+      { id: 'scada', type: 'process', label: 'SCADA server', x: 740, y: 450 },
+      { id: 'bill', type: 'store', label: 'Billing & account database', x: 740, y: 110 }
+    ],
+    flows: [
+      { id: 'f1', from: 'cust', to: 'portal', label: 'Web & app requests' },
+      { id: 'f2', from: 'portal', to: 'bill', label: 'Account lookups' },
+      { id: 'f3', from: 'rtu', to: 'radio', label: 'Telemetry (DNP3)' },
+      { id: 'f4', from: 'radio', to: 'scada', label: 'Telemetry backhaul' },
+      { id: 'f5', from: 'crew', to: 'rtu', label: 'Local maintenance (laptop)' },
+      { id: 'f6', from: 'scada', to: 'lab', label: 'Compliance data' }
+    ],
+    boundaries: [
+      { id: 'b1', label: 'Internet & field', x: 10, y: 20, w: 200, h: 520 },
+      { id: 'b2', label: 'Utility platform', x: 235, y: 50, w: 620, h: 470 }
+    ],
+    scenarios: [
+      { id: 'dt1', target: { kind: 'element', id: 'cust' }, text: 'An attacker uses leaked personal details to impersonate a customer, change the contact address and request a duplicate account statement.', answer: 'S', why: 'The attacker poses as a legitimate customer. Data and availability are unaffected; the weakness is how identity is verified.', refs: ['attack:T1078', 'nist-800-53:IA-4', 'privacy:ndb'] },
+      { id: 'dt2', target: { kind: 'flow', id: 'f3' }, text: 'A rogue transmitter replays and edits DNP3 messages so reservoir level readings appear normal while a tank overflows.', answer: 'T', why: 'Telemetry content is falsified in transit, and the operators trust it. Interruption is not the threat here; altered values are.', refs: ['attack:T1692.002', 'ics:M0802', 'emb3d:MID-036'] },
+      { id: 'dt3', target: { kind: 'element', id: 'bill' }, text: 'A nightly export of customer data, including the addresses of customers on home dialysis, is left in a publicly readable storage bucket.', answer: 'I', why: 'Sensitive stored records become readable by the public. Nothing is modified and the service is up, so this is disclosure.', refs: ['attack:T1530', 'owasp-top10:A05', 'privacy:ndb'] },
+      { id: 'dt4', target: { kind: 'element', id: 'rtu' }, text: 'A shared engineering login on every RTU lets any contractor change setpoints and firmware, including those they have no reason to touch.', answer: 'E', why: 'A role can perform actions it was never meant to have. This is excessive authority, not impersonation or tampering in transit.', refs: ['attack:M1018', 'emb3d:MID-018', 'nist-800-53:AC-6'] },
+      { id: 'dt5', target: { kind: 'element', id: 'lab' }, text: 'Water-quality results can be edited by any supervisor and the system keeps no history of who changed which value.', answer: 'R', why: 'There is no attributable evidence of who changed compliance records. That is the defining Repudiation problem.', refs: ['nist-800-53:AU-10', 'nist-800-53:AU-3', 'nist-csf:PR.PS-04'] },
+      { id: 'dt6', target: { kind: 'flow', id: 'f4' }, text: 'Jamming and a flood of traffic at the LTE backhaul blind SCADA to 40 pump stations during a heatwave.', answer: 'D', why: 'The channel is made unavailable to legitimate use when demand peaks. Nothing is forged or read.', refs: ['attack:T1498', 'ics:T0814', 'ics:M0811'] },
+      { id: 'dt7', target: { kind: 'element', id: 'portal' }, text: 'Changing the account number in a portal URL returns another customer’s usage history and address.', answer: 'I', why: 'Customer data is disclosed to someone not authorised for it (broken object-level authorisation). Nothing is modified and the attacker did not escalate a role.', refs: ['owasp-api:API1', 'owasp-top10:A01', 'cwe:639'] },
+      { id: 'dt8', target: { kind: 'flow', id: 'f5' }, text: 'A contractor’s maintenance laptop sends RTU credentials in cleartext over an unsecured access point at a pump station.', answer: 'I', why: 'The contents of the flow are captured by a nearby eavesdropper. Changing or blocking traffic would be a different threat.', refs: ['attack:T1040', 'emb3d:MID-035', 'nist-800-53:SC-8'] }
+    ]
+  }
+];
+
+export const ttx = [
+  {
+    id: 'ot-unitronics', name: 'Exposed HMI', blurb: 'A defacement of an internet-exposed PLC panel turns out to be the visible part of something larger. Modelled on the documented 2023 Unitronics campaign (MITRE C0031) against water utilities. Decide what is safe to switch off, and who to tell.',
+    adversary: { id: 'C0031', tier: 2 }, rounds: 8, maxScore: 250,
+    injects: [
+      { id: 'i1', round: 1, at: 'T+00:00', kind: 'ops', title: 'A boosting-station screen has changed', text: 'The HMI at a remote boosting station now shows a political message instead of pump status. The pumps still run.', fx: [],
+        decision: { prompt: 'What does the duty operator do first?', choices: [
+          { id: 'a', quality: 'best', label: 'Switch the station to local manual control, disconnect its network link, photograph the screen, and call the on-call OT engineer.', fx: [{ op: 'reveal', n: 1 }, { op: 'shieldAll', n: 1 }], lesson: 'Take the device out of the attacker’s hands without taking the process down, and preserve evidence. Manual operation is why you drilled it.', refs: ['ics:M0811', 'nist:800-82', 'attack:C0031'] },
+          { id: 'b', quality: 'ok', label: 'Leave it running and log a ticket for the next business day.', fx: [{ op: 'intel', n: 1 }], lesson: 'A defaced HMI means someone has write access to the controller. Waiting hands them time.', refs: ['nist-csf:RS.MA-01'] },
+          { id: 'c', quality: 'poor', label: 'Power-cycle the PLC to restore the screen.', fx: [{ op: 'plant' }, { op: 'resilience', n: -3 }], lesson: 'A reboot destroys volatile evidence and may drop the pumps to a default state.', refs: ['nist:800-82'] }
+        ] } },
+      { id: 'i2', round: 2, at: 'T+03:00', kind: 'alert', title: 'It is not one station', text: 'Two other stations report the same message. The integrator says the panels use the factory default password and were “temporarily” exposed for remote support.', fx: [{ op: 'intel', n: 1 }],
+        decision: { prompt: 'What is the priority?', choices: [
+          { id: 'a', quality: 'best', label: 'Remove every OT device from direct internet exposure now (firewall rules or a gateway), then rotate credentials from a clean workstation, in that order.', fx: [{ op: 'shieldAll', n: 1 }, { op: 'reveal', n: 2 }], lesson: 'Exposure plus default credentials is the whole campaign. Close the door first; rotating a password the attacker already holds achieves little.', refs: ['ics:T0883', 'emb3d:MID-043', 'ics:M0930'] },
+          { id: 'b', quality: 'ok', label: 'Change the passwords on the three affected panels only.', fx: [{ op: 'intel', n: 1 }], lesson: 'Fixing known victims without finding the rest of the fleet leaves the same hole open.', refs: ['nist-csf:ID.AM-01'] },
+          { id: 'c', quality: 'poor', label: 'Wait for the vendor’s advisory.', fx: [{ op: 'plant' }], lesson: 'The vendor cannot fix a configuration choice; exposure is yours to remove.', refs: ['nist-csf:ID.RA-01'] }
+        ] } },
+      { id: 'i3', round: 3, at: 'T+06:00', kind: 'regulator', title: 'Do we have to report this?', text: 'A defaced panel at a water utility might be a SOCI-notifiable incident. The general manager wants to know the clock.', fx: [],
+        decision: { prompt: 'What is the right call?', choices: [
+          { id: 'a', quality: 'best', label: 'Treat unauthorised access to a control system as a cyber security incident with a relevant impact on a critical asset, notify the ACSC within 72 hours (12 if availability is significantly affected), and keep the regulator informed.', fx: [{ op: 'score', n: 2 }], lesson: 'Report on awareness of unauthorised control-system access, not on whether the water ran out. Early notification also brings ACSC help.', refs: ['soci:csirp'] },
+          { id: 'b', quality: 'ok', label: 'Wait until the technical investigation says whether anything was changed.', fx: [], lesson: 'The reporting clock runs from awareness, not from the end of forensics.', refs: ['soci:csirp'] },
+          { id: 'c', quality: 'poor', label: 'Do not report: it was only a defacement.', fx: [{ op: 'resilience', n: -3 }], lesson: 'A defacement proves write access to a controller; treat it as a control-system compromise.', refs: ['soci:csirp', 'attack:C0031'] }
+        ] } },
+      { id: 'i4', round: 5, at: 'T+12:00', kind: 'ops', title: 'The setpoint has moved', text: 'The SCADA historian shows a dosing setpoint at one plant raised well above normal for 40 minutes before the hard-wired limit tripped the dosing pump.', fx: [{ op: 'intel', n: 1 }],
+        decision: { prompt: 'What does the plant manager do?', choices: [
+          { id: 'a', quality: 'best', label: 'Isolate the dosing PLC from the network, test water quality at the affected point, brief the health regulator, and compare PLC logic to the offline baseline before resuming.', fx: [{ op: 'reveal', n: 2 }, { op: 'resilience', n: 2 }], lesson: 'An integrity attack on dosing is a public-health matter. Verify the process, tell the regulator, and trust only logic you can compare with a known-good copy.', refs: ['ics:M0953', 'emb3d:MID-040', 'nist:800-82'] },
+          { id: 'b', quality: 'ok', label: 'Reset the setpoint and carry on, noting the incident for the monthly report.', fx: [], lesson: 'Resetting a value does not tell you whether the logic or the safety limits were tampered with.', refs: ['ics:T0836'] },
+          { id: 'c', quality: 'poor', label: 'Disable the hard-wired limit so it does not trip again unnecessarily.', fx: [{ op: 'plant' }, { op: 'resilience', n: -5 }], lesson: 'Removing the last independent safety layer is exactly what an attacker hopes the defender will do.', refs: ['ics:M0812'] }
+        ] } },
+      { id: 'i5', round: 6, at: 'T+16:00', kind: 'comms', title: 'The local paper is calling', text: 'A journalist asks whether the town’s drinking water is safe.', fx: [],
+        decision: { prompt: 'What is your holding line?', choices: [
+          { id: 'a', quality: 'best', label: 'State the facts you have: a security incident affected control systems at some sites, safety systems operated as designed, water-quality testing is under way, and you will update at set times.', fx: [{ op: 'score', n: 1 }, { op: 'resilience', n: 2 }], lesson: 'Say what you know, what you are doing and when you will update. Public confidence depends on candour about safety.', refs: ['nist-csf:RS.CO-02'] },
+          { id: 'b', quality: 'poor', label: 'Say the water is perfectly safe and nothing happened.', fx: [{ op: 'resilience', n: -3 }], lesson: 'Statements you cannot yet verify become the story when they are wrong.', refs: ['nist:800-61'] },
+          { id: 'c', quality: 'ok', label: 'No comment.', fx: [], lesson: 'Silence leaves a vacuum for rumour.', refs: ['nist-csf:RS.CO-02'] }
+        ] } }
+    ],
+    objectives: [
+      { id: 'o1', kind: 'detectBy', round: 3, text: 'Detect the intrusion by round 3 (T+6h)', points: 30 },
+      { id: 'o2', kind: 'keepJewel', text: 'Keep SCADA and the treatment PLCs under your control', points: 40 },
+      { id: 'o3', kind: 'decisions', n: 3, text: 'Make at least 3 best-practice decisions', points: 30 },
+      { id: 'o4', kind: 'resilienceAbove', n: 20, text: 'Finish with Resilience above 20', points: 20 },
+      { id: 'o5', kind: 'win', text: 'Contain the operation', points: 20 }
+    ]
+  },
+  {
+    id: 'ot-maroochy', name: 'The Disgruntled Contractor', blurb: 'An insider with radio equipment and system knowledge manipulates pump stations. Modelled on the documented Maroochy Water Breach (MITRE C0020, Queensland, 2000): attribution, insider risk and the limits of perimeter security.',
+    adversary: { id: 'C0020', tier: 1 }, rounds: 8, maxScore: 250,
+    injects: [
+      { id: 'i1', round: 1, at: 'T+00:00', kind: 'ops', title: 'Pump stations are misbehaving', text: 'Several pump stations stop reporting, alarms do not fire, and sewage is overflowing at a number of sites. Everything “worked in testing”.', fx: [],
+        decision: { prompt: 'What does the operations manager assume?', choices: [
+          { id: 'a', quality: 'best', label: 'Treat it as possible deliberate interference alongside equipment faults: dispatch crews to manually operate affected stations while keeping the SCADA logs and radio traffic captures.', fx: [{ op: 'reveal', n: 1 }, { op: 'intel', n: 1 }], lesson: 'The Maroochy investigation took months because early faults were treated as ordinary. Keep operating, but preserve evidence and keep the possibility of intent open.', refs: ['attack:C0020', 'nist:800-82'] },
+          { id: 'b', quality: 'ok', label: 'Assume a technical fault and replace equipment.', fx: [], lesson: 'Replacing hardware while the cause is deliberate burns time and evidence.', refs: ['nist-csf:RS.AN-03'] },
+          { id: 'c', quality: 'poor', label: 'Reset all RTU configurations to defaults remotely.', fx: [{ op: 'plant' }, { op: 'resilience', n: -3 }], lesson: 'Mass resets destroy evidence and may erase the very protections you need.', refs: ['nist:800-82'] }
+        ] } },
+      { id: 'i2', round: 3, at: 'T+08:00', kind: 'alert', title: 'The same laptop, again', text: 'Telemetry logs show commands to pump stations coming from an unknown device using valid station IDs and a protocol the utility never documented as externally reachable.', fx: [{ op: 'intel', n: 1 }],
+        decision: { prompt: 'What is the most useful next step?', choices: [
+          { id: 'a', quality: 'best', label: 'Authenticate and log all radio commands, restrict RTUs to a short allow-list of sources, and review who still holds equipment and documentation from the original contractor.', fx: [{ op: 'shieldAll', n: 1 }, { op: 'reveal', n: 2 }], lesson: 'Message authentication and allow-lists stop an outsider with the right radio; leaver and contractor offboarding stops the insider who built the system.', refs: ['ics:M0802', 'emb3d:MID-034', 'nist-800-53:PS-4'] },
+          { id: 'b', quality: 'ok', label: 'Change radio frequencies.', fx: [{ op: 'intel', n: 1 }], lesson: 'Security by obscurity buys days; an insider knows the plan.', refs: ['nist:800-82'] },
+          { id: 'c', quality: 'poor', label: 'Do nothing until police are involved.', fx: [{ op: 'plant' }], lesson: 'Investigation and mitigation can proceed in parallel; waiting leaves the exposure open.', refs: ['nist:800-61'] }
+        ] } },
+      { id: 'i3', round: 5, at: 'T+16:00', kind: 'exec', title: 'Who has the keys now?', text: 'HR confirms a recently departed contractor retained a laptop with the vendor’s configuration software and a list of station IDs.', fx: [],
+        decision: { prompt: 'How do you manage the insider risk?', choices: [
+          { id: 'a', quality: 'best', label: 'Revoke all remaining access and credentials, rekey the radio network, recover equipment, and add contractor offboarding to the change-control checklist with an owner.', fx: [{ op: 'resilience', n: 3 }, { op: 'shieldAll', n: 1 }], lesson: 'Offboarding is a control. Credentials, keys, equipment and documentation held by leavers are standing access you forgot to remove.', refs: ['nist-800-53:PS-4', 'attack:M1018', 'nist-csf:PR.AA-05'] },
+          { id: 'b', quality: 'ok', label: 'Ask the contractor to return the laptop.', fx: [], lesson: 'A request is not a control, especially for someone with a grievance.', refs: ['nist-800-53:PS-4'] },
+          { id: 'c', quality: 'poor', label: 'Confront the contractor directly before preserving logs.', fx: [{ op: 'plant' }, { op: 'resilience', n: -3 }], lesson: 'Tipping off a suspect before securing evidence and access invites destruction.', refs: ['nist:800-61'] }
+        ] } },
+      { id: 'i4', round: 7, at: 'T+24:00', kind: 'comms', title: 'Environment regulator & media', text: 'The environment regulator asks for a statement on the spills, and local media are on site.', fx: [],
+        decision: { prompt: 'What do you do?', choices: [
+          { id: 'a', quality: 'best', label: 'Brief the regulator proactively with what is known, what is being done and the clean-up plan, and give the media a factual statement through one spokesperson.', fx: [{ op: 'score', n: 2 }, { op: 'resilience', n: 2 }], lesson: 'Regulatory trust is earned by early, factual disclosure. One voice avoids contradictions.', refs: ['nist-csf:RS.CO-03', 'soci:csirp'] },
+          { id: 'b', quality: 'poor', label: 'Blame equipment failure publicly.', fx: [{ op: 'resilience', n: -3 }], lesson: 'A cause stated publicly that is later shown to be wrong costs far more than uncertainty acknowledged early.', refs: ['nist:800-61'] },
+          { id: 'c', quality: 'ok', label: 'Refer all enquiries to legal.', fx: [], lesson: 'Legal needs to be involved, but a communications void is not neutral.', refs: ['nist-csf:RS.CO-02'] }
+        ] } }
+    ],
+    objectives: [
+      { id: 'o1', kind: 'detectBy', round: 4, text: 'Identify deliberate interference by round 4', points: 30 },
+      { id: 'o2', kind: 'keepJewel', text: 'Keep SCADA and treatment under your control', points: 40 },
+      { id: 'o3', kind: 'decisions', n: 3, text: 'Make at least 3 best-practice decisions', points: 30 },
+      { id: 'o4', kind: 'win', text: 'Contain the operation', points: 20 }
+    ]
+  }
+];

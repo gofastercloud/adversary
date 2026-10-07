@@ -59,3 +59,10 @@
 .goalbar { margin-top: .4rem; display: flex; align-items: center; gap: .5rem; font-size: .78rem; padding: .3rem .6rem; border-radius: 9px; background: rgba(255, 190, 70, .08); border: 1px solid rgba(255, 190, 70, .45); }
 .goalbar b { font-family: var(--font-display); letter-spacing: .06em; white-space: nowrap; } .goalbar .gm { flex: 1; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .12); overflow: hidden; }
 .goalbar .gm i { display: block; height: 100%; background: linear-gradient(90deg, #ffbe46, #ff5470); transition: width .5s; } .goalbar.hot { border-color: var(--bad); animation: pulse 1s infinite; }
+
+/* hover preview of a hand card (desktop only) and the narrow-screen drawer for programme / relics / SOC feed */
+.card-preview { position: fixed; left: 50%; bottom: calc(var(--card-h) + 64px); transform: translateX(-50%); z-index: 900; pointer-events: none; --card-w: 230px; --card-h: 330px; filter: drop-shadow(0 12px 32px rgba(0, 0, 0, .7)); }
+.card-preview .card { font-size: 15px; transform: none !important; margin: 0; } .card-preview .card-text { font-size: 13px !important; } .card-preview .card-art { height: 74px; } .card-preview .card-art svg.big { width: 58px; height: 58px; }
+@media (hover: none), (max-height: 700px) { .card-preview { display: none; } }
+.side-toggle { display: none; }
+@media (max-width: 1150px) { .side-toggle { display: inline-flex; } .side.open { display: flex !important; flex-direction: column; gap: .5rem; position: fixed; right: 8px; top: 64px; bottom: 8px; width: min(380px, calc(100vw - 16px)); z-index: 700; overflow: auto; background: rgba(2, 10, 6, .96); border: 1px solid var(--accent, #00ff9c); border-radius: 10px; padding: .5rem; } }

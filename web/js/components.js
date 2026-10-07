@@ -16,16 +16,17 @@ export const CARD_ICONS = {
 const CELL_ICON = { 'protect.spoofing': 'fingerprint', 'protect.tampering': 'badge-check', 'protect.repudiation': 'file-lock', 'protect.disclosure': 'lock', 'protect.dos': 'gauge', 'protect.elevation': 'key-round', 'detect.spoofing': 'scan-face', 'detect.tampering': 'file-search', 'detect.repudiation': 'activity', 'detect.disclosure': 'eye-off', 'detect.dos': 'radar', 'detect.elevation': 'trending-up', 'respond.spoofing': 'user-x', 'respond.tampering': 'fence', 'respond.repudiation': 'microscope', 'respond.disclosure': 'megaphone', 'respond.dos': 'waves', 'respond.elevation': 'ban', 'recover.spoofing': 'id-card', 'recover.tampering': 'copy-plus', 'recover.repudiation': 'clipboard-check', 'recover.disclosure': 'key-round', 'recover.dos': 'database-backup', 'recover.elevation': 'castle', 'govern.spoofing': 'id-card', 'govern.tampering': 'gavel', 'govern.repudiation': 'scroll-text', 'govern.disclosure': 'file-lock', 'govern.dos': 'hourglass', 'govern.elevation': 'scale', 'identify.spoofing': 'users', 'identify.tampering': 'package', 'identify.repudiation': 'file-search', 'identify.disclosure': 'workflow', 'identify.dos': 'route', 'identify.elevation': 'map' };
 export const cardIcon = (def) => CARD_ICONS[def.id] || CELL_ICON[def.cell] || 'shield';
 
-export function Card({ content, def, ml = 1, cost, discounted, cls, style, onClick, onContext, selected, playable, unaffordable, back, i, tiltOn = true, children, tipOff, extra, iid }) {
+export function Card({ content, def, ml = 1, cost, discounted, cls, style, onClick, onContext, selected, playable, unaffordable, back, i, tiltOn = true, children, tipOff, extra, iid, onEnter, onLeaveCb }) {
   if (back) return html`<div class=${cx('card back', cls)} style=${style}><div class="card-in"></div></div>`;
   const d = def; const e = scaleCard(d, ml);
   const lines = describeCard(content, d, ml);
   const c = cost ?? e.cost;
   const onMove = tiltOn ? (ev) => { const r = ev.currentTarget.getBoundingClientRect(); const x = (ev.clientX - r.left) / r.width, y = (ev.clientY - r.top) / r.height; const el = ev.currentTarget; el.style.setProperty('--ry', (x - .5) * 16 + 'deg'); el.style.setProperty('--rx', (.5 - y) * 14 + 'deg'); el.style.setProperty('--mx', x); el.style.setProperty('--my', y); el.style.setProperty('--fa', x * 180 + y * 90); } : null;
   const onLeave = tiltOn ? (ev) => { const el = ev.currentTarget; el.style.setProperty('--ry', '0deg'); el.style.setProperty('--rx', '0deg'); } : null;
+  const onLeave2 = (ev) => { onLeave?.(ev); onLeaveCb?.(ev); };
   const typeLbl = { control: 'Control', action: 'Action', policy: 'Policy', augment: 'Augment', status: 'Status' }[d.type];
   const fnName = content.fns.find(f => f.id === d.fn)?.name, propName = content.props.find(p => p.id === d.prop);
-  return html`<div class=${cx('card', 'fn-' + d.fn, 'st-' + d.stride, 'rar-' + d.rarity, d.type === 'status' && 'status', playable && 'playable', selected && 'selected', unaffordable && 'unaffordable', cls)} style=${{ ...(style || {}), '--i': i }} onClick=${onClick} onContextMenu=${onContext} onMouseMove=${onMove} onMouseLeave=${onLeave} data-card=${d.id} data-ml=${ml} data-iid=${iid}>
+  return html`<div class=${cx('card', 'fn-' + d.fn, 'st-' + d.stride, 'rar-' + d.rarity, d.type === 'status' && 'status', playable && 'playable', selected && 'selected', unaffordable && 'unaffordable', cls)} style=${{ ...(style || {}), '--i': i }} onClick=${onClick} onContextMenu=${onContext} onMouseMove=${onMove} onMouseEnter=${onEnter} onMouseLeave=${onLeave2} data-card=${d.id} data-ml=${ml} data-iid=${iid}>
     <div class="card-in">
       <div class=${cx('cost', c === 0 && 'zero', discounted && 'disc')}>${d.type === 'status' ? '–' : c}</div>
       <div class="ml">${[1, 2, 3].map(k => html`<i class=${k <= ml ? 'on' : ''}/>`)}</div>

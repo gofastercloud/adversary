@@ -7,3 +7,4 @@ cdk.out/
 infra/node_modules/
 coverage/
 .localstack/
+lab/out/

@@ -987,6 +987,29 @@
    ]
   },
   {
+   "id": "ach.slay-g0045",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "handshake",
+   "name": "menuPass Down",
+   "desc": "Defeat menuPass (G0045) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0045"
+    },
+    "gte": 1
+   },
+   "order": 51,
+   "adv": "G0045",
+   "lesson": "Chinese state-linked actor known for “Operation Cloud Hopper”: compromising managed service providers to reach their customers’ networks.",
+   "refs": [
+    "attack:G0045"
+   ]
+  },
+  {
    "id": "ach.slay-g0129",
    "cat": "Adversaries",
    "tier": "gold",
@@ -1002,7 +1025,7 @@
     },
     "gte": 1
    },
-   "order": 51,
+   "order": 52,
    "adv": "G0129",
    "lesson": "PRC-linked actor with a large toolset and broad targeting, frequently using phishing and removable-media propagation.",
    "refs": [
@@ -1025,7 +1048,7 @@
     },
     "gte": 1
    },
-   "order": 52,
+   "order": 53,
    "adv": "G0046",
    "lesson": "Financially motivated group known for phishing, point-of-sale malware and later ransomware affiliations.",
    "refs": [
@@ -1048,7 +1071,7 @@
     },
     "gte": 1
    },
-   "order": 53,
+   "order": 54,
    "adv": "G0102",
    "lesson": "Cybercriminal group behind TrickBot, Ryuk and Conti: human-operated ransomware against large organisations.",
    "refs": [
@@ -1071,7 +1094,7 @@
     },
     "gte": 1
    },
-   "order": 54,
+   "order": 55,
    "adv": "G1015",
    "lesson": "Native-English-speaking group that social-engineers help desks, abuses MFA fatigue and SIM swapping, then pivots through cloud and SaaS.",
    "refs": [
@@ -1094,7 +1117,7 @@
     },
     "gte": 1
    },
-   "order": 55,
+   "order": 56,
    "adv": "G0035",
    "lesson": "Long-running actor targeting energy and industrial organisations, using trusted-relationship and watering-hole access.",
    "refs": [
@@ -1117,7 +1140,7 @@
     },
     "gte": 1
    },
-   "order": 56,
+   "order": 57,
    "adv": "G0117",
    "lesson": "Iran-linked actor that exploits VPN and other edge appliances to gain and sell access.",
    "refs": [
@@ -1140,7 +1163,7 @@
     },
     "gte": 1
    },
-   "order": 57,
+   "order": 58,
    "adv": "G0082",
    "lesson": "DPRK-linked group targeting banks and SWIFT-connected payment infrastructure.",
    "refs": [
@@ -1163,7 +1186,7 @@
     },
     "gte": 1
    },
-   "order": 58,
+   "order": 59,
    "adv": "G1057",
    "lesson": "Data-extortion crew that abuses stolen credentials and OAuth/API access to bulk-export SaaS data.",
    "refs": [
@@ -1186,7 +1209,7 @@
     },
     "gte": 1
    },
-   "order": 59,
+   "order": 60,
    "adv": "G0125",
    "lesson": "State-sponsored actor that exploited zero-days in on-premises Exchange servers at scale.",
    "refs": [
@@ -1209,7 +1232,7 @@
     },
     "gte": 1
    },
-   "order": 60,
+   "order": 61,
    "adv": "G0114",
    "lesson": "Actor known for patient, targeted intrusions against technology firms using stolen credentials and Cobalt Strike.",
    "refs": [
@@ -1232,7 +1255,7 @@
     },
     "gte": 1
    },
-   "order": 61,
+   "order": 62,
    "adv": "G0049",
    "lesson": "Iran-linked actor with a broad toolset and heavy use of spearphishing and credential theft.",
    "refs": [
@@ -1255,7 +1278,7 @@
     },
     "gte": 1
    },
-   "order": 62,
+   "order": 63,
    "adv": "G0088",
    "lesson": "Actor associated with the Triton/Trisis malware targeting safety instrumented systems at an industrial facility.",
    "refs": [
@@ -1278,7 +1301,7 @@
     },
     "gte": 1
    },
-   "order": 63,
+   "order": 64,
    "adv": "G0139",
    "lesson": "Cloud-focused group that exploits exposed Docker/Kubernetes and steals cloud credentials to run cryptominers.",
    "refs": [
@@ -1301,7 +1324,7 @@
     },
     "gte": 1
    },
-   "order": 64,
+   "order": 65,
    "adv": "G0106",
    "lesson": "Cryptojacking group that exploits unpatched public-facing services and persists with cron jobs.",
    "refs": [
@@ -1324,7 +1347,7 @@
     },
     "gte": 1
    },
-   "order": 65,
+   "order": 66,
    "adv": "G0092",
    "lesson": "Financially motivated actor known for large-scale phishing campaigns and distribution of banking trojans and ransomware.",
    "refs": [
@@ -1347,7 +1370,7 @@
     },
     "gte": 1
    },
-   "order": 66,
+   "order": 67,
    "adv": "G0037",
    "lesson": "Financially motivated actor that compromises point-of-sale systems to steal card data.",
    "refs": [
@@ -1370,7 +1393,7 @@
     },
     "gte": 1
    },
-   "order": 67,
+   "order": 68,
    "adv": "G0091",
    "lesson": "Financially motivated group targeting banks in Eastern Europe and beyond.",
    "refs": [
@@ -1393,7 +1416,7 @@
     },
     "gte": 1
    },
-   "order": 68,
+   "order": 69,
    "adv": "G0080",
    "lesson": "Financially motivated group known for ATM jackpotting and bank intrusions using Cobalt Strike.",
    "refs": [
@@ -1416,7 +1439,7 @@
     },
     "gte": 1
    },
-   "order": 69,
+   "order": 70,
    "adv": "G1004",
    "lesson": "Extortion group known for social engineering, SIM swapping and recruiting insiders to obtain access.",
    "refs": [
@@ -1439,7 +1462,7 @@
     },
     "gte": 1
    },
-   "order": 70,
+   "order": 71,
    "adv": "G1051",
    "lesson": "Ransomware operation with a data-leak site and an affiliate model.",
    "refs": [
@@ -1462,7 +1485,7 @@
     },
     "gte": 1
    },
-   "order": 71,
+   "order": 72,
    "adv": "G1043",
    "lesson": "Ransomware group that exploits public-facing services and abuses legitimate tooling.",
    "refs": [
@@ -1485,7 +1508,7 @@
     },
     "gte": 1
    },
-   "order": 72,
+   "order": 73,
    "adv": "G1032",
    "lesson": "Ransomware operation using valid accounts and legitimate remote tools.",
    "refs": [
@@ -1509,7 +1532,7 @@
     "distinct": "adv",
     "distinctGte": 5
    },
-   "order": 73
+   "order": 74
   },
   {
    "id": "ach.hall-12",
@@ -1528,7 +1551,7 @@
     "distinct": "adv",
     "distinctGte": 12
    },
-   "order": 74
+   "order": 75
   },
   {
    "id": "ach.hall-24",
@@ -1547,7 +1570,7 @@
     "distinct": "adv",
     "distinctGte": 24
    },
-   "order": 75
+   "order": 76
   },
   {
    "id": "ach.read-dossier",
@@ -1561,7 +1584,7 @@
     "event": "dossier_view",
     "gte": 1
    },
-   "order": 76
+   "order": 77
   },
   {
    "id": "ach.dossier-10",
@@ -1577,7 +1600,7 @@
     "distinct": "adv",
     "distinctGte": 10
    },
-   "order": 77
+   "order": 78
   },
   {
    "id": "ach.typhoon-warning",
@@ -1596,7 +1619,7 @@
     },
     "gte": 1
    },
-   "order": 78,
+   "order": 79,
    "lesson": "Volt Typhoon lives off the land: hunting for valid-account abuse and LOLBins beats looking for malware.",
    "refs": [
     "attack:G1017"
@@ -1618,7 +1641,7 @@
     },
     "gte": 1
    },
-   "order": 79
+   "order": 80
   },
   {
    "id": "ach.boss-10",
@@ -1636,7 +1659,7 @@
     },
     "gte": 10
    },
-   "order": 80
+   "order": 81
   },
   {
    "id": "ach.elite-10",
@@ -1654,7 +1677,7 @@
     },
     "gte": 10
    },
-   "order": 81
+   "order": 82
   },
   {
    "id": "ach.first-ttx",
@@ -1668,7 +1691,7 @@
     "event": "ttx_complete",
     "gte": 1
    },
-   "order": 82
+   "order": 83
   },
   {
    "id": "ach.ttx-perfect",
@@ -1688,7 +1711,7 @@
     },
     "gte": 1
    },
-   "order": 83
+   "order": 84
   },
   {
    "id": "ach.best-decisions",
@@ -1705,7 +1728,7 @@
     },
     "gte": 10
    },
-   "order": 84,
+   "order": 85,
    "lesson": "Good incident decisions come from rehearsed roles, authority and criteria.",
    "refs": [
     "nist:800-61"
@@ -1724,7 +1747,7 @@
     "where": {},
     "gte": 20
    },
-   "order": 85
+   "order": 86
   },
   {
    "id": "ach.act1",
@@ -1741,7 +1764,7 @@
     },
     "gte": 1
    },
-   "order": 86
+   "order": 87
   },
   {
    "id": "ach.act2",
@@ -1758,7 +1781,7 @@
     },
     "gte": 1
    },
-   "order": 87
+   "order": 88
   },
   {
    "id": "ach.act3",
@@ -1775,7 +1798,7 @@
     },
     "gte": 1
    },
-   "order": 88
+   "order": 89
   },
   {
    "id": "ach.win-1",
@@ -1789,7 +1812,7 @@
     "event": "run_won",
     "gte": 1
    },
-   "order": 89
+   "order": 90
   },
   {
    "id": "ach.win-5",
@@ -1804,7 +1827,7 @@
     "where": {},
     "gte": 5
    },
-   "order": 90
+   "order": 91
   },
   {
    "id": "ach.win-ml2",
@@ -1823,7 +1846,7 @@
     },
     "gte": 1
    },
-   "order": 91
+   "order": 92
   },
   {
    "id": "ach.win-ml3",
@@ -1840,7 +1863,7 @@
     },
     "gte": 1
    },
-   "order": 92
+   "order": 93
   },
   {
    "id": "ach.win-architect",
@@ -1857,7 +1880,7 @@
     },
     "gte": 1
    },
-   "order": 93
+   "order": 94
   },
   {
    "id": "ach.win-hunter",
@@ -1874,7 +1897,7 @@
     },
     "gte": 1
    },
-   "order": 94
+   "order": 95
   },
   {
    "id": "ach.win-phoenix",
@@ -1891,7 +1914,7 @@
     },
     "gte": 1
    },
-   "order": 95
+   "order": 96
   },
   {
    "id": "ach.win-governor",
@@ -1908,7 +1931,7 @@
     },
     "gte": 1
    },
-   "order": 96
+   "order": 97
   },
   {
    "id": "ach.win-responder",
@@ -1925,7 +1948,7 @@
     },
     "gte": 1
    },
-   "order": 97
+   "order": 98
   },
   {
    "id": "ach.relic-hoard",
@@ -1944,7 +1967,7 @@
     },
     "gte": 1
    },
-   "order": 98
+   "order": 99
   },
   {
    "id": "ach.rich",
@@ -1963,7 +1986,7 @@
     },
     "gte": 1
    },
-   "order": 99
+   "order": 100
   },
   {
    "id": "ach.daily-1",
@@ -1977,7 +2000,7 @@
     "event": "daily_done",
     "gte": 1
    },
-   "order": 100
+   "order": 101
   },
   {
    "id": "ach.daily-7",
@@ -1996,7 +2019,7 @@
     },
     "gte": 1
    },
-   "order": 101
+   "order": 102
   },
   {
    "id": "ach.tutorial",
@@ -2010,7 +2033,7 @@
     "event": "tutorial_done",
     "gte": 1
    },
-   "order": 102
+   "order": 103
   },
   {
    "id": "ach.clearance-5",
@@ -2029,7 +2052,7 @@
     },
     "gte": 1
    },
-   "order": 103
+   "order": 104
   },
   {
    "id": "ach.canary",
@@ -2043,7 +2066,7 @@
     "event": "canary",
     "gte": 1
    },
-   "order": 104,
+   "order": 105,
    "hidden": true
   },
   {
@@ -2063,7 +2086,7 @@
     },
     "gte": 1
    },
-   "order": 105,
+   "order": 106,
    "hidden": true,
    "lesson": "Risk accepted without ownership is debt with a variable rate."
   },
@@ -2084,7 +2107,7 @@
     },
     "gte": 1
    },
-   "order": 106,
+   "order": 107,
    "hidden": true,
    "lesson": "Five identical controls fail identically: common-mode failure."
   },
@@ -2104,7 +2127,7 @@
     },
     "gte": 1
    },
-   "order": 107,
+   "order": 108,
    "hidden": true,
    "lesson": "Known-exploited internet-facing services are the quietest way in.",
    "refs": [
@@ -2127,7 +2150,7 @@
     },
     "gte": 1
    },
-   "order": 108,
+   "order": 109,
    "hidden": true
   },
   {
@@ -2146,7 +2169,7 @@
     },
     "gte": 1
    },
-   "order": 109,
+   "order": 110,
    "hidden": true,
    "refs": [
     "attack:T1199"
@@ -2164,7 +2187,7 @@
     "event": "aegis",
     "gte": 1
    },
-   "order": 110,
+   "order": 111,
    "hidden": true
   },
   {
@@ -2179,7 +2202,7 @@
     "event": "revive",
     "gte": 1
    },
-   "order": 111,
+   "order": 112,
    "hidden": true
   },
   {
@@ -2200,7 +2223,7 @@
     },
     "gte": 1
    },
-   "order": 112,
+   "order": 113,
    "hidden": true,
    "lesson": "Sometimes strong wards and good hygiene mean there is nothing to find."
   },
@@ -2223,7 +2246,7 @@
     },
     "gte": 1
    },
-   "order": 113,
+   "order": 114,
    "hidden": true
   },
   {
@@ -2243,7 +2266,7 @@
     },
     "gte": 1
    },
-   "order": 114,
+   "order": 115,
    "hidden": true,
    "lesson": "Encrypted data stolen today may be readable tomorrow. Migrate to post-quantum cryptography.",
    "refs": [
@@ -2270,7 +2293,7 @@
     },
     "gte": 1
    },
-   "order": 115,
+   "order": 116,
    "hidden": true
   },
   {
@@ -2286,7 +2309,7 @@
     "where": {},
     "gte": 2
    },
-   "order": 116,
+   "order": 117,
    "hidden": true,
    "lesson": "Persistence mechanisms outlive eviction. Remove the mechanism, not just the process.",
    "refs": [
@@ -2305,7 +2328,7 @@
     "event": "phase",
     "gte": 1
    },
-   "order": 117,
+   "order": 118,
    "hidden": true
   },
   {
@@ -2325,7 +2348,7 @@
     },
     "gte": 5
    },
-   "order": 118,
+   "order": 119,
    "hidden": true,
    "lesson": "You will not always find everyone. Make sure nothing they hold matters."
   },
@@ -2341,7 +2364,7 @@
     "event": "docs_open",
     "gte": 1
    },
-   "order": 119,
+   "order": 120,
    "hidden": true
   },
   {
@@ -2360,7 +2383,7 @@
     },
     "gte": 1
    },
-   "order": 120,
+   "order": 121,
    "hidden": true
   },
   {
@@ -2376,8 +2399,365 @@
     "where": {},
     "gte": 60
    },
-   "order": 121,
+   "order": 122,
    "hidden": true
+  },
+  {
+   "id": "ach.photo-finish",
+   "cat": "Combat",
+   "tier": "silver",
+   "icon": "timer",
+   "name": "Photo Finish",
+   "desc": "Win a battle after the adversary reached 80% or more of its goal.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "goalFrac": {
+      "gte": 0.8
+     }
+    },
+    "gte": 1
+   },
+   "order": 123,
+   "lesson": "An adversary that is one step from its objective is still beatable if you can find and remove what it depends on.",
+   "refs": [
+    "attack:TA0040"
+   ]
+  },
+  {
+   "id": "ach.goal-denied-preposition",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "anchor",
+   "name": "Evicted From the Walls",
+   "desc": "Defeat an adversary whose goal is to pre-position inside your systems.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "goal": "preposition"
+    },
+    "gte": 1
+   },
+   "order": 124,
+   "lesson": "Pre-positioning is a win condition even if nothing breaks: the damage is the option value. Only detection and eviction of persistence beat it.",
+   "refs": [
+    "attack:G1017",
+    "nist-csf:DE.CM-01"
+   ]
+  },
+  {
+   "id": "ach.goal-keeper",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "target",
+   "name": "Every Objective Denied",
+   "desc": "Defeat adversaries pursuing 6 different goals.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "goal": {
+      "exists": true
+     }
+    },
+    "gte": 1,
+    "distinct": "goal",
+    "distinctGte": 6
+   },
+   "order": 125,
+   "lesson": "Adversaries are defined by what they want: data, money, disruption, access, destruction. Controls that work against one goal can be irrelevant to another.",
+   "refs": [
+    "attack:TA0040",
+    "attack:TA0010"
+   ]
+  },
+  {
+   "id": "ach.mission-accomplished",
+   "cat": "Combat",
+   "tier": "bronze",
+   "icon": "flag",
+   "name": "Mission Accomplished (For Them)",
+   "desc": "Lose a battle because the adversary achieved its goal.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": false,
+     "how": "goal"
+    },
+    "gte": 1
+   },
+   "order": 126,
+   "hidden": true,
+   "lesson": "Resilience is not the only way to lose. Know what the adversary is trying to do before it does it."
+  },
+  {
+   "id": "ach.break-glass",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "siren",
+   "name": "Break Glass",
+   "desc": "Play a consumable response card.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "consumed",
+    "gte": 1
+   },
+   "order": 127,
+   "lesson": "Consumables model one-off expert actions: a retainer, a shutdown, a restore. The lesson is when each is worth its cost.",
+   "refs": [
+    "nist:800-61"
+   ]
+  },
+  {
+   "id": "ach.pull-the-plug",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "power",
+   "name": "Pull the Plug",
+   "desc": "Use Disable System to contain an asset.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "consumed",
+    "where": {
+     "card": "x.killswitch"
+    },
+    "gte": 1
+   },
+   "order": 128,
+   "lesson": "Containment by shutdown always works and always costs availability. In OT it can be a safety event, so decide the safe state in advance.",
+   "refs": [
+    "nist:800-82",
+    "nist:800-61"
+   ]
+  },
+  {
+   "id": "ach.restore-dont-pay",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "database-backup",
+   "name": "Restore, Don’t Pay",
+   "desc": "Use Restore from Backup with a working Recovery control on the board.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "consumed",
+    "where": {
+     "card": "x.restore"
+    },
+    "gte": 1
+   },
+   "order": 129,
+   "lesson": "A restore is only as good as the backup you tested. Image first when you can.",
+   "refs": [
+    "e8:backups",
+    "nist-csf:RC.RP-03"
+   ]
+  },
+  {
+   "id": "ach.retainer-called",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "handshake",
+   "name": "Retainer Called",
+   "desc": "Activate a Security Retainer.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "consumed",
+    "where": {
+     "card": "x.retainer"
+    },
+    "gte": 1
+   },
+   "order": 130,
+   "lesson": "An IR retainer buys surge capacity and a priority queue, but the hours are finite and contracted before you need them.",
+   "refs": [
+    "nist:800-61",
+    "nist-csf:GV.SC-08"
+   ]
+  },
+  {
+   "id": "ach.consumables-10",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "package-check",
+   "name": "Spare Parts Budget",
+   "desc": "Play 10 consumable cards.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "consumed",
+    "where": {},
+    "gte": 10
+   },
+   "order": 131
+  },
+  {
+   "id": "ach.embedded-defence",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "cpu",
+   "name": "Embedded Defence",
+   "desc": "Attach an EMB3D device-hardening booster to a control.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "augment",
+    "where": {
+     "card": {
+      "in": [
+       "a.emb-firmware-signing",
+       "a.emb-hw-rot",
+       "a.emb-attest",
+       "a.emb-msgauth",
+       "a.emb-physpresence",
+       "a.emb-signedlogic",
+       "a.emb-nofactory-creds",
+       "a.emb-mfa",
+       "a.emb-acl",
+       "a.emb-pqc"
+      ]
+     }
+    },
+    "gte": 1
+   },
+   "order": 132,
+   "lesson": "MITRE EMB3D catalogues threats and mitigations for embedded devices by maturity: foundational, intermediate and leading.",
+   "refs": [
+    "emb3d:MID-026",
+    "emb3d:MID-040"
+   ]
+  },
+  {
+   "id": "ach.embedded-5",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "circuit-board",
+   "name": "Firmware You Can Trust",
+   "desc": "Attach 5 EMB3D boosters.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "augment",
+    "where": {
+     "card": {
+      "in": [
+       "a.emb-firmware-signing",
+       "a.emb-hw-rot",
+       "a.emb-attest",
+       "a.emb-msgauth",
+       "a.emb-physpresence",
+       "a.emb-signedlogic",
+       "a.emb-nofactory-creds",
+       "a.emb-mfa",
+       "a.emb-acl",
+       "a.emb-pqc"
+      ]
+     }
+    },
+    "gte": 5
+   },
+   "order": 133,
+   "refs": [
+    "emb3d:MID-002",
+    "emb3d:MID-003"
+   ]
+  },
+  {
+   "id": "ach.embedded-all",
+   "cat": "Controls",
+   "tier": "gold",
+   "icon": "microscope",
+   "name": "Device Hardening Complete",
+   "desc": "Attach 8 different EMB3D boosters.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "augment",
+    "where": {
+     "card": {
+      "in": [
+       "a.emb-firmware-signing",
+       "a.emb-hw-rot",
+       "a.emb-attest",
+       "a.emb-msgauth",
+       "a.emb-physpresence",
+       "a.emb-signedlogic",
+       "a.emb-nofactory-creds",
+       "a.emb-mfa",
+       "a.emb-acl",
+       "a.emb-pqc"
+      ]
+     }
+    },
+    "gte": 1,
+    "distinct": "card",
+    "distinctGte": 8
+   },
+   "order": 134,
+   "hidden": true,
+   "lesson": "Embedded devices live for decades. Boot integrity, signed logic, authenticated messages and physical presence are the controls that still work in 2045.",
+   "refs": [
+    "emb3d:MID-029",
+    "nist:fips-203"
+   ]
+  },
+  {
+   "id": "ach.scored-coverage",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "scale",
+   "name": "Scored Coverage",
+   "desc": "Have a CTID-scored control block an attack.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "blocked",
+    "where": {
+     "why": {
+      "has": {
+       "kind": "mitigation",
+       "cov": {
+        "exists": true
+       }
+      }
+     }
+    },
+    "gte": 1
+   },
+   "order": 135,
+   "lesson": "CTID’s Mappings Explorer scores how well a security capability protects, detects or responds to each ATT&CK technique. The scores are evidence, not marketing.",
+   "refs": [
+    "ctid:aws"
+   ]
+  },
+  {
+   "id": "ach.mapped-control",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "link",
+   "name": "Mapped Control",
+   "desc": "Have a NIST 800-53 control, as mapped by CTID, help stop a technique.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "blocked",
+    "where": {
+     "why": {
+      "has": {
+       "kind": "mitigation",
+       "ctl": {
+        "exists": true
+       }
+      }
+     }
+    },
+    "gte": 1
+   },
+   "order": 136,
+   "lesson": "Mapping controls to adversary behaviour turns a compliance checklist into a threat-informed defence.",
+   "refs": [
+    "ctid:nist",
+    "nist-800-53:AC-6"
+   ]
   }
  ]
 }

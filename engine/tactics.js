@@ -80,9 +80,9 @@ export function primaryTactic(tacs) {
 // adversary a believable common core and make every battle a little different, while the *signature* overlay
 // (the adversary's own techniques) and all payoff cards (exfil/strike/impair/inhibit) stay adversary-specific.
 const BASELINE_KINDS = ['breach', 'arm', 'persist', 'escalate', 'evade', 'disable', 'creds', 'map', 'spread', 'stage', 'beacon'];
-const BASELINE_SLOTS = [7, 5, 4];   // commodity actors lean on common tradecraft; apex actors on their own
+const BASELINE_SLOTS = [7, 5, 4];   // default; tuning.adversary.baselineSlots overrides. Commodity actors lean on common tradecraft, apex actors on their own
 
-export function compileDeck(adv, { tier = 1, size = 22, tacticsAllowed = null, assessed = [], techTable = null, rand = null, goal = null } = {}) {
+export function compileDeck(adv, { tier = 1, size = 22, tacticsAllowed = null, assessed = [], techTable = null, rand = null, goal = null, baselineSlots = BASELINE_SLOTS, goalSlots = 2 } = {}) {
   const cards = [];
   const techs = [...adv.techs, ...(techTable ? assessed.filter(a => techTable[a]).map(a => ({ id: a, n: techTable[a].n, tac: techTable[a].tac, m: techTable[a].m || [] })) : [])];
   for (const t of adv.techs) {
@@ -118,7 +118,7 @@ export function compileDeck(adv, { tier = 1, size = 22, tacticsAllowed = null, a
   // draws the missing payoff cards from what real incidents with the same goal used (ATT&CK Attack Flow corpus).
   if (rand && techTable && goal?.kinds?.length) {
     const doms = new Set(adv.domains || ['enterprise']);
-    const have = chosen.filter(c => goal.kinds.includes(c.kind)).length, want = 2 - have;
+    const have = chosen.filter(c => goal.kinds.includes(c.kind)).length, want = goalSlots - have;
     const mk = (wOf) => Object.entries(techTable).filter(([id, t]) => wOf(t) && doms.has(t.dom || 'enterprise') && !chosen.some(c => c.id.split('.')[0] === id.split('.')[0])).map(([id, t]) => {
       const tactic = primaryTactic(t.tac); if (!tactic) return null; const kind = ARCHETYPE[tactic].kind;
       return goal.kinds.includes(kind) ? { id, t, tactic, kind, w: wOf(t) } : null;
@@ -141,7 +141,7 @@ export function compileDeck(adv, { tier = 1, size = 22, tacticsAllowed = null, a
       const kind = ARCHETYPE[tactic].kind; if (!BASELINE_KINDS.includes(kind)) return null;
       return { id, t, tactic, kind, w: Math.pow(t.p, 1.5) * (advTac.has(tactic) ? 1.5 : 1) };
     }).filter(Boolean).sort((a, b) => a.id.localeCompare(b.id));   // stable order: determinism
-    for (let n = 0; n < BASELINE_SLOTS[Math.min(2, tier - 1)] && pool.length; n++) {
+    for (let n = 0; n < baselineSlots[Math.min(2, tier - 1)] && pool.length; n++) {
       const total = pool.reduce((x, c) => x + c.w, 0); let r = rand() * total, i = 0;
       while (i < pool.length - 1 && (r -= pool[i].w) > 0) i++;
       const c = pool.splice(i, 1)[0];

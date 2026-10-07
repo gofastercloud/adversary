@@ -80,3 +80,17 @@ stream so new features do not reshuffle old ones.
 Every card, relic, event, scenario and decision carries a `lesson` and 2–6 `refs`. The UI shows *why* an attack was
 stopped (ward breakdown with sources) and what an adversary's intent is before it lands, so the game explains itself.
 Fiction is kept honest: assessed intents are labelled, goals are editorial, STRIDE mapping of techniques is a heuristic.
+
+## Balance model
+
+Difficulty is data, tuned by simulation rather than by feel (see [PLAYTEST_LAB.md](PLAYTEST_LAB.md)):
+
+- **Global shape**: goal clocks (`tuning.goals.*.need` per tier), tier tables (energy, hand, exposure, rounds), starting resilience.
+- **Global card knobs** (`tuning.balance`): `wardAdd`, `detectStrAdd`, `detectNAdd`, `evictAdd`, `healAdd`, `shieldAdd`, applied at content build.
+- **Per-adversary residuals** (`adversaryMeta[id].balance`): `goalNeed`, `energy`, `power`, `exposure`; small by design, so the
+  *kind* of threat (what its goal is, which techniques it has) shapes difficulty, not a patch number.
+- **Targets**: a standard-skill player with a realistic deck should beat normal fights about 90-96% of the time, elites 80-90%
+  and bosses 70-88% depending on the act, giving a full-run clear rate of roughly 15-20%. Sharper play and the expert planner
+  should do materially better; random play should almost never clear a fight with a developed deck.
+- Calibrated numbers live in `scripts/balance.json` and are merged into `content/core` by the generators, so they are reviewed
+  like any other content change.

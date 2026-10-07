@@ -39,6 +39,7 @@ Node 22+. First-time players get a guided tutorial battle; the in-game Guide has
 - [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md): datasets, licences, regeneration order
 - [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md): local tiers (in-process, DynamoDB emulator, Floci), testing
 - [docs/DEPLOY.md](docs/DEPLOY.md): AWS deployment with CDK
+- [docs/PLAYTEST_LAB.md](docs/PLAYTEST_LAB.md): automated playtesting, balance calibration and fuzzing
 - [docs/SECURITY.md](docs/SECURITY.md): threat model of the game itself, and what is and is not protected
 
 ## Honest limits

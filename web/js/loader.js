@@ -20,6 +20,8 @@ export async function loadContent(scenarioId, extras = []) {
   return buildContent({ core: { taxonomy: cache.core.taxonomy, cards: cache.core.cards, doctrines: cache.core.doctrines, relics: cache.core.relics, events: cache.core.events, tuning: cache.core.tuning, achievements: cache.core.achievements, adversaryMeta: cache.core.adversaryMeta }, scenario, extras: extras.map(e => cache.packs[e]), attack: cache.attack, adversaries });
 }
 export const loadDossier = async (id) => (cache.dossiers[id] ||= await j(`${base}dossiers/${id}.json?v=${cache.manifest.version}`));
+export const loadFlowIndex = async () => (cache.flowIndex ||= await j(`${base}flows/index.json?v=${cache.manifest.version}`));
+export const loadFlow = async (id) => ((cache.flows ||= {})[id] ||= await j(`${base}flows/${id}.json?v=${cache.manifest.version}`));
 export const getManifest = () => cache.manifest;
 export const getCore = () => cache.core;
 // a lightweight content (no scenario) for menus: codex & achievements before a run starts

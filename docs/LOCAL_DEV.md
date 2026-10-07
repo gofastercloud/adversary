@@ -39,3 +39,11 @@ npm run sim              # balance: bot win rates per doctrine and adversary
 
 `window.__adv` is exposed in dev builds for the screenshot harness (`scripts/shot.mjs`, `scripts/scene-*.mjs`); `scripts/trace.mjs`
 prints an event trace for a seed. Because the engine is deterministic, a bug report is a seed plus an action log.
+
+## UI end-to-end bot
+
+`npm run dev` in one terminal, then `npm run e2e` in another. The bot (`scripts/e2e.mjs`, Playwright + the bundled Chromium) plays
+the tutorial and full runs through real clicks at 1440×900, 1024×768 and 390×844 and fails on console errors, uncaught
+exceptions, failed requests, horizontal overflow, the End-turn button leaving the viewport, and screens it cannot leave.
+Screenshots of stuck states and results land in `lab/out/e2e/`. For engine-level balance and fuzzing see
+[PLAYTEST_LAB.md](PLAYTEST_LAB.md).

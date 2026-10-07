@@ -141,5 +141,8 @@ const GOAL = { X0001: 'exfil', G1017: 'preposition', G0035: 'preposition', G0034
   G0102: 'ransom', G1015: 'ransom', G0092: 'ransom', G1051: 'ransom', G1043: 'ransom', G1032: 'ransom', C0063: 'destroy',
   G0117: 'access', G0139: 'resource', G0106: 'resource' };
 for (const [id, m] of Object.entries(M)) { if (!GOAL[id]) throw new Error('no goal for ' + id); m.goal = GOAL[id]; }
+import { existsSync } from 'node:fs';
+const balPath = new URL('./balance.json', import.meta.url);
+if (existsSync(balPath)) for (const [id, b] of Object.entries(JSON.parse(readFileSync(balPath, 'utf8')).adversaryMeta || {})) if (M[id]) M[id].balance = { ...(M[id].balance || {}), ...(b.balance || b) };
 writeFileSync(new URL('../content/core/adversary-meta.json', import.meta.url), JSON.stringify(M, null, 1) + '\n');
 console.log('adversary meta:', Object.keys(M).length);

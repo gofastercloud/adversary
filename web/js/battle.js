@@ -30,6 +30,8 @@ export function BattleScreen() {
   const [sel, setSel] = useState(null);            // {iid} | {power:true}
   const [log, setLog] = useState([]);
   const [hit, setHit] = useState({});
+  const [preview, setPreview] = useState(null);
+  const [sideOpen, setSideOpen] = useState(false);
   const [inspect, setInspect] = useState(null);
   const fieldRef = useRef(); const [links, setLinks] = useState([]);
   const adv = content.adversaryMeta[b.adv.id] || {}; const advData = content.adversaries[b.adv.id];
@@ -170,7 +172,7 @@ export function BattleScreen() {
     <div class="hud">
       <div class="panel hud-me">
         <div class="hud-row"><span class="lbl">Resilience</span><div id="res-bar" class=${cx('meter res', resP < 30 ? 'low' : resP < 60 ? 'mid' : '')}><i style=${`width:${resP}%`}/><b>${b.res.cur} / ${b.res.max}</b></div></div>
-        <div class="hud-row"><span class="lbl">Budget</span><span class="money">$${run.money}</span><span class="spacer"/><span class="chip" ...${tip('Gold earns only between battles: rewards, events, shops.')}><${Icon} n="coins"/>${run.relics.length} relics</span></div>
+        <div class="hud-row"><span class="lbl">Budget</span><span class="money">$${run.money}</span><span class="spacer"/><button class="btn small ghost side-toggle" onClick=${() => setSideOpen(o => !o)} aria-expanded=${sideOpen}><${Icon} n="terminal"/>Intel</button><span class="chip" ...${tip('Gold earns only between battles: rewards, events, shops.')}><${Icon} n="coins"/>${run.relics.length} relics</span></div>
         <div class="hud-row"><span class="lbl">Clock</span><span class="clock">${clock(b.round)}</span><span class="spacer"/><div class="round-pips">${Array.from({ length: content.tuning.adversary.tiers[b.adv.tier].rounds }, (_, i) => html`<i class=${i + 1 < b.round ? 'done' : i + 1 === b.round ? 'now' : ''}/>`)}</div></div>
       </div>
       <div class="panel hud-adv glow" style=${`--accent:${advc}`}>
@@ -200,16 +202,17 @@ export function BattleScreen() {
         </div>
         ${tk === 'control' && html`<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;z-index:30" class="panel"><span class="dim" style="padding:.4em .8em">Augment which control?</span>${b.controls.filter(k => tKids.has(k.kid)).map(k => html`<button class="btn small" onClick=${() => confirm({ kid: k.kid })}>${content.cards[k.card].name} @ ${b.assets.find(a => a.id === k.asset).name}</button>`)}${!tKids.size && html`<span class="bad" style="padding:.4em .8em">No compatible control deployed.</span>`}</div>`}
       </div>
-      <div class="side">
+      <div class=${cx('side', sideOpen && 'open')}>
         <div class="panel"><div class="panel-h"><${Icon} n="scroll-text"/>Programme (${b.policies.length}/${content.tuning.battle.policySlots})</div><div class="prog">${b.policies.map(p => { const d = content.cards[p.id]; return html`<span class="pol" style=${`--fn:${FNCOL[d.fn]}`} ...${tip(html`<${CardTip} content=${content} def=${d} ml=${p.ml}/>`)}><${Icon} n=${cardIcon(d)}/>${d.name}</span>`; })}${!b.policies.length && html`<span class="dimmer" style="font-size:.78rem">Policies you enact stay in force.</span>`}</div></div>
         <div class="panel"><div class="panel-h"><${Icon} n="gem"/>Relics</div><div class="relics">${run.relics.map(id => { const r = content.relics[id]; return html`<span class="relic" ...${tip(html`<div style="width:260px"><h4>${r.name}</h4><p>${r.desc}</p><p class="dim">${r.lesson}</p><${Refs} list=${r.refs}/></div>`)}><${Icon} n=${r.icon}/></span>`; })}</div></div>
         <div class="panel" style="flex:1;min-height:0;display:flex;flex-direction:column"><div class="panel-h"><${Icon} n="terminal"/>SOC feed</div><div class="log" ref=${logRef}>${log.map(l => html`<div class=${l.cls}><span class="t">${l.t}</span>${l.text} ${(l.refs || []).slice(0, 1).map(r => html`<${RefLink} r=${r} label="↗"/>`)}</div>`)}</div></div>
       </div>
     </div>
 
+    ${preview && b.cards[preview] && html`<div class="card-preview" aria-hidden="true"><${Card} content=${content} def=${content.cards[b.cards[preview].id]} ml=${b.cards[preview].ml} cost=${B.cardCost(content, b, preview)} tiltOn=${false} cls="big-preview"/></div>`}
     <div class="bottom">
       <div class="pile" ...${tip('Draw pile · cards left before your discard is reshuffled')}>Deck<div class="stack"><i/><b>${b.draw.length}</b></div><span class="dimmer">${b.discard.length} discard</span></div>
-      <div class="hand">${b.hand.map((id, i) => { const d = content.cards[b.cards[id].id]; const c = B.cardCost(content, b, id); const base = B.effCard(content, b, id).cost; const ok = !d.unplayable && c <= b.energy.cur; const rot = (i - (n - 1) / 2) * Math.min(4, 22 / Math.max(n, 1)); const lift = Math.abs(i - (n - 1) / 2) ** 2 * 1.6; return html`<${Card} key=${id} content=${content} def=${d} ml=${b.cards[id].ml} cost=${c} discounted=${c < base} playable=${ok} unaffordable=${!ok} selected=${sel?.iid === id} onClick=${() => clickCard(id)} onContext=${(e) => { e.preventDefault(); setInspect(id); }} cls="deal" i=${i} iid=${id} style=${{ '--rot': rot + 'deg', '--lift': lift + 'px' }}/>`; })}</div>
+      <div class="hand">${b.hand.map((id, i) => { const d = content.cards[b.cards[id].id]; const c = B.cardCost(content, b, id); const base = B.effCard(content, b, id).cost; const ok = !d.unplayable && c <= b.energy.cur; const rot = (i - (n - 1) / 2) * Math.min(4, 22 / Math.max(n, 1)); const lift = Math.abs(i - (n - 1) / 2) ** 2 * 1.6; return html`<${Card} key=${id} content=${content} def=${d} ml=${b.cards[id].ml} cost=${c} discounted=${c < base} playable=${ok} unaffordable=${!ok} selected=${sel?.iid === id} onClick=${() => clickCard(id)} onContext=${(e) => { e.preventDefault(); setInspect(id); }} onEnter=${() => setPreview(id)} onLeaveCb=${() => setPreview(p => (p === id ? null : p))} cls="deal" i=${i} iid=${id} style=${{ '--rot': rot + 'deg', '--lift': lift + 'px' }}/>`; })}</div>
       <div class="energy-wrap"><div class=${cx('energy', b.energy.cur === 0 && 'empty')} ...${tip('Energy: spent to play cards. Resets each round.')}>${b.energy.cur}<small>/ ${b.energy.max}</small></div>
         ${b.doctrine && html`<div class="power"><button ...${tip(content.doctrines[b.doctrine].power.text)} class=${cx('btn small violet', sel?.power && 'pulse')} disabled=${b.powerUsed || b.energy.cur < content.doctrines[b.doctrine].power.cost || !!s.stage} onClick=${() => { if (sel?.power) setSel(null); else { const p = content.doctrines[b.doctrine].power; if (p.target === 'none') doAction({ type: 'POWER', target: {} }); else setSel({ power: true }); } }}><${Icon} n=${content.doctrines[b.doctrine].icon}/>${content.doctrines[b.doctrine].power.name} · ${content.doctrines[b.doctrine].power.cost}</button></div>`}
         <button class=${cx('btn good big', noMoves && !s.stage && 'pulse')} disabled=${!!s.stage || b.over || !!b.ttx?.pending} onClick=${() => doAction({ type: 'END_TURN' })}>End turn <span class="kbd">E</span></button></div>
@@ -251,5 +254,5 @@ function BattleEnd({ b, content, run }) {
 
 function GoalMeter({ b, content }) {
   const G = b.goal, d = content.tuning.goals[G.kind]; const pct = Math.min(100, Math.round(100 * G.prog / G.need));
-  return html`<div class=${cx('goalbar', pct >= 60 && 'hot', pct >= 85 && 'crit')} role="meter" aria-label=${'Adversary goal: ' + d.name} aria-valuemin="0" aria-valuemax=${G.need} aria-valuenow=${G.prog} ...${tip(d.how + ' ' + d.blurb)}><${Icon} n=${d.icon}/><b>Goal: ${d.name}</b><div class="gm"><i style=${`width:${pct}%`}/></div><span class="gv">${G.prog}/${G.need}</span></div>`;
+  return html`<div class=${cx('goalbar', pct >= 60 && 'hot', pct >= 85 && 'crit')} role="meter" aria-label=${'Adversary goal: ' + d.name} aria-valuemin="0" aria-valuemax=${G.need} aria-valuenow=${+G.prog.toFixed(1)} ...${tip(d.how + ' ' + d.blurb)}><${Icon} n=${d.icon}/><b>Goal: ${d.name}</b><div class="gm"><i style=${`width:${pct}%`}/></div><span class="gv">${+G.prog.toFixed(1)}/${G.need}</span></div>`;
 }

@@ -21,7 +21,7 @@ const RUN_OPS = new Set(['money', 'resilience', 'maxResilience', 'addCard', 'add
 const TRAIT_OPS = new Set(['startFootholds', 'discount', 'stealthBonus', 'bypass', 'energyBonus', 'drawBonus', 'ransomPressure', 'hndl', 'phase']);
 const KINDS = ['prep', 'breach', 'arm', 'persist', 'escalate', 'evade', 'disable', 'creds', 'map', 'spread', 'stage', 'beacon', 'exfil', 'strike', 'inhibit', 'impair'];
 const ASSET_KINDS = ['identity', 'email', 'endpoint', 'server', 'data', 'network', 'cloud', 'ot', 'backup', 'app', 'vendor'];
-const KNOWN_EVENTS = new Set(['battle_start', 'battle_end', 'adv_play', 'played', 'evict', 'reveal', 'blocked', 'deploy', 'augment', 'policy', 'action', 'isolate', 'heal', 'asset_down', 'canary', 'aegis', 'revive', 'phase', 'persists', 'exfil', 'exfil_pqc', 'decision', 'inject', 'act_cleared', 'run_won', 'run_lost', 'card_added', 'card_removed', 'upgraded', 'relic', 'shop_buy', 'event_choice', 'wb_answer', 'wb_done', 'wb_perfect', 'ttx_complete', 'status_added', 'dossier_view', 'daily_done', 'tutorial_done', 'docs_open', 'clearance', 'ach_unlocked']);
+const KNOWN_EVENTS = new Set(['battle_start', 'battle_end', 'adv_play', 'played', 'evict', 'reveal', 'blocked', 'deploy', 'augment', 'policy', 'action', 'isolate', 'heal', 'asset_down', 'canary', 'aegis', 'revive', 'phase', 'persists', 'exfil', 'exfil_pqc', 'decision', 'inject', 'act_cleared', 'run_won', 'run_lost', 'card_added', 'card_removed', 'upgraded', 'relic', 'shop_buy', 'event_choice', 'wb_answer', 'wb_done', 'wb_perfect', 'consumed', 'goal', 'consumed_run', 'ttx_complete', 'status_added', 'dossier_view', 'daily_done', 'tutorial_done', 'docs_open', 'clearance', 'ach_unlocked']);
 
 export function validateAll() {
   const errs = [], warns = [];

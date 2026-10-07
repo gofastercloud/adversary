@@ -40,6 +40,7 @@ export function buildContent({ core, scenario = null, extras = [], attack, adver
     const ctl = (c.refs || []).filter(r => r.startsWith('nist-800-53:')).map(r => normCtl(r.slice(12)));
     if (ctl.length) c.ctl = ctl;
   }
+  const cardsBase = cards;
   const relics = {};
   for (const r of core.relics.relics) relics[r.id] = r;
   for (const pk of packs) for (const r of pk.relics || []) relics[r.id] = { ...r, pack: pk.id };
@@ -50,8 +51,8 @@ export function buildContent({ core, scenario = null, extras = [], attack, adver
   const meta = core.adversaryMeta || {};
   const fingerprint = cyrb53(JSON.stringify([core.cards, core.relics, core.tuning, core.doctrines, scenario?.id, scenario?.version, scenario?.assets, scenario?.roster, scenario?.systems, scenario?.ttx, core.adversaryMeta, Object.keys(adversaries).sort().map(k => [k, adversaries[k].techs.length])]));
 
-  return {
-    fingerprint, fns, props, cells, cards, relics, doctrines, events, achievements, tuning: core.tuning,
+  const out = {
+    fingerprint, fns, props, cells, cards, cardsBase, relics, doctrines, events, achievements, tuning: core.tuning,
     scenario, scenarioId: scenario?.id || null,
     assets: scenario?.assets || [], roster: scenario?.roster || null, systems: scenario?.systems || [], ttx: scenario?.ttx || [],
     theme: scenario?.theme || { accent: '#5ad1ff', accent2: '#8b7bff', bg: ['#0b1020', '#141a33', '#1d1640'] },
@@ -61,8 +62,27 @@ export function buildContent({ core, scenario = null, extras = [], attack, adver
     cardPool: Object.values(cards).filter(c => c.type !== 'status' && c.rarity !== 'status').map(c => c.id),
     relicPool: Object.values(relics).filter(r => r.rarity !== 'starter').map(r => r.id)
   };
+  return applyBalance(out);
 }
 
+/**
+ * Global balance knobs (tuning.balance) applied to card numbers at build time, so the balance optimiser can move whole
+ * families of numbers without editing card data: wardAdd, detectStrAdd, detectNAdd, evictAdd, healAdd, shieldAdd.
+ * Pure: rebuilds content.cards from content.cardsBase.
+ */
+export function applyBalance(content) {
+  const bal = content.tuning.balance || {}; const cards = {};
+  for (const [id, c] of Object.entries(content.cardsBase)) {
+    const x = { ...c };
+    if (c.type !== 'status') {
+      if (x.ward && bal.wardAdd) x.ward = Object.fromEntries(Object.entries(x.ward).map(([k, v]) => [k, v + bal.wardAdd]));
+      if (x.detect) x.detect = { ...x.detect, str: x.detect.str + (bal.detectStrAdd || 0), n: x.detect.n + (bal.detectNAdd || 0) };
+      if (x.fx && (bal.evictAdd || bal.healAdd || bal.shieldAdd)) x.fx = x.fx.map(f => (f.op === 'evict' && bal.evictAdd ? { ...f, n: f.n + bal.evictAdd } : f.op === 'heal' && f.n < 90 && bal.healAdd ? { ...f, n: f.n + bal.healAdd } : f.op === 'shield' && bal.shieldAdd ? { ...f, n: f.n + bal.shieldAdd } : f));
+    }
+    cards[id] = x;
+  }
+  content.cards = cards; return content;
+}
 export const normCtl = id => id.replace(/-0(\d)/, '-$1').replace(/\(0(\d)\)/, '($1)');
 export const cardOf = (content, id) => content.cards[id];
 export const isControl = c => c.type === 'control';

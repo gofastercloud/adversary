@@ -171,5 +171,12 @@ const tuning = {
 w('doctrines', { schema: 2, doctrines });
 w('relics', { schema: 2, relics });
 w('events', { schema: 2, events });
+// Balance overlay written by the lab optimiser (scripts/balance.json): deep-merged over the hand-authored numbers above.
+import { existsSync, readFileSync } from 'node:fs';
+const balPath = new URL('./balance.json', import.meta.url);
+if (existsSync(balPath)) {
+  const dm = (t, s) => { for (const [k, v] of Object.entries(s)) { if (v && typeof v === 'object' && !Array.isArray(v)) dm((t[k] ||= {}), v); else t[k] = v; } return t; };
+  dm(tuning, JSON.parse(readFileSync(balPath, 'utf8')).tuning || {});
+}
 w('tuning', tuning);
 console.log('doctrines', doctrines.length, 'relics', relics.length, 'events', events.length);

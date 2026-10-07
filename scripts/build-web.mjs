@@ -29,6 +29,9 @@ export async function buildWeb({ apiBase = '/api' } = {}) {
   for (const id of listScenarios()) { const p = loadScenario(id); w(`content/packs/${id}.json`, p); scenarios.push({ id, name: p.name, tagline: p.tagline, icon: p.icon, theme: p.theme, org: p.org?.name, version: p.version }); }
   const advIndex = JSON.parse(readFileSync(j('data/adversaries/index.json'), 'utf8'));
   for (const a of advIndex) { cpSync(j('data/adversaries', a.id + '.json'), path.join(dist, 'content/adversaries', a.id + '.json')); cpSync(j('data/dossiers', a.id + '.json'), path.join(dist, 'content/dossiers', a.id + '.json')); }
+  // real incident timelines (CTID Attack Flow corpus) for the Codex incident library
+  mkdirSync(path.join(dist, 'content/flows'), { recursive: true });
+  for (const f of readdirSync(j('data/flows'))) if (f.endsWith('.json') && f !== 'stats.json') cpSync(j('data/flows', f), path.join(dist, 'content/flows', f));
   w('content/manifest.json', { version, built: new Date().toISOString(), scenarios, adversaries: advIndex.map(a => a.id), attackVersion: readFileSync(j('data/attack/NOTICE.md'), 'utf8').match(/version ([\d.]+)/)?.[1] });
   cpSync(j('data/attack/NOTICE.md'), path.join(dist, 'content/NOTICE-ATTACK.md'));
 

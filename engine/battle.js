@@ -59,7 +59,7 @@ export function newBattle(content, o) {
 
   const b = {
     v: 2, seed, rng: {}, round: 0, phase: 'defender', over: false, result: null,
-    res: { cur: o.resilience.cur, max: o.resilience.max }, expo: { cur: 0, max: tier.exposureMax + (o.adversary.boss ? 0 : 0) },
+    res: { cur: o.resilience.cur, max: o.resilience.max }, expo: { cur: 0, max: tier.exposureMax + (((content.adversaryMeta[o.adversary.id] || {}).balance || {}).exposure || 0) },
     energy: { cur: 0, max: bt.energy }, energyNext: 0,
     cards: {}, draw: [], hand: [], discard: [], board: [],
     assets: [], controls: [], footholds: [], ghosts: [], policies: [],
@@ -78,8 +78,9 @@ export function newBattle(content, o) {
   b.draw = shuffle(b.rng, seed, 'deck', o.deck.map(c => c.iid));
   if (o.drawOrder) b.draw = [...o.drawOrder, ...b.draw.filter(i => !o.drawOrder.includes(i))];
   // adversary deck
-  const deck = compileDeck(advData, { tier: b.adv.tier, size: 22, assessed: meta.assessed || [], techTable: content.techs, goal: b0goal(content, meta), rand: o.advOrder ? null : () => rand(b.rng, seed, 'adv-baseline') });
-  const bonus = tier.powerBonus + (assur.advPower || 0);
+  const deck = compileDeck(advData, { tier: b.adv.tier, size: 22, assessed: meta.assessed || [], techTable: content.techs, goal: b0goal(content, meta), baselineSlots: content.tuning.adversary.baselineSlots || undefined, goalSlots: content.tuning.adversary.goalSlots ?? 2, rand: o.advOrder ? null : () => rand(b.rng, seed, 'adv-baseline') });
+  const abal = meta.balance || {};   // per-adversary calibration knobs (lab optimiser): goalNeed, energy, power, exposure
+  const bonus = tier.powerBonus + (assur.advPower || 0) + (abal.power || 0);
   deck.forEach((c, i) => {
     const uid = 'a' + i;
     const card = { ...c, uid };
@@ -91,7 +92,7 @@ export function newBattle(content, o) {
   b.adv.exposureBase = b.expo.max;
   // goal: the adversary's win condition (not used in the scripted tutorial or TTX scenarios)
   const gdef = !o.advOrder && !o.ttx && content.tuning.goals?.[meta.goal];
-  if (gdef) b.goal = { kind: meta.goal, rule: gdef.rule, need: gdef.need[Math.min(2, b.adv.tier - 1)] + (assur.goalNeed || 0), prog: 0 };
+  if (gdef) b.goal = { kind: meta.goal, rule: gdef.rule, need: Math.max(1, gdef.need[Math.min(2, b.adv.tier - 1)] + (assur.goalNeed || 0) + (abal.goalNeed || 0)), prog: 0 };
 
   // start-of-battle effects
   for (let i = 0; i < (o.modelBonus || 0); i++) { const a = b.assets[randInt(b.rng, seed, 'model', b.assets.length)]; a.baseWard += 1; }
@@ -108,7 +109,7 @@ export function newBattle(content, o) {
 }
 
 // ───────────────────────────── helpers ─────────────────────────────
-const ev = (b, e) => { b.events.push(e); return e; };
+const ev = (b, e) => { b.events.push(e); if (b.obs) b.obs(e); return e; };   // b.obs is a lab-only observer (never serialised)
 export const asset = (b, id) => b.assets.find(a => a.id === id);
 const foot = (b, id) => b.footholds.find(f => f.id === id);
 const def = (content, b, iid) => content.cards[b.cards[iid].id];
@@ -411,7 +412,7 @@ export function playCard(content, b, iid, target = {}) {
     b.stats.augments++;
     const st = ctrlStats(content, b, k); if (st.detect) monitorReveal(content, b, k, st);
   } else if (e.type === 'policy') {
-    if (b.policies.length >= content.tuning.battle.policySlots) { const old = b.policies.shift(); b.discard.push(old.iid); ev(b, { t: 'policy_out', card: old.id }); }
+    if (b.policies.length >= content.tuning.battle.policySlots) { const old = b.policies.shift(); b.discard.push(old.iid); b.board = b.board.filter(x => x !== old.iid); ev(b, { t: 'policy_out', card: old.id }); }
     b.policies.push({ iid, id: card.id, ml: mlOf(b, iid) }); b.board.push(iid);
     ev(b, { t: 'policy', card: card.id });
   } else {
@@ -523,7 +524,7 @@ function endRound(content, b) {
 function advTierEnergy(content, b, round = b.round) {
   const t = content.tuning.adversary.tiers[b.adv.tier];
   const a = content.tuning.assurance[b.assurance ?? 1] || { advEnergy: 0 };
-  let e = t.energy[clamp(round - 1, 0, t.energy.length - 1)] + (b.adv.traits.filter(x => x.op === 'energyBonus').reduce((s, x) => s + x.n, 0)) + (a.advEnergy || 0) + b.adv.energyBonusNext;
+  let e = t.energy[clamp(round - 1, 0, t.energy.length - 1)] + (b.adv.traits.filter(x => x.op === 'energyBonus').reduce((s, x) => s + x.n, 0)) + (a.advEnergy || 0) + b.adv.energyBonusNext + ((content.adversaryMeta[b.adv.id]?.balance || {}).energy || 0);
   return Math.max(1, e);
 }
 function advHandSize(content, b) {
@@ -614,7 +615,32 @@ function scoreOption(content, b, c, o) {
     default: s = 0;
   }
   if (f && f.revealed && ['arm', 'persist', 'beacon', 'creds', 'map', 'stage'].includes(c.kind)) s -= 2; // don't invest in doomed footholds
+  if (content.tuning.adversary.goalAI) s += goalBonus(content, b, c, o, A, f);
   return s + (rand(b.rng, b.seed, 'ai-jitter') * 0.4);
+}
+/** Goal-directed play: each adversary pursues what it wants (dwell undetected on critical assets, breadth, or payoffs). */
+function goalBonus(content, b, c, o, A, f) {
+  const G = b.goal; if (!G) return 0;
+  const def = content.tuning.goals[G.kind]; let s = 0;
+  const critical = (a) => a && (a.jewel || (def.targets && def.targets !== 'any' && def.targets.includes(a.kind)));
+  if (def.rule === 'dwell') {
+    const tgt = o.asset ? asset(b, o.asset) : A;
+    if (c.kind === 'spread' && critical(tgt)) s += 7;
+    if (c.kind === 'breach') s += 1;
+    if (c.kind === 'evade' && f && f.revealed) s += 8;          // go dark again: only undetected footholds count
+    if (c.kind === 'persist' && f && critical(A)) s += 4;
+    if (c.kind === 'escalate' && critical(A)) s += 2;
+    if (['strike', 'impair', 'exfil'].includes(c.kind)) s -= 6;  // noisy: burns the dwell
+  } else if (def.rule === 'reach') {
+    if (c.kind === 'spread' || c.kind === 'breach') s += 6;
+    if (c.kind === 'evade' && f && f.revealed) s += 4;
+  } else {
+    if (def.kinds.includes(c.kind)) s += 8 * Math.min(1.6, 0.8 + b.round * 0.1);
+    if (c.kind === 'stage' && def.kinds.includes('exfil')) s += 6;
+    if (c.kind === 'escalate' && def.kinds.includes('strike')) s += 4;
+    if (c.kind === 'spread') s += (def.jewelOnly ? distToJewel(b, A?.id) <= 1 : critical(o.asset ? asset(b, o.asset) : A)) ? 4 : 0;
+  }
+  return s * (G.prog / G.need > 0.6 ? 1.3 : 1);
 }
 function bestPlay(content, b, energy) {
   let best = null;
@@ -740,7 +766,7 @@ function resolveAdv(content, b, c, target, cost) {
       const amt = power - w.total - au.exfilMinus - b.exfilShield - detMinus;
       if (amt <= 0) { blocked(w); break; }
       const loss = asst.jewel ? amt * 2 : amt;
-      loseResilience(content, b, loss, 'exfil'); b.stats.dataLost += loss; asst.staged = false; goalHit(content, b, 'exfil', asst);
+      loseResilience(content, b, loss, 'exfil'); b.stats.dataLost += loss; asst.staged = false; goalHit(content, b, 'exfil', asst, amt, power);
       ev(b, { t: 'exfil', asset: asst.id, n: loss, jewel: asst.jewel, tech: c.id });
       if (A.traits.some(t => t.op === 'hndl') && !activeControls(b, asst.id).some(k => ctrlStats(content, b, k).flags.has('pqc'))) { A.harvested += 1; ev(b, { t: 'harvest', asset: asst.id }); }
       break;
@@ -753,7 +779,7 @@ function resolveAdv(content, b, c, target, cost) {
       if (dmg <= 0) { blocked(w); break; }
       const d = damageAsset(content, b, asst, dmg, c.id);
       if (d > 0) loseResilience(content, b, Math.ceil(d / 2), 'impact');
-      goalHit(content, b, c.kind === 'impair' ? 'impair' : 'strike', asst);
+      goalHit(content, b, c.kind === 'impair' ? 'impair' : 'strike', asst, dmg, power + ransom);
       if (/^T1486|^T1490|^T1485|^T1561|^T1489/.test(c.id)) for (const n of asst.adjacent) { const B = asset(b, n); if (B.kind === 'backup' && !B.down) { const vaulted = activeControls(b, B.id).some(k => ctrlStats(content, b, k).flags.has('vault')); if (!vaulted) damageAsset(content, b, B, 2, c.id); else ev(b, { t: 'vault', asset: B.id }); } }
       break;
     }
@@ -767,12 +793,14 @@ function resolveAdv(content, b, c, target, cost) {
   }
 }
 /** Goal progress from a resolved payoff card (exfil/strike/impair/inhibit). */
-function goalHit(content, b, kind, A) {
+function goalHit(content, b, kind, A, amt = null, power = null) {
   const G = b.goal; if (!G || b.over) return;
   const def = content.tuning.goals[G.kind]; if (def.rule !== 'payoff' || !def.kinds.includes(kind)) return;
   if (def.jewelOnly && !A.jewel) return;
-  const n = def.jewelOnly ? 2 : (A.jewel || (G.kind === 'disrupt' && A.kind === 'ot')) ? 2 : 1;
-  G.prog += n; ev(b, { t: 'goal', kind: G.kind, prog: G.prog, need: G.need, asset: A.id });
+  let n = def.jewelOnly ? 2 : (A.jewel || (G.kind === 'disrupt' && A.kind === 'ot')) ? 2 : 1;
+  // amount mode: progress follows how much actually got through the wards, so every point of defence matters
+  if (content.tuning.goalMode === 'amount' && amt != null && power) n = +(n * Math.max(0.25, Math.min(1, amt / power))).toFixed(2);
+  G.prog = +(G.prog + n).toFixed(2); ev(b, { t: 'goal', kind: G.kind, prog: G.prog, need: G.need, asset: A.id });
 }
 /** End-of-adversary-turn goal rules (dwell / reach). Isolated assets do not count: containment buys time. */
 function goalTick(content, b) {
@@ -780,7 +808,8 @@ function goalTick(content, b) {
   const def = content.tuning.goals[G.kind];
   if (def.rule === 'dwell') {
     const live = b.footholds.filter(f => { const a = asset(b, f.asset); return !f.revealed && !a.isolated && !a.down && (def.targets === 'any' || def.targets.includes(a.kind) || a.jewel); });
-    G.prog = live.length >= (def.minFootholds || 1) ? G.prog + 1 : Math.max(0, G.prog - 1);
+    const inc = content.tuning.goalMode === 'amount' ? Math.min(2, 0.5 + 0.5 * live.length) : 1;   // amount mode: more undetected footholds, faster dwell
+    G.prog = live.length >= (def.minFootholds || 1) ? G.prog + inc : Math.max(0, G.prog - 1);
   } else if (def.rule === 'reach') G.prog = new Set(b.footholds.filter(f => !f.revealed && !asset(b, f.asset).isolated).map(f => f.asset)).size;
   else return;
   ev(b, { t: 'goal', kind: G.kind, prog: G.prog, need: G.need });

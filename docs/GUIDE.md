@@ -23,6 +23,10 @@
 - **Exposure** rises when the adversary is blocked or revealed; at the limit its operation is burned and you win.
 - **Resilience** is your hit points. Losing a crown jewel or reaching zero ends the run.
 
+**Tips**: hover a card in your hand to see it enlarged; right-click it for the full inspector. On narrow screens the Programme,
+Relics and SOC feed live behind the **Intel** button. The Codex has an **Incidents** tab: 40 real intrusions as ordered technique
+chains with source links, a good way to see what the goals mean in practice.
+
 ## Specialising and deck building
 
 Each doctrine leans on two CSF functions (Architect: protect and identify; Hunter: detect and respond; Resilience Engineer:

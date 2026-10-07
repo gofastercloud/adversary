@@ -82,7 +82,7 @@ export function primaryTactic(tacs) {
 const BASELINE_KINDS = ['breach', 'arm', 'persist', 'escalate', 'evade', 'disable', 'creds', 'map', 'spread', 'stage', 'beacon'];
 const BASELINE_SLOTS = [7, 5, 4];   // commodity actors lean on common tradecraft; apex actors on their own
 
-export function compileDeck(adv, { tier = 1, size = 22, tacticsAllowed = null, assessed = [], techTable = null, rand = null } = {}) {
+export function compileDeck(adv, { tier = 1, size = 22, tacticsAllowed = null, assessed = [], techTable = null, rand = null, goal = null } = {}) {
   const cards = [];
   const techs = [...adv.techs, ...(techTable ? assessed.filter(a => techTable[a]).map(a => ({ id: a, n: techTable[a].n, tac: techTable[a].tac, m: techTable[a].m || [] })) : [])];
   for (const t of adv.techs) {
@@ -114,6 +114,24 @@ export function compileDeck(adv, { tier = 1, size = 22, tacticsAllowed = null, a
     const ar = ARCHETYPE[tactic];
     chosen.push({ id: a, name: t.n, tactic, kind: ar.kind, stride: strideOf(a, tactic), cost: ar.cost, power: ar.power, stealth: ar.stealth, mit: t.m || [], ev: 0, sig: false, assessed: true, remote: false });
   }
+  // Goal payoffs: an adversary whose goal needs impact/exfiltration but whose observed technique list lacks enough of it
+  // draws the missing payoff cards from what real incidents with the same goal used (ATT&CK Attack Flow corpus).
+  if (rand && techTable && goal?.kinds?.length) {
+    const doms = new Set(adv.domains || ['enterprise']);
+    const have = chosen.filter(c => goal.kinds.includes(c.kind)).length, want = 2 - have;
+    const mk = (wOf) => Object.entries(techTable).filter(([id, t]) => wOf(t) && doms.has(t.dom || 'enterprise') && !chosen.some(c => c.id.split('.')[0] === id.split('.')[0])).map(([id, t]) => {
+      const tactic = primaryTactic(t.tac); if (!tactic) return null; const kind = ARCHETYPE[tactic].kind;
+      return goal.kinds.includes(kind) ? { id, t, tactic, kind, w: wOf(t) } : null;
+    }).filter(Boolean).sort((a, b) => a.id.localeCompare(b.id));
+    let pool = mk(t => t.g?.[goal.key]);
+    if (!pool.length) pool = mk(t => t.p);   // goals with no observed incidents yet fall back to general prevalence
+    for (let n = 0; n < want && pool.length; n++) {
+      const total = pool.reduce((x, c) => x + c.w, 0); let r = rand() * total, i = 0;
+      while (i < pool.length - 1 && (r -= pool[i].w) > 0) i++;
+      const c = pool.splice(i, 1)[0], a = ARCHETYPE[c.tactic];
+      chosen.push({ id: c.id, name: c.t.n, tactic: c.tactic, kind: a.kind, stride: strideOf(c.id, c.tactic), cost: a.cost, power: a.power, stealth: a.stealth, mit: c.t.m || [], ev: 0, sig: false, goalCard: true, remote: false });
+    }
+  }
   if (rand && techTable) {
     const doms = new Set(adv.domains || ['enterprise']);
     const have = new Set(chosen.map(c => c.id.split('.')[0])), advTac = new Set(adv.techs.flatMap(t => t.tac));
@@ -134,7 +152,7 @@ export function compileDeck(adv, { tier = 1, size = 22, tacticsAllowed = null, a
     }
   }
   // If over budget, drop the least valuable cards first (never the payoff cards at the end of the kill chain).
-  const value = (c) => (c.baseline ? 5 + (c.prev || 0) / 10 : 0) + (c.assessed ? 1000 : 0) + ({ exfil: 60, strike: 60, impair: 60, inhibit: 30, spread: 25, escalate: 22, stage: 22, breach: 24, creds: 14, disable: 14 }[c.kind] || 0) + (c.ev || 0);
+  const value = (c) => (c.goalCard ? 500 : 0) + (c.baseline ? 5 + (c.prev || 0) / 10 : 0) + (c.assessed ? 1000 : 0) + ({ exfil: 60, strike: 60, impair: 60, inhibit: 30, spread: 25, escalate: 22, stage: 22, breach: 24, creds: 14, disable: 14 }[c.kind] || 0) + (c.ev || 0);
   const kept = chosen.slice().sort((a, b) => value(b) - value(a) || a.id.localeCompare(b.id)).slice(0, size + assessed.length);
   return kept.sort((a, b) => TACTIC_ORDER.indexOf(a.tactic) - TACTIC_ORDER.indexOf(b.tactic) || b.ev - a.ev);
 }

@@ -78,3 +78,6 @@
 .reflink { display: inline-flex; align-items: center; gap: .3em; padding: .1em .55em; border-radius: 999px; font-size: .74rem; font-family: var(--font-mono); border: 1px solid; margin: .1em .15em .1em 0; } .reflink.mitre { color: #ff9aad; border-color: rgba(255, 84, 112, .5); } .reflink.nist { color: #9fd8ff; border-color: rgba(90, 209, 255, .5); } .reflink.owasp { color: #9bffb5; border-color: rgba(74, 222, 128, .5); } .reflink.au { color: #ffd9a0; border-color: rgba(255, 176, 46, .5); } .reflink.std { color: #d6c6ff; border-color: rgba(167, 139, 250, .5); } .reflink:hover { background: rgba(255, 255, 255, .08); text-decoration: none; } .reflink svg { width: .95em; height: .95em; }
 
 .spot.soft { box-shadow: 0 0 0 4000px rgba(2, 4, 10, .32), 0 0 0 3px var(--accent), 0 0 30px var(--accent); }
+
+.goalbrief { margin: .6rem 0; padding: .5rem .7rem; border-left: 3px solid #ffbe46; background: rgba(255, 190, 70, .07); font-size: .86rem; }
+.goalbrief svg { vertical-align: -3px; color: #ffbe46; }

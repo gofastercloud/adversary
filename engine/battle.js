@@ -78,7 +78,7 @@ export function newBattle(content, o) {
   b.draw = shuffle(b.rng, seed, 'deck', o.deck.map(c => c.iid));
   if (o.drawOrder) b.draw = [...o.drawOrder, ...b.draw.filter(i => !o.drawOrder.includes(i))];
   // adversary deck
-  const deck = compileDeck(advData, { tier: b.adv.tier, size: 22, assessed: meta.assessed || [], techTable: content.techs, rand: o.advOrder ? null : () => rand(b.rng, seed, 'adv-baseline') });
+  const deck = compileDeck(advData, { tier: b.adv.tier, size: 22, assessed: meta.assessed || [], techTable: content.techs, goal: b0goal(content, meta), rand: o.advOrder ? null : () => rand(b.rng, seed, 'adv-baseline') });
   const bonus = tier.powerBonus + (assur.advPower || 0);
   deck.forEach((c, i) => {
     const uid = 'a' + i;
@@ -89,6 +89,9 @@ export function newBattle(content, o) {
   b.adv.draw = shuffle(b.rng, seed, 'adv-deck', Object.keys(b.adv.cards));
   if (o.advOrder) { const first = o.advOrder.map(t => Object.values(b.adv.cards).find(c => c.id === t)?.uid).filter(Boolean); b.adv.draw = [...first, ...b.adv.draw.filter(u => !first.includes(u))]; }
   b.adv.exposureBase = b.expo.max;
+  // goal: the adversary's win condition (not used in the scripted tutorial or TTX scenarios)
+  const gdef = !o.advOrder && !o.ttx && content.tuning.goals?.[meta.goal];
+  if (gdef) b.goal = { kind: meta.goal, rule: gdef.rule, need: gdef.need[Math.min(2, b.adv.tier - 1)] + (assur.goalNeed || 0), prog: 0 };
 
   // start-of-battle effects
   for (let i = 0; i < (o.modelBonus || 0); i++) { const a = b.assets[randInt(b.rng, seed, 'model', b.assets.length)]; a.baseWard += 1; }
@@ -661,6 +664,7 @@ function adversaryTurn(content, b) {
     resolveAdv(content, b, c, pick.target, cost);
     checkEnd(content, b);
   }
+  goalTick(content, b); checkEnd(content, b);
   if (b.over) return;
   // end of adversary turn: unplayed cards are discarded, like the defender's hand; fresh draw + new intent
   for (const u of A.hand) A.discard.push(u);
@@ -732,7 +736,7 @@ function resolveAdv(content, b, c, target, cost) {
       const amt = power - w.total - au.exfilMinus - b.exfilShield - detMinus;
       if (amt <= 0) { blocked(w); break; }
       const loss = asst.jewel ? amt * 2 : amt;
-      loseResilience(content, b, loss, 'exfil'); b.stats.dataLost += loss; asst.staged = false;
+      loseResilience(content, b, loss, 'exfil'); b.stats.dataLost += loss; asst.staged = false; goalHit(content, b, 'exfil', asst);
       ev(b, { t: 'exfil', asset: asst.id, n: loss, jewel: asst.jewel, tech: c.id });
       if (A.traits.some(t => t.op === 'hndl') && !activeControls(b, asst.id).some(k => ctrlStats(content, b, k).flags.has('pqc'))) { A.harvested += 1; ev(b, { t: 'harvest', asset: asst.id }); }
       break;
@@ -745,6 +749,7 @@ function resolveAdv(content, b, c, target, cost) {
       if (dmg <= 0) { blocked(w); break; }
       const d = damageAsset(content, b, asst, dmg, c.id);
       if (d > 0) loseResilience(content, b, Math.ceil(d / 2), 'impact');
+      goalHit(content, b, c.kind === 'impair' ? 'impair' : 'strike', asst);
       if (/^T1486|^T1490|^T1485|^T1561|^T1489/.test(c.id)) for (const n of asst.adjacent) { const B = asset(b, n); if (B.kind === 'backup' && !B.down) { const vaulted = activeControls(b, B.id).some(k => ctrlStats(content, b, k).flags.has('vault')); if (!vaulted) damageAsset(content, b, B, 2, c.id); else ev(b, { t: 'vault', asset: B.id }); } }
       break;
     }
@@ -752,9 +757,29 @@ function resolveAdv(content, b, c, target, cost) {
       const w = wardFor(content, b, asst.id, c);
       if (power - w.total <= 0) { blocked(w); break; }
       const cs = activeControls(b, asst.id); const k = cs[0]; if (k) { k.disabledBy = f.id; ev(b, { t: 'disabled', kid: k.kid, asset: asst.id, card: k.card, by: f.id, tech: c.id }); }
+      goalHit(content, b, 'inhibit', asst);
       break;
     }
   }
+}
+/** Goal progress from a resolved payoff card (exfil/strike/impair/inhibit). */
+function goalHit(content, b, kind, A) {
+  const G = b.goal; if (!G || b.over) return;
+  const def = content.tuning.goals[G.kind]; if (def.rule !== 'payoff' || !def.kinds.includes(kind)) return;
+  if (def.jewelOnly && !A.jewel) return;
+  const n = def.jewelOnly ? 2 : (A.jewel || (G.kind === 'disrupt' && A.kind === 'ot')) ? 2 : 1;
+  G.prog += n; ev(b, { t: 'goal', kind: G.kind, prog: G.prog, need: G.need, asset: A.id });
+}
+/** End-of-adversary-turn goal rules (dwell / reach). Isolated assets do not count: containment buys time. */
+function goalTick(content, b) {
+  const G = b.goal; if (!G || b.over) return;
+  const def = content.tuning.goals[G.kind];
+  if (def.rule === 'dwell') {
+    const live = b.footholds.filter(f => { const a = asset(b, f.asset); return !f.revealed && !a.isolated && !a.down && (def.targets === 'any' || def.targets.includes(a.kind) || a.jewel); });
+    G.prog = live.length >= (def.minFootholds || 1) ? G.prog + 1 : Math.max(0, G.prog - 1);
+  } else if (def.rule === 'reach') G.prog = new Set(b.footholds.filter(f => !f.revealed && !asset(b, f.asset).isolated).map(f => f.asset)).size;
+  else return;
+  ev(b, { t: 'goal', kind: G.kind, prog: G.prog, need: G.need });
 }
 function canaryCheck(content, b, A, f) {
   const can = activeControls(b, A.id).find(k => ctrlStats(content, b, k).flags.has('canary') && !k.canaryUsed);
@@ -802,9 +827,11 @@ export function decide(content, b, choiceId) {
 }
 
 // ───────────────────────────── end ─────────────────────────────
+const b0goal = (content, meta) => { const d = content.tuning.goals?.[meta.goal]; return d ? { key: meta.goal, kinds: d.rule === 'payoff' ? d.kinds : [] } : null; };
 function checkEnd(content, b) {
   if (b.over) return;
   if (b.res.cur <= 0) { b.res.cur = 0; endBattle(content, b, false, 'resilience'); return; }
+  if (b.goal && b.goal.prog >= b.goal.need) { endBattle(content, b, false, 'goal'); return; }
   if (b.expo.cur >= b.expo.max) endBattle(content, b, true, 'evicted');
 }
 function endBattle(content, b, won, how) {
@@ -856,7 +883,7 @@ export function intentView(content, b) {
   const c = b.adv.cards[I.uid];
   const lvl = Math.min(3, b.intel);
   const v = { level: lvl, tactic: c.tactic, kind: c.kind };
-  if (lvl >= 1) { v.tech = c.id; v.name = c.name; v.origin = c.baseline ? 'baseline' : c.assessed ? 'assessed' : 'signature'; }
+  if (lvl >= 1) { v.tech = c.id; v.name = c.name; v.origin = c.goalCard ? 'goal' : c.baseline ? 'baseline' : c.assessed ? 'assessed' : 'signature'; }
   if (lvl >= 2) { v.asset = I.asset || (I.fid ? foot(b, I.fid)?.asset : null); }
   if (lvl >= 3) { v.stride = c.stride; v.power = c.power; v.cost = c.cost; }
   return v;

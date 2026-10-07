@@ -1,0 +1,424 @@
+{
+ "id": "solarwinds-ttx",
+ "draft": true,
+ "name": "SolarWinds",
+ "blurb": "Draft exercise based on the documented incident “SolarWinds” (CTID Attack Flow corpus). A well-known supply chain attack against an Austin, TX software company.",
+ "adversary": {
+  "id": "G0034",
+  "tier": 2
+ },
+ "rounds": 8,
+ "maxScore": 250,
+ "injects": [
+  {
+   "id": "i1",
+   "round": 1,
+   "at": "T+00:00",
+   "kind": "ops",
+   "title": "Malware",
+   "text": "Attackers embedded their malicious payload on a legitimate component of the SolarWinds Orion Platform software. This component is a DLL library,… To bypass application control technologies, adversaries sign their malware with valid signatures by creating, acquiring, or stealing code-signing… The malicious DLL file was distributed to victims through an automated update mechanism.",
+   "refs": [
+    "attack:T1587.001",
+    "attack:T1553.002",
+    "attack:T1195.002",
+    "attack:T1569.002"
+   ],
+   "fx": []
+  },
+  {
+   "id": "i2",
+   "round": 2,
+   "at": "T+04:00",
+   "kind": "ops",
+   "title": "Time Based Evasion (Time Based Checks)",
+   "text": "Once loaded, the backdoor runs a series of checks to ensure it is running in an actual environment. The backdoor also checks that the last write-time. The backdoor checks for a variety of antivirus/endpoint detection agents prior to execution (e.g. Windbg, Autoruns, Wireshark). The backdoor conducts basic reconnaissance on the compromised system to determine running processes to report to the C2 server.",
+   "refs": [
+    "attack:T1497.003",
+    "attack:T1063",
+    "attack:T1057",
+    "attack:T1012"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "id": "i3",
+   "round": 3,
+   "at": "T+08:00",
+   "kind": "ops",
+   "title": "Domain Generation Algorithms",
+   "text": "Adversaries use DGAs to dynamically generate a C2 domain rather than relying on static IP addresses. The C2 responds with an encoded buffer of commands for the backdoor to execute. The commands allow the attackers to run, stop, enumerate processes;… The attackers used a legitimate hostname found within the victim's environment as the hostname on their C2 infrastructure to avoid detection. The…",
+   "refs": [
+    "attack:T1568.002",
+    "attack:T1132",
+    "attack:T1036.005",
+    "attack:T1562.004"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (Domain Generation Algorithms). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "Network Intrusion Prevention: Use intrusion detection signatures to block traffic at network boundaries.",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: Use intrusion detection signatures to block traffic at network boundaries. This mitigation applies to 2 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M1031",
+       "nist-800-53:AC-4",
+       "nist-800-53:CA-7"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques.",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques. It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M1017"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i4",
+   "round": 4,
+   "at": "T+12:00",
+   "kind": "ops",
+   "title": "Domain Trust Discovery",
+   "text": "Attackers executed ADFIND to enumerate domains and to discover trust between federated accounts with a renamed filename chosen to blend into the… The attackers created a IFEO Debugger registry value for dllhost.exe to trigger execution of the installation of Cobalt Strike. Attackers obtained Ticket Granting Service (TGS) tickets for Active Directory Service Principal Names (SPNs) to crack offline.",
+   "refs": [
+    "attack:T1482",
+    "attack:T1183",
+    "attack:T1558.003",
+    "attack:T1555"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (Domain Trust Discovery). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts).",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). This mitigation applies to 2 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M1026",
+       "nist-800-53:AC-4",
+       "nist-800-53:CM-2"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "Password Policies: Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access.",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: Set and enforce secure password policies for accounts to reduce the likelihood of unauthorized access. It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M1027"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i5",
+   "round": 5,
+   "at": "T+16:00",
+   "kind": "alert",
+   "title": "DCSync",
+   "text": "Attackers executed a DCSync attack in which they leveraged privileged accounts to access credentials. The TEARDROP malware is run through rundll32.exe, which runs as a service in the background to estabish persistence. The VBScript removes the previously created registry value to clean up any traces of execution and deletes two more registry keys in…",
+   "refs": [
+    "attack:T1003.006",
+    "attack:T1543.003",
+    "attack:T1112",
+    "attack:T1053.005"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (DCSync). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts).",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). This mitigation applies to 3 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M1026",
+       "nist-800-53:AC-2",
+       "nist-800-53:AC-3"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "Operating System Configuration involves adjusting system settings and hardening the default configurations of an operating system (OS) to mitigate adversary exploitation and prevent abuse of system functionality.",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: Operating System Configuration involves adjusting system settings and hardening the default configurations of an operating system (OS) to mitigate adversary exploitation and prevent abuse of system functionality. It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M1028"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i6",
+   "round": 6,
+   "at": "T+20:00",
+   "kind": "ops",
+   "title": "Valid Accounts",
+   "text": "The attackers used valid accounts to move laterally. When executed during lateral movement, rundll32 ran through WMIC. The Cobalt Strike beacon was loaded onto the machine. According to Microsoft, the Cobalt Strike DLL was likely deleted after execution to avoid forensic discovery.",
+   "refs": [
+    "attack:T1078",
+    "attack:T1047",
+    "attack:T1070",
+    "attack:T1082"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (Valid Accounts). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation.",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. This mitigation applies to 2 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M1018",
+       "nist-800-53:AC-2",
+       "nist-800-53:AC-3"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts).",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M1026"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i7",
+   "round": 7,
+   "at": "T+24:00",
+   "kind": "alert",
+   "title": "Data from Local System",
+   "text": "The attackers were able to collect sensitive data from victims. The attackers used the 7-zip utility to create a password-protected archive with an extension not associated with archive files. The attackers mapped a OneDrive share from the command-line using the net.exe command-line utility. They also likely used other cloud services such…",
+   "refs": [
+    "attack:T1005",
+    "attack:T1560.001",
+    "attack:T1567.002"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "objectives": [
+  {
+   "id": "o1",
+   "kind": "detectBy",
+   "round": 4,
+   "text": "Detect the intrusion by round 4",
+   "points": 30
+  },
+  {
+   "id": "o2",
+   "kind": "keepJewel",
+   "text": "Keep the crown jewels intact",
+   "points": 40
+  },
+  {
+   "id": "o3",
+   "kind": "decisions",
+   "text": "Make the best call on at least half of the decisions",
+   "points": 30
+  }
+ ],
+ "sources": [
+  {
+   "n": "Picus",
+   "u": "https://www.picussecurity.com/resource/blog/ttps-used-in-the-solarwinds-breach"
+  },
+  {
+   "n": "Microsoft",
+   "u": "https://www.microsoft.com/en-us/security/blog/2020/12/18/analyzing-solorigate-the-compromised-dll-file-that-started-a-sophisticated-cyberattack-and-how-microsoft-defender-helps-protect/"
+  },
+  {
+   "n": "Comodo Cybersecurity",
+   "u": "https://techtalk.comodo.com/2020/12/23/sunburst-apt-against-solarwind-mapped-to-kill-chain/"
+  },
+  {
+   "n": "Microsoft",
+   "u": "https://www.microsoft.com/en-us/security/blog/2021/01/20/deep-dive-into-the-solorigate-second-stage-activation-from-sunburst-to-teardrop-and-raindrop/"
+  }
+ ],
+ "goal": "exfil"
+}

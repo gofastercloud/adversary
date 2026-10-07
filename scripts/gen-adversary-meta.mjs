@@ -123,5 +123,13 @@ camp('C0014', 2, 'Operation Wocao (2017–2019): wide-ranging intrusions using l
 camp('C0041', 1, 'FrostyGoop incident (2024): ICS malware manipulating Modbus on heating controllers.', [t('modbus', 'Modbus Manipulation', 'Impair cards cost 1 less.', { op: 'discount', kinds: ['impair'], n: 1 })]);
 camp('C0022', 2, 'Operation Dream Job: fake job offers used to deliver malware and steal data and cryptocurrency.', [t('lure', 'Targeted Lures', 'Ignores 1 Authentication ward.', { op: 'bypass', stride: 'S', n: 1 })]);
 
+
+// ── Goals (see tuning.goals). Editorial: based on each actor's documented objectives; see dossier and ATT&CK pages.
+const GOAL = { G1017: 'preposition', G0035: 'preposition', G0034: 'disrupt', G0088: 'disrupt', C0025: 'disrupt', C0028: 'disrupt', C0034: 'disrupt', C0030: 'disrupt', C0020: 'disrupt', C0041: 'disrupt',
+  G0016: 'exfil', G0096: 'exfil', G0007: 'exfil', G0045: 'exfil', G0129: 'exfil', G1057: 'exfil', G0125: 'exfil', G0114: 'exfil', G0049: 'exfil', G1004: 'exfil', C0024: 'exfil', C0012: 'exfil', C0049: 'exfil', C0014: 'exfil', C0022: 'exfil', C0059: 'exfil', C0058: 'exfil', C0029: 'access',
+  G0032: 'fraud', G0046: 'fraud', G0082: 'fraud', G0037: 'fraud', G0091: 'fraud', G0080: 'fraud', C0057: 'fraud',
+  G0102: 'ransom', G1015: 'ransom', G0092: 'ransom', G1051: 'ransom', G1043: 'ransom', G1032: 'ransom', C0063: 'destroy',
+  G0117: 'access', G0139: 'resource', G0106: 'resource' };
+for (const [id, m] of Object.entries(M)) { if (!GOAL[id]) throw new Error('no goal for ' + id); m.goal = GOAL[id]; }
 writeFileSync(new URL('../content/core/adversary-meta.json', import.meta.url), JSON.stringify(M, null, 1) + '\n');
 console.log('adversary meta:', Object.keys(M).length);

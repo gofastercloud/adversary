@@ -122,11 +122,20 @@ export function validateAll() {
   const nAch = core.achievements.achievements.length;
   if (nAch < 60) W('achievements', `only ${nAch}`);
 
+  // ───── goals
+  for (const [gid, g] of Object.entries(core.tuning.goals || {})) {
+    const f = `goal:${gid}`; icon(g.icon, f, 'icon'); refs(g.refs, f, 'refs', { min: 1, max: 4 });
+    if (!['dwell', 'reach', 'payoff'].includes(g.rule)) E(f, 'bad rule');
+    if (!Array.isArray(g.need) || g.need.length !== 3 || g.need.some(n => !Number.isInteger(n) || n < 1)) E(f, 'need must be [t1,t2,t3]');
+    if (g.rule === 'payoff' && !g.kinds?.length) E(f, 'payoff goal needs kinds');
+    for (const k of ['blurb', 'how', 'lesson']) if (!isStr(g[k], 20, 400)) E(f, k);
+  }
   // ───── adversary meta
   for (const [id, m] of Object.entries(core.adversaryMeta)) {
     const f = `advmeta:${id}`;
     if (!advs[id]) E(f, 'no data/adversaries file'); icon(m.icon, f, 'icon');
     if (![1, 2, 3].includes(m.tier)) E(f, 'tier');
+    if (!core.tuning.goals?.[m.goal]) E(f, 'goal must be one of tuning.goals: ' + m.goal);
     if (!isStr(m.blurb, 40, 320)) E(f, 'blurb');
     for (const t of m.traits || []) { if (!TRAIT_OPS.has(t.op)) E(f, 'bad trait op ' + t.op); if (!isStr(t.text, 15, 260)) E(f, `trait ${t.id} text`); if (t.op === 'discount') for (const k of t.kinds) if (!KINDS.includes(k)) E(f, 'bad kind ' + k); }
     for (const a of m.assessed || []) if (!attack.techniques[a]) E(f, 'assessed technique unknown ' + a);

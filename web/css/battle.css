@@ -55,3 +55,7 @@
 
 @media (max-width: 1150px) { :root { --card-w: 122px; --card-h: 176px; } .card { font-size: 10px; } .card-art { height: 52px; } .card-art svg.big { width: 42px; height: 42px; } .asset { width: 172px; } .field-wrap { grid-template-columns: 1fr; } .side { display: none; } .bottom { grid-template-columns: 90px 1fr 140px; } .hud { grid-template-columns: 1fr 1.5fr; } .hud > :last-child { display: none; } }
 @media (max-width: 760px) { .asset { width: 150px; padding: 6px; } .zone { padding: .6rem .4rem; gap: .4rem; } .asset .slot { height: 28px; } :root { --card-w: 98px; --card-h: 142px; } .card { font-size: 8px; } .card-text { font-size: 7.5px !important; } .card-name { font-size: 9.5px; min-height: 20px; } .card-art { height: 34px; } .card-art svg.big { width: 28px; height: 28px; } .energy { width: 64px; height: 64px; font-size: 2.2rem; } .bottom { grid-template-columns: 60px 1fr 100px; } }
+
+.goalbar { margin-top: .4rem; display: flex; align-items: center; gap: .5rem; font-size: .78rem; padding: .3rem .6rem; border-radius: 9px; background: rgba(255, 190, 70, .08); border: 1px solid rgba(255, 190, 70, .45); }
+.goalbar b { font-family: var(--font-display); letter-spacing: .06em; white-space: nowrap; } .goalbar .gm { flex: 1; height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .12); overflow: hidden; }
+.goalbar .gm i { display: block; height: 100%; background: linear-gradient(90deg, #ffbe46, #ff5470); transition: width .5s; } .goalbar.hot { border-color: var(--bad); animation: pulse 1s infinite; }

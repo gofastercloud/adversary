@@ -1335,5 +1335,18 @@
     ]
    ]
   }
+ },
+ "observed": {
+  "flows": 40,
+  "goals": {
+   "ransom": 7,
+   "access": 8,
+   "exfil": 13,
+   "resource": 3,
+   "fraud": 4,
+   "preposition": 1,
+   "destroy": 4
+  },
+  "techniquesBlended": 150
  }
 }

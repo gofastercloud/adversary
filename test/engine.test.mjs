@@ -217,3 +217,18 @@ test('baseline tradecraft: seeded, varies per battle, never adds payoff cards, s
   for (const c of a1.filter(c => c.baseline)) assert.ok(!['exfil', 'strike', 'impair', 'inhibit'].includes(c.kind), 'no baseline payoffs');
   assert.ok(a1.filter(c => !c.baseline).length >= 10, 'signature overlay intact');
 });
+
+test('goals: every adversary has one; breaching a goal ends the battle; scripted tutorial/TTX battles have none', () => {
+  for (const [id, m] of Object.entries(content.adversaryMeta)) assert.ok(content.tuning.goals[m.goal], id + ' has a valid goal');
+  const outs = [];
+  for (let i = 0; i < 12; i++) { const b = playBattle(content, { seed: 'goal-' + i, adversary: 'G0117', tier: 2 }); assert.equal(b.goal.kind, 'access'); outs.push(b.result.how); }
+  assert.ok(outs.includes('goal'), 'access broker sometimes achieves its goal: ' + outs.join());
+  const t = B.newBattle(content, { seed: 't', deck: starterDeck(content, 'phoenix'), adversary: { id: 'G0092', tier: 1 }, resilience: { cur: 20, max: 20 }, advOrder: ['T1566'] });
+  assert.equal(t.goal, undefined, 'tutorial battle has no goal');
+});
+
+test('goal payoffs: a ransom actor with too few observed impact cards gets goal-aligned payoffs from incident data', () => {
+  const b = B.newBattle(content, { seed: 'gp-1', deck: starterDeck(content, 'phoenix'), adversary: { id: 'G1015', tier: 2 }, resilience: { cur: 20, max: 20 } });
+  const pay = Object.values(b.adv.cards).filter(c => c.kind === 'strike');
+  assert.ok(pay.length >= 2, 'at least two strike cards');
+});

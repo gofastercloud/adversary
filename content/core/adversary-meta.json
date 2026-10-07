@@ -50,7 +50,8 @@
     ]
    }
   ],
-  "note": "Destructive impact is an *assessed intent* (CISA AA24-038A), not an observed technique — its Strike card is marked as such."
+  "note": "Destructive impact is an *assessed intent* (CISA AA24-038A), not an observed technique — its Strike card is marked as such.",
+  "goal": "preposition"
  },
  "G0034": {
   "name": "Sandworm Team",
@@ -83,7 +84,8 @@
     "op": "startFootholds",
     "n": 1
    }
-  ]
+  ],
+  "goal": "disrupt"
  },
  "G0016": {
   "name": "APT29",
@@ -116,7 +118,8 @@
     "op": "hndl",
     "note": "Illustrates the general harvest-now-decrypt-later risk for strategic collectors; not an APT29-specific finding."
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "G0032": {
   "name": "Lazarus Group",
@@ -150,7 +153,8 @@
     "op": "drawBonus",
     "n": 1
    }
-  ]
+  ],
+  "goal": "fraud"
  },
  "G0096": {
   "name": "APT41",
@@ -178,7 +182,8 @@
     "op": "drawBonus",
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "G0007": {
   "name": "APT28",
@@ -204,7 +209,8 @@
     "op": "energyBonus",
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "G0045": {
   "name": "menuPass",
@@ -229,7 +235,8 @@
     "op": "stealthBonus",
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "G0129": {
   "name": "Mustang Panda",
@@ -254,7 +261,8 @@
     "op": "stealthBonus",
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "G0046": {
   "name": "FIN7",
@@ -275,7 +283,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "fraud"
  },
  "G0102": {
   "name": "Wizard Spider",
@@ -304,7 +313,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "ransom"
  },
  "G1015": {
   "name": "Scattered Spider",
@@ -330,7 +340,8 @@
     "op": "energyBonus",
     "n": 1
    }
-  ]
+  ],
+  "goal": "ransom"
  },
  "G0035": {
   "name": "Dragonfly",
@@ -355,7 +366,8 @@
     "op": "stealthBonus",
     "n": 1
    }
-  ]
+  ],
+  "goal": "preposition"
  },
  "G0117": {
   "name": "Fox Kitten",
@@ -376,7 +388,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "access"
  },
  "G0082": {
   "name": "APT38",
@@ -395,7 +408,8 @@
     "n": 1,
     "round": 3
    }
-  ]
+  ],
+  "goal": "fraud"
  },
  "G1057": {
   "name": "ShinyHunters",
@@ -417,7 +431,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "G0125": {
   "name": "HAFNIUM",
@@ -445,7 +460,8 @@
     "op": "stealthBonus",
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "G0114": {
   "name": "Chimera",
@@ -466,7 +482,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "G0049": {
   "name": "OilRig",
@@ -484,7 +501,8 @@
     "op": "drawBonus",
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "G0088": {
   "name": "TEMP.Veles",
@@ -507,7 +525,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "disrupt"
  },
  "G0139": {
   "name": "TeamTNT",
@@ -525,7 +544,8 @@
     "op": "stealthBonus",
     "n": -1
    }
-  ]
+  ],
+  "goal": "resource"
  },
  "G0106": {
   "name": "Rocke",
@@ -546,7 +566,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "resource"
  },
  "G0092": {
   "name": "TA505",
@@ -564,7 +585,8 @@
     "op": "drawBonus",
     "n": 1
    }
-  ]
+  ],
+  "goal": "ransom"
  },
  "G0037": {
   "name": "FIN6",
@@ -585,7 +607,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "fraud"
  },
  "G0091": {
   "name": "Silence",
@@ -606,7 +629,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "fraud"
  },
  "G0080": {
   "name": "Cobalt Group",
@@ -625,7 +649,8 @@
     "n": 1,
     "round": 3
    }
-  ]
+  ],
+  "goal": "fraud"
  },
  "G1004": {
   "name": "LAPSUS$",
@@ -644,7 +669,8 @@
     "stride": "S",
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "G1051": {
   "name": "Medusa Group",
@@ -663,7 +689,8 @@
     "n": 1,
     "round": 4
    }
-  ]
+  ],
+  "goal": "ransom"
  },
  "G1043": {
   "name": "BlackByte",
@@ -684,7 +711,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "ransom"
  },
  "G1032": {
   "name": "INC Ransom",
@@ -705,7 +733,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "ransom"
  },
  "C0025": {
   "name": "2016 Ukraine Electric Power Attack",
@@ -726,7 +755,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "disrupt"
  },
  "C0028": {
   "name": "2015 Ukraine Electric Power Attack",
@@ -744,7 +774,8 @@
     "op": "startFootholds",
     "n": 1
    }
-  ]
+  ],
+  "goal": "disrupt"
  },
  "C0030": {
   "name": "Triton Safety Instrumented System Attack",
@@ -765,7 +796,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "disrupt"
  },
  "C0024": {
   "name": "SolarWinds Compromise",
@@ -790,7 +822,8 @@
     "op": "stealthBonus",
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "C0034": {
   "name": "2022 Ukraine Electric Power Attack",
@@ -809,7 +842,8 @@
     "n": 1,
     "round": 5
    }
-  ]
+  ],
+  "goal": "disrupt"
  },
  "C0063": {
   "name": "2025 Poland Wiper Attacks",
@@ -828,7 +862,8 @@
     "n": 1,
     "round": 4
    }
-  ]
+  ],
+  "goal": "destroy"
  },
  "C0057": {
   "name": "3CX Supply Chain Attack",
@@ -846,7 +881,8 @@
     "op": "startFootholds",
     "n": 1
    }
-  ]
+  ],
+  "goal": "fraud"
  },
  "C0029": {
   "name": "Cutting Edge",
@@ -867,7 +903,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "access"
  },
  "C0012": {
   "name": "Operation CuckooBees",
@@ -888,7 +925,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "C0059": {
   "name": "Salesforce Data Exfiltration",
@@ -910,7 +948,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "C0058": {
   "name": "SharePoint ToolShell Exploitation",
@@ -931,7 +970,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "C0020": {
   "name": "Maroochy Water Breach",
@@ -952,7 +992,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "disrupt"
  },
  "C0049": {
   "name": "Leviathan Australian Intrusions",
@@ -973,7 +1014,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "C0014": {
   "name": "Operation Wocao",
@@ -994,7 +1036,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  },
  "C0041": {
   "name": "FrostyGoop Incident",
@@ -1015,7 +1058,8 @@
     ],
     "n": 1
    }
-  ]
+  ],
+  "goal": "disrupt"
  },
  "C0022": {
   "name": "Operation Dream Job",
@@ -1034,6 +1078,7 @@
     "stride": "S",
     "n": 1
    }
-  ]
+  ],
+  "goal": "exfil"
  }
 }

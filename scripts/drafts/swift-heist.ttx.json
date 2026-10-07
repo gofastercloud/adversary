@@ -1,0 +1,387 @@
+{
+ "id": "swift-heist-ttx",
+ "draft": true,
+ "name": "SWIFT Heist",
+ "blurb": "Draft exercise based on the documented incident “SWIFT Heist” (CTID Attack Flow corpus). A financial crime involving the SWIFT banking network.",
+ "adversary": {
+  "id": "G0034",
+  "tier": 2
+ },
+ "rounds": 8,
+ "maxScore": 250,
+ "injects": [
+  {
+   "id": "i1",
+   "round": 1,
+   "at": "T+00:00",
+   "kind": "ops",
+   "title": "Spearphishing Attachment",
+   "text": "Suspected that phishing emails were sent to employees at Bangladesh Bank which dropped malware.",
+   "refs": [
+    "attack:T1566.001"
+   ],
+   "fx": []
+  },
+  {
+   "id": "i2",
+   "round": 2,
+   "at": "T+04:00",
+   "kind": "ops",
+   "title": "Exploit Public-Facing Application",
+   "text": "Suspected that attackers gained access by exploiting weakness in a new electronic payment system (real time gross settlement).",
+   "refs": [
+    "attack:T1190"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (Exploit Public-Facing Application). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "Vulnerability scanning involves the automated or manual assessment of systems, applications, and networks to identify misconfigurations, unpatched software, or other security weaknesses.",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: Vulnerability scanning involves the automated or manual assessment of systems, applications, and networks to identify misconfigurations, unpatched software, or other security weaknesses. This mitigation applies to 1 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M1016",
+       "nist-800-53:AC-2",
+       "nist-800-53:AC-3"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts).",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M1026"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i3",
+   "round": 3,
+   "at": "T+08:00",
+   "kind": "ops",
+   "title": "Valid Accounts",
+   "text": "Credentials stolen for SWIFT operator at Bangladesh Bank.",
+   "refs": [
+    "attack:T1078"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (Valid Accounts). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "Application Developer Guidance focuses on providing developers with the knowledge, tools, and best practices needed to write secure code, reduce vulnerabilities, and implement secure design principles.",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: Application Developer Guidance focuses on providing developers with the knowledge, tools, and best practices needed to write secure code, reduce vulnerabilities, and implement secure design principles. This mitigation applies to 1 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M1013",
+       "nist-800-53:AC-2",
+       "nist-800-53:AC-3"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "Active Directory Configuration: Implement robust Active Directory (AD) configurations using group policies to secure user accounts, control access, and minimize the attack surface.",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: Implement robust Active Directory (AD) configurations using group policies to secure user accounts, control access, and minimize the attack surface. It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M1015"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i4",
+   "round": 4,
+   "at": "T+12:00",
+   "kind": "ops",
+   "title": "Ingress Tool Transfer",
+   "text": "Attackers installed 6 types of malware.",
+   "refs": [
+    "attack:T1105"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (Ingress Tool Transfer). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "Network Intrusion Prevention: Use intrusion detection signatures to block traffic at network boundaries.",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: Use intrusion detection signatures to block traffic at network boundaries. This mitigation applies to 1 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M1031",
+       "nist-800-53:AC-4",
+       "nist-800-53:CA-7"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "Filter Network Traffic: Employ network appliances and endpoint software to filter ingress, egress, and lateral network traffic.",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: Employ network appliances and endpoint software to filter ingress, egress, and lateral network traffic. It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M1037"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i5",
+   "round": 5,
+   "at": "T+16:00",
+   "kind": "ops",
+   "title": "File Deletion",
+   "text": "Attackers deleted files associated with SWIFT software to prevent employees from seeing the SWIFT messages.",
+   "refs": [
+    "attack:T1070.004"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (File Deletion). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "Restrict File and Directory Permissions: Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files.",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files. This mitigation applies to 1 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M1022",
+       "nist-800-53:AC-16",
+       "nist-800-53:AC-17"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "Remote Data Storage focuses on moving critical data, such as security logs and sensitive files, to secure, off-host locations to minimize unauthorized access, tampering, or destruction by adversaries.",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: Remote Data Storage focuses on moving critical data, such as security logs and sensitive files, to secure, off-host locations to minimize unauthorized access, tampering, or destruction by adversaries. It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M1029"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i6",
+   "round": 6,
+   "at": "T+20:00",
+   "kind": "alert",
+   "title": "Disable or Modify Tools",
+   "text": "Attackers used malware to disable printer, which prevented SWIFT acknowledgement messages being printed out for manual review.",
+   "refs": [
+    "attack:T1562.001"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "objectives": [
+  {
+   "id": "o1",
+   "kind": "detectBy",
+   "round": 4,
+   "text": "Detect the intrusion by round 4",
+   "points": 30
+  },
+  {
+   "id": "o2",
+   "kind": "keepJewel",
+   "text": "Keep the crown jewels intact",
+   "points": 40
+  },
+  {
+   "id": "o3",
+   "kind": "decisions",
+   "text": "Make the best call on at least half of the decisions",
+   "points": 30
+  }
+ ],
+ "sources": [
+  {
+   "n": "Cyber UK",
+   "u": "https://cyber.uk/areas-of-cyber-security/nation-state-hackers-case-study-bangladesh-bank-heist/"
+  },
+  {
+   "n": "NYTimes",
+   "u": "https://www.nytimes.com/interactive/2018/05/03/magazine/money-issue-bangladesh-billion-dollar-bank-heist.html?mtrref=undefined&gwh=39B90281F7FE0DFD1876E89D17BFE7C5&gwt=pay&assetType=PAYWALL"
+  },
+  {
+   "n": "Wired",
+   "u": "https://www.wired.com/2016/05/insane-81m-bangladesh-bank-heist-heres-know/"
+  },
+  {
+   "n": "Reuters",
+   "u": "https://www.reuters.com/investigates/special-report/cyber-heist-federal"
+  }
+ ],
+ "goal": "fraud"
+}

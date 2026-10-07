@@ -2,7 +2,7 @@
   "name": "adversary",
   "version": "0.1.0",
   "private": true,
-  "description": "ADVERSARY — a roguelike deckbuilder that teaches threat modelling and blue-team concepts.",
+  "description": "ADVERSARY \u2014 a roguelike deckbuilder that teaches threat modelling and blue-team concepts.",
   "type": "module",
   "license": "MIT",
   "engines": {
@@ -16,7 +16,8 @@
     "sim": "node scripts/simulate.mjs",
     "links": "node scripts/check-links.mjs",
     "synth": "npm run build && npm --prefix infra run synth",
-    "deploy": "npm run build && npm --prefix infra run deploy"
+    "deploy": "npm run build && npm --prefix infra run deploy",
+    "data": "node scripts/build-attack-data.mjs && node scripts/build-mapping-data.mjs && node scripts/build-flows.mjs && node scripts/build-baseline.mjs"
   },
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "^3.1147.0",

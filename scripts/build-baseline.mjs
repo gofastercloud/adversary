@@ -40,6 +40,24 @@ for (const dom of ['enterprise', 'ics']) {
   summary[dom] = { intrusionSets: N, techniquesWithData: n, top: byTac };
   console.log(dom, 'intrusion sets with data:', N, 'techniques with prevalence:', n);
 }
+// Observed-incident overlay: how often each technique appears in real incidents (CTID Attack Flow corpus, build-flows.mjs).
+// p = 70% group prevalence (breadth across actors) + 30% incident frequency (what actually showed up in documented intrusions).
+// Goal-conditioned frequency `g` (share of flows with that goal using the technique) drives goal payoff sampling.
+const flowDir = path.join(root, 'data/flows');
+if (existsSync(path.join(flowDir, 'stats.json'))) {
+  const st = JSON.parse(readFileSync(path.join(flowDir, 'stats.json'), 'utf8')), idx = JSON.parse(readFileSync(path.join(flowDir, 'index.json'), 'utf8'));
+  const byGoal = {}, goalN = {};
+  for (const f of idx) { const d = JSON.parse(readFileSync(path.join(flowDir, f.id + '.json'), 'utf8')); goalN[d.goal] = (goalN[d.goal] || 0) + 1; const seen = new Set(); for (const a of d.acts) { for (const k of new Set([a.t, a.t.split('.')[0]])) if (!seen.has(k)) { seen.add(k); (byGoal[d.goal] ||= {})[k] = (byGoal[d.goal][k] || 0) + 1; } } }
+  let nb = 0;
+  for (const [id, t] of Object.entries(T)) {
+    delete t.pg; delete t.po; delete t.g;
+    const po = st.freq[id] ? Math.round(100 * st.freq[id] / st.flows) : 0;
+    if (po) { t.po = po; t.pg = t.p || 0; t.p = Math.max(1, Math.round(0.7 * (t.p || 0) + 0.3 * po)); nb++; }
+    for (const [g, m] of Object.entries(byGoal)) if (m[id] && goalN[g] >= 2) (t.g ||= {})[g] = Math.round(100 * m[id] / goalN[g]);
+  }
+  summary.observed = { flows: st.flows, goals: goalN, techniquesBlended: nb };
+  console.log('blended observed incident frequency into', nb, 'techniques;', JSON.stringify(goalN));
+}
 writeFileSync(tp, JSON.stringify(T) + '\n');
 mkdirSync(path.join(root, 'data/baseline'), { recursive: true });
 writeFileSync(path.join(root, 'data/baseline/summary.json'), JSON.stringify({ src: 'Derived from MITRE ATT&CK intrusion-set / software usage relationships', ...summary }, null, 1) + '\n');

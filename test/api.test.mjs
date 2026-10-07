@@ -44,7 +44,7 @@ test('forged results are rejected: tampered log, wrong fingerprint, truncated ru
   const { content, log } = makeRun(init);
   const post = (b, auth) => api.write(ev('POST', '/runs', { body: b, auth }));
   const base = { init, scenario: 'enterprise', log, fingerprint: content.fingerprint };
-  assert.equal((await post({ ...base, log: log.slice(0, 40) })).statusCode, 422);                       // incomplete
+  assert.equal((await post({ ...base, log: log.slice(0, Math.max(1, log.length - 2)) })).statusCode, 422);                       // incomplete
   const tampered = log.map(a => ({ ...a })); const i = tampered.findIndex(a => a.type === 'BUY' || a.type === 'TAKE_CARD'); if (i >= 0) tampered[i].id = 'c.recover.elevation'; tampered.push({ type: 'BATTLE', action: { type: 'PLAY', iid: 'zzz', target: {} } });
   assert.equal((await post({ ...base, log: tampered })).statusCode, 422);                               // replay fails
   assert.equal((await post({ ...base, fingerprint: 'deadbeef' })).statusCode, 409);                     // outdated/forged content

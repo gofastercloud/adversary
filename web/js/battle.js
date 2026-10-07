@@ -111,7 +111,7 @@ export function BattleScreen() {
     store.set({ holdBattle: true });
     const res = nb.result;
     if (res.won) { banner(res.how === 'evicted' ? 'ADVERSARY EVICTED' : 'OPERATION CONTAINED', res.how === 'evicted' ? 'Exposure maxed — the operation is burned' : 'The window closed with your crown jewels intact', '#4ade80', 2400); sfx.win(); confetti(120); flashBg(1); }
-    else { banner('BREACH', res.how === 'jewel' ? 'A crown jewel was lost' : res.how === 'resilience' ? 'Resilience exhausted' : 'Operation abandoned', '#ff2e4e', 2400); sfx.lose(); shake(true); }
+    else { banner('BREACH', res.how === 'goal' ? `The adversary achieved its goal: ${content.tuning.goals[b.goal?.kind]?.name || ''}` : res.how === 'jewel' ? 'A crown jewel was lost' : res.how === 'resilience' ? 'Resilience exhausted' : 'Operation abandoned', '#ff2e4e', 2400); sfx.lose(); shake(true); }
   };
 
   // ── targeting
@@ -163,6 +163,7 @@ export function BattleScreen() {
           <div class="traits">${b.adv.traits.filter(t => t.name).map(t => html`<span class="trait" ...${tip(html`<div style="width:280px"><h4>${t.name}</h4><p>${t.text}</p>${t.note ? html`<p class="dim">${t.note}</p>` : null}</div>`)}>${t.name}</span>`)}</div></div>
       </div>
       <div class="panel hud-me">
+        ${b.goal && html`<${GoalMeter} b=${b} content=${content}/>`}
         <div class=${cx('intent', intent?.level < 1 && 'hidden-intent')}>
           <${Icon} n=${TACTIC_ICON[intent?.tactic] || 'help-circle'} cls="lg"/>
           <div><div class="iv">${intent ? (intent.level >= 1 ? `${intent.tech} ${intent.name}` : tname(content, intent.tactic)) : 'No move planned'}</div>
@@ -228,4 +229,9 @@ function BattleEnd({ b, content, run }) {
     <div class="statgrid" style="margin:1rem 0"><div class="stat"><b>${r.rounds}</b><span>Rounds</span></div><div class="stat"><b>${r.evictions}</b><span>Evictions</span></div><div class="stat"><b>${r.blocked}</b><span>Blocked</span></div><div class="stat"><b>${r.resLost}</b><span>Resilience lost</span></div></div>
     ${r.debt > 0 && html`<p class="warn">⚠ Quantum debt: ${r.debt} Resilience will be lost to future decryption of stolen data. Post-quantum hybrid crypto would have prevented it.</p>`}
     <button class="btn primary big" onClick=${() => { store.set({ holdBattle: false }); sfx.click(); }}>${r.won ? 'Debrief' : 'See what happened'}</button></div></div>`;
+}
+
+function GoalMeter({ b, content }) {
+  const G = b.goal, d = content.tuning.goals[G.kind]; const pct = Math.min(100, Math.round(100 * G.prog / G.need));
+  return html`<div class=${cx('goalbar', pct >= 70 && 'hot')} ...${tip(d.how + ' ' + d.blurb)}><${Icon} n=${d.icon}/><b>Goal: ${d.name}</b><div class="gm"><i style=${`width:${pct}%`}/></div><span>${G.prog}/${G.need}</span></div>`;
 }

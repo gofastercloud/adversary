@@ -76,7 +76,13 @@ export function primaryTactic(tacs) {
  * Compile adversary deck data (data/adversaries/<id>.json) into playable cards.
  * tier: 1 commodity | 2 intrusion set | 3 apex. Higher tiers: more power, more cards of signature techniques.
  */
-export function compileDeck(adv, { tier = 1, size = 22, tacticsAllowed = null, assessed = [], techTable = null } = {}) {
+// Baseline tradecraft: commodity techniques most intrusion sets use (ATT&CK-derived prevalence `p`). They give each
+// adversary a believable common core and make every battle a little different, while the *signature* overlay
+// (the adversary's own techniques) and all payoff cards (exfil/strike/impair/inhibit) stay adversary-specific.
+const BASELINE_KINDS = ['breach', 'arm', 'persist', 'escalate', 'evade', 'disable', 'creds', 'map', 'spread', 'stage', 'beacon'];
+const BASELINE_SLOTS = [7, 5, 4];   // commodity actors lean on common tradecraft; apex actors on their own
+
+export function compileDeck(adv, { tier = 1, size = 22, tacticsAllowed = null, assessed = [], techTable = null, rand = null } = {}) {
   const cards = [];
   const techs = [...adv.techs, ...(techTable ? assessed.filter(a => techTable[a]).map(a => ({ id: a, n: techTable[a].n, tac: techTable[a].tac, m: techTable[a].m || [] })) : [])];
   for (const t of adv.techs) {
@@ -108,8 +114,27 @@ export function compileDeck(adv, { tier = 1, size = 22, tacticsAllowed = null, a
     const ar = ARCHETYPE[tactic];
     chosen.push({ id: a, name: t.n, tactic, kind: ar.kind, stride: strideOf(a, tactic), cost: ar.cost, power: ar.power, stealth: ar.stealth, mit: t.m || [], ev: 0, sig: false, assessed: true, remote: false });
   }
+  if (rand && techTable) {
+    const doms = new Set(adv.domains || ['enterprise']);
+    const have = new Set(chosen.map(c => c.id.split('.')[0])), advTac = new Set(adv.techs.flatMap(t => t.tac));
+    const perKind = {};
+    const pool = Object.entries(techTable).filter(([id, t]) => t.p && doms.has(t.dom || 'enterprise') && !have.has(id.split('.')[0])).map(([id, t]) => {
+      const tactic = primaryTactic(t.tac); if (!tactic || (tacticsAllowed && !tacticsAllowed.includes(tactic))) return null;
+      const kind = ARCHETYPE[tactic].kind; if (!BASELINE_KINDS.includes(kind)) return null;
+      return { id, t, tactic, kind, w: Math.pow(t.p, 1.5) * (advTac.has(tactic) ? 1.5 : 1) };
+    }).filter(Boolean).sort((a, b) => a.id.localeCompare(b.id));   // stable order: determinism
+    for (let n = 0; n < BASELINE_SLOTS[Math.min(2, tier - 1)] && pool.length; n++) {
+      const total = pool.reduce((x, c) => x + c.w, 0); let r = rand() * total, i = 0;
+      while (i < pool.length - 1 && (r -= pool[i].w) > 0) i++;
+      const c = pool.splice(i, 1)[0];
+      if ((perKind[c.kind] = (perKind[c.kind] || 0) + 1) > 2 || chosen.filter(x => x.kind === c.kind).length >= (CAP[c.kind] ?? 1) + 1) continue;
+      have.add(c.id.split('.')[0]);
+      const a = ARCHETYPE[c.tactic];
+      chosen.push({ id: c.id, name: c.t.n, tactic: c.tactic, kind: a.kind, stride: strideOf(c.id, c.tactic), cost: a.cost, power: a.power, stealth: a.stealth, mit: c.t.m || [], ev: 0, sig: false, baseline: true, prev: c.t.p, remote: false });
+    }
+  }
   // If over budget, drop the least valuable cards first (never the payoff cards at the end of the kill chain).
-  const value = (c) => (c.assessed ? 1000 : 0) + ({ exfil: 60, strike: 60, impair: 60, inhibit: 30, spread: 25, escalate: 22, stage: 22, breach: 24, creds: 14, disable: 14 }[c.kind] || 0) + (c.ev || 0);
+  const value = (c) => (c.baseline ? 5 + (c.prev || 0) / 10 : 0) + (c.assessed ? 1000 : 0) + ({ exfil: 60, strike: 60, impair: 60, inhibit: 30, spread: 25, escalate: 22, stage: 22, breach: 24, creds: 14, disable: 14 }[c.kind] || 0) + (c.ev || 0);
   const kept = chosen.slice().sort((a, b) => value(b) - value(a) || a.id.localeCompare(b.id)).slice(0, size + assessed.length);
   return kept.sort((a, b) => TACTIC_ORDER.indexOf(a.tactic) - TACTIC_ORDER.indexOf(b.tactic) || b.ev - a.ev);
 }

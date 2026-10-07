@@ -78,7 +78,7 @@ export function newBattle(content, o) {
   b.draw = shuffle(b.rng, seed, 'deck', o.deck.map(c => c.iid));
   if (o.drawOrder) b.draw = [...o.drawOrder, ...b.draw.filter(i => !o.drawOrder.includes(i))];
   // adversary deck
-  const deck = compileDeck(advData, { tier: b.adv.tier, size: 22, assessed: meta.assessed || [], techTable: content.techs });
+  const deck = compileDeck(advData, { tier: b.adv.tier, size: 22, assessed: meta.assessed || [], techTable: content.techs, rand: o.advOrder ? null : () => rand(b.rng, seed, 'adv-baseline') });
   const bonus = tier.powerBonus + (assur.advPower || 0);
   deck.forEach((c, i) => {
     const uid = 'a' + i;
@@ -856,7 +856,7 @@ export function intentView(content, b) {
   const c = b.adv.cards[I.uid];
   const lvl = Math.min(3, b.intel);
   const v = { level: lvl, tactic: c.tactic, kind: c.kind };
-  if (lvl >= 1) { v.tech = c.id; v.name = c.name; }
+  if (lvl >= 1) { v.tech = c.id; v.name = c.name; v.origin = c.baseline ? 'baseline' : c.assessed ? 'assessed' : 'signature'; }
   if (lvl >= 2) { v.asset = I.asset || (I.fid ? foot(b, I.fid)?.asset : null); }
   if (lvl >= 3) { v.stride = c.stride; v.power = c.power; v.cost = c.cost; }
   return v;

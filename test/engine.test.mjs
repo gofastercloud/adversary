@@ -206,3 +206,14 @@ test('consumables: run-scope cards leave the deck after a won battle; battle-sco
   B.playCard(content, b, 'zz2', { asset: b.assets[0].id });
   assert.ok(!b.spent.includes('zz2') && b.exhausted.includes('zz2') && !b.discard.includes('zz2'), 'restore exhausts for the battle only');
 });
+
+test('baseline tradecraft: seeded, varies per battle, never adds payoff cards, signature overlay intact', () => {
+  const mk = seed => B.newBattle(content, { seed, deck: starterDeck(content, 'phoenix'), adversary: { id: 'G1017', tier: 3 }, resilience: { cur: 20, max: 20 } });
+  const deckOf = b => Object.values(b.adv.cards);
+  const a1 = deckOf(mk('bl-1')), a2 = deckOf(mk('bl-1')), b1 = deckOf(mk('bl-2'));
+  assert.equal(JSON.stringify(a1), JSON.stringify(a2), 'same seed, same deck');
+  assert.notEqual(a1.filter(c => c.baseline).map(c => c.id).join(), b1.filter(c => c.baseline).map(c => c.id).join(), 'different seed, different baseline draw');
+  assert.ok(a1.some(c => c.baseline), 'baseline cards present');
+  for (const c of a1.filter(c => c.baseline)) assert.ok(!['exfil', 'strike', 'impair', 'inhibit'].includes(c.kind), 'no baseline payoffs');
+  assert.ok(a1.filter(c => !c.baseline).length >= 10, 'signature overlay intact');
+});

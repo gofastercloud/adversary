@@ -15,7 +15,7 @@ const FNS = ['govern', 'identify', 'protect', 'detect', 'respond', 'recover'];
 const PROPS = ['spoofing', 'tampering', 'repudiation', 'disclosure', 'dos', 'elevation'];
 const CELLS = FNS.flatMap(f => PROPS.map(p => `${f}.${p}`));
 const STR = ['S', 'T', 'R', 'I', 'D', 'E'];
-const FX_OPS = new Set(['reveal', 'scanKinds', 'draw', 'energy', 'energyNext', 'resilience', 'exposure', 'intel', 'evict', 'evictPrivileged', 'isolate', 'heal', 'shield', 'shieldExfil', 'purge', 'restore', 'clearCreds', 'unstage', 'unprivilege', 'unprivilegeAll', 'blockPath', 'nextPolicyFree']);
+const FX_OPS = new Set(['reveal', 'scanKinds', 'draw', 'energy', 'energyNext', 'resilience', 'exposure', 'intel', 'evict', 'evictPrivileged', 'isolate', 'heal', 'shield', 'shieldExfil', 'purge', 'restore', 'clearCreds', 'unstage', 'unprivilege', 'unprivilegeAll', 'blockPath', 'nextPolicyFree', 'damage', 'restoreBackup']);
 const RELIC_OPS = new Set(['money', 'exposure', 'intel', 'draw', 'resilience', 'healAll', 'reveal', 'wardRandomAsset']);
 const RUN_OPS = new Set(['money', 'resilience', 'maxResilience', 'addCard', 'addRandomCard', 'upgradeRandom', 'upgradeCard', 'addStatus', 'removeStatus', 'flag', 'relicChance', 'ifHasCard']);
 const TRAIT_OPS = new Set(['startFootholds', 'discount', 'stealthBonus', 'bypass', 'energyBonus', 'drawBonus', 'ransomPressure', 'hndl', 'phase']);
@@ -33,12 +33,16 @@ export function validateAll() {
   const only = (obj, allowed, f, p) => { for (const k of Object.keys(obj || {})) if (!allowed.includes(k)) E(f, `${p}: unknown key "${k}"`); };
   const icon = (v, f, p) => { if (!icons.has(v)) E(f, `${p}: unknown icon "${v}"`); };
 
+  const emb3d = Object.fromEntries(['threats', 'mitigations', 'properties'].map(k => [k, JSON.parse(readFileSync(path.join(root, `data/emb3d/${k}.json`), 'utf8'))]));
+  const otAssets = JSON.parse(readFileSync(path.join(root, 'data/ctid/ot-assets.json'), 'utf8')).assets;
   function ref(r, f, p) {
     const res = resolveRef(r);
     if (!res) return E(f, `${p}: bad or unknown ref "${r}"`);
     const i = r.indexOf(':'), src = r.slice(0, i), id = r.slice(i + 1);
-    if (src === 'attack') { const ok = attack.techniques[id] || attack.mitigations[id] || Object.values(attack.tactics).some(t => t.id === id || t.enterpriseId === id || t.icsId === id) || advs[id] || attackIdsAll[id]; if (!ok) E(f, `${p}: ATT&CK id ${id} not found in dataset`); }
+    if (src === 'attack' && /^A\d{4}$/.test(id)) { if (!otAssets[id]) E(f, `${p}: ATT&CK asset ${id} not in data/ctid/ot-assets.json`); }
+    else if (src === 'attack') { const ok = attack.techniques[id] || attack.mitigations[id] || Object.values(attack.tactics).some(t => t.id === id || t.enterpriseId === id || t.icsId === id) || advs[id] || attackIdsAll[id]; if (!ok) E(f, `${p}: ATT&CK id ${id} not found in dataset`); }
     if (src === 'ics') { if (!attackIdsAll[id]) E(f, `${p}: ICS id ${id} not found`); }
+    if (src === 'emb3d') { const t = id.startsWith('TID') ? emb3d.threats : id.startsWith('MID') ? emb3d.mitigations : emb3d.properties; if (!t[id]) E(f, `${p}: EMB3D id ${id} not found in data/emb3d`); }
     if (src === 'd3fend' && !d3[id]) E(f, `${p}: D3FEND id ${id} not found`);
   }
   const attackIdsAll = JSON.parse(readFileSync(path.join(root, 'scripts/data/mitre-attack-ids.json'), 'utf8')); // flatten
@@ -71,6 +75,8 @@ export function validateAll() {
     for (const s of Object.keys(c.ward || {})) if (!STR.includes(s)) E(f, 'bad ward stride ' + s);
     for (const fx of c.fx || []) if (!FX_OPS.has(fx.op)) E(f, 'unknown fx ' + fx.op);
     if (c.type === 'action' && !c.fx?.length) E(f, 'action needs fx');
+    if (c.consume && !['battle', 'run'].includes(c.consume)) E(f, 'consume must be battle|run');
+    if (c.consume && c.type !== 'action') E(f, 'only actions can be consumables');
     if (c.type === 'augment') {
       const au = c.aug || {};
       for (const m of au.mit || []) mitExists(m, f, 'aug.mit');
@@ -154,7 +160,7 @@ export function validateAll() {
     for (const [i, ac] of (acts || []).entries()) for (const k of [...ac.battle, ...ac.elite, ac.boss]) { if (!advs[k]) E(f, `roster act ${i + 1}: no adversary data for ${k}`); else if (!core.adversaryMeta[k]) E(f, `roster: no meta for ${k}`); }
     // overrides
     for (const [c, x] of Object.entries(p.cardOverrides || {})) { if (!CELLS.includes(c)) E(f, 'override cell ' + c); if (!isStr(x.name, 3, 44) || !isStr(x.flavour, 8, 52) || !isStr(x.desc, 60, 420)) E(f, `override ${c} lengths`); refs(x.refs, f, `override ${c}.refs`, { min: 2, max: 6 }); }
-    if (p.systems?.length && p.systems.length !== 2) E(f, 'systems: 0 or 2');
+    if (p.systems?.length > 2) E(f, 'systems: 0–2');
     p.systems?.forEach((s, i) => system(s, f, `systems[${i}]`, E, W, refs, isStr, num, only));
     for (const t of p.ttx || []) ttx(t, p, f, E, W, refs, advs, core, attack);
     for (const c of p.cards || []) if (cards.has(c.id) && !c.id.startsWith(id + '.')) E(f, `scenario card id must be prefixed "${id}."`);

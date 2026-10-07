@@ -18,6 +18,8 @@ function fxText(fx, content) {
     case 'intel': return `+${fx.n} intel this round`;
     case 'evict': return `Reduce a revealed foothold’s grip by ${fx.n} (removes it at 0)`;
     case 'evictPrivileged': return `Reduce privileged footholds on the asset by ${fx.n} grip`;
+    case 'damage': return `The asset takes ${fx.n} damage (the cost of pulling the plug)`;
+    case 'restoreBackup': return 'Remove all footholds and rebuild the asset: fully with a working recovery control on the board, otherwise only ' + fx.n + ' integrity';
     case 'isolate': return 'Isolate the asset until your next turn';
     case 'heal': return fx.n >= 90 ? 'Fully restore the asset' : `Restore ${fx.n} integrity`;
     case 'shield': return `+${fx.n} ward against everything until the adversary’s turn ends`;
@@ -78,6 +80,7 @@ export function describeCard(content, def, ml = 1) {
   } else {
     if (c.target === 'foothold') out.push({ k: 'note', t: 'Target: a revealed foothold' });
     for (const fx of c.fx || []) out.push({ k: 'fx', t: fxText(fx, content) });
+    if (c.consume) out.push({ k: 'note', t: c.consume === 'run' ? 'Consumable: spent for the rest of the run once played' : 'Exhaust: removed from play for the rest of this battle' });
   }
   return out;
 }

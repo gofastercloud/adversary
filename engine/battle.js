@@ -138,11 +138,12 @@ export function activeControls(b, assetId) {
 }
 function ctrlStats(content, b, k) {
   const e = scaleCard(content.cards[k.card], k.ml);
-  const out = { ward: { ...(e.ward || {}) }, mit: new Set(e.mit || []), detect: e.detect ? { ...e.detect } : null, flags: new Set(e.flags || []), resists: new Set(), resistSrc: {}, aegis: e.aegis ? { ...e.aegis } : null, privBonus: e.privBonus || 0, expert: [] };
+  const out = { ward: { ...(e.ward || {}) }, mit: new Set(e.mit || []), detect: e.detect ? { ...e.detect } : null, flags: new Set(e.flags || []), resists: new Set(), resistSrc: {}, ctl: new Set(content.cards[k.card].ctl || []), aegis: e.aegis ? { ...e.aegis } : null, privBonus: e.privBonus || 0, expert: [] };
   for (const au of k.augs) {
     const ae = scaleCard(content.cards[au.card], au.ml).aug || {};
     for (const [s, v] of Object.entries(ae.ward || {})) out.ward[s] = (out.ward[s] || 0) + v;
     for (const m of ae.mit || []) out.mit.add(m);
+    for (const c of content.cards[au.card].ctl || []) out.ctl.add(c);
     for (const r of ae.resists || []) { out.resists.add(r); out.resistSrc[r] = au.card; }
     for (const x of ae.expert || []) { out.resists.add(x.tech); out.resistSrc[x.tech] = au.card; }
     for (const f of ae.flags || []) out.flags.add(f);
@@ -169,6 +170,12 @@ export function wardFor(content, b, assetId, card, opts = {}) {
     if (w) { total += w; why.push({ src: k.card, kid: k.kid, kind: 'ward', n: w }); }
     const mitHit = (card.mit || []).find(m => st.mit.has(m));
     if (mitHit && matched < 2) { total += 1; matched++; why.push({ src: k.card, kid: k.kid, kind: 'mitigation', n: 1, mit: mitHit }); }
+    else if (matched < 2 && st.ctl.size) {
+      // CTID Mappings Explorer: NIST 800-53 controls that mitigate this technique (no ATT&CK mitigation overlap needed)
+      const tt = content.techs?.[card.id] || content.techs?.[(card.id || '').split('.')[0]];
+      const ctlHit = (tt?.c || []).find(c => st.ctl.has(c));
+      if (ctlHit) { total += 1; matched++; why.push({ src: k.card, kid: k.kid, kind: 'mitigation', n: 1, ctl: ctlHit }); }
+    }
     for (const r of st.resists) if (card.id === r || card.id.startsWith(r + '.')) { total += 3; why.push({ src: st.resistSrc[r] || k.card, kid: k.kid, kind: 'counter', n: 3, tech: r }); break; }
     if (opts.spread && st.flags.has('segment')) { /* handled by cost/power in spread */ }
   }
@@ -304,6 +311,16 @@ function runFx(content, b, fx, ctx) {
     case 'intel': b.intel += fx.n; return;
     case 'evict': if (F) evictFoothold(content, b, F, fx.n, 'evict'); return;
     case 'evictPrivileged': for (const f of b.footholds.filter(f => f.asset === A?.id && f.privileged)) evictFoothold(content, b, f, fx.n, 'evict'); return;
+    case 'damage': if (A) damageAsset(content, b, A, fx.n, 'self-inflicted'); return;
+    case 'restoreBackup': {
+      // Restoring needs a working backup: an active recovery control on the board (not broken by the adversary) gives a full rebuild
+      if (!A) return;
+      const ok = b.controls.some(k => !k.disabledBy && ctrlStats(content, b, k).aegis) && !b.flags.brokenBackups;
+      for (const f of b.footholds.filter(f => f.asset === A.id)) evictFoothold(content, b, f, 99, 'purge');
+      const was = A.hp; A.hp = Math.min(A.max, A.hp + (ok ? 99 : fx.n)); if (A.hp > 0) A.down = false;
+      for (const k of b.controls.filter(k => k.asset === A.id && k.disabledBy)) { k.disabledBy = null; ev(b, { t: 'restored', kid: k.kid, asset: A.id }); }
+      ev(b, { t: 'heal', asset: A.id, n: A.hp - was, backup: ok }); return;
+    }
     case 'isolate': if (A) { A.isolated = true; ev(b, { t: 'isolate', asset: A.id }); } return;
     case 'heal': if (A) { const was = A.hp; A.hp = Math.min(A.max, A.hp + fx.n); if (A.hp > 0) A.down = false; ev(b, { t: 'heal', asset: A.id, n: A.hp - was }); } return;
     case 'shield': if (A) A.shield += fx.n; return;
@@ -392,7 +409,9 @@ export function playCard(content, b, iid, target = {}) {
     ev(b, { t: 'policy', card: card.id });
   } else {
     for (const fx of e.fx || []) runFx(content, b, fx, { asset: target.asset, fid: target.fid });
-    b.discard.push(iid);
+    // consumables: 'battle' exhausts for this fight; 'run' is spent for the rest of the run
+    if (e.consume) { (b.exhausted ||= []).push(iid); if (e.consume === 'run') (b.spent ||= []).push(iid); ev(b, { t: 'consumed', card: card.id, scope: e.consume }); }
+    else b.discard.push(iid);
     ev(b, { t: 'action', card: card.id, asset: target.asset, fid: target.fid });
   }
   b.stats.cardsPlayed++;
@@ -793,7 +812,7 @@ function endBattle(content, b, won, how) {
   b.over = true; b.phase = 'over';
   let debt = 0;
   if (won && b.adv.harvested > 0) debt = b.adv.harvested; // quantum debt: stolen ciphertext awaiting decryption
-  const res = { won, how, rounds: b.round, resLost: b.stats.resLost, exposure: b.expo.cur, evictions: b.stats.evictions, adversary: b.adv.id, tier: b.adv.tier, boss: b.adv.boss, harvested: b.adv.harvested, debt, assetsDown: b.stats.assetsDown, resEnd: Math.max(0, b.res.cur - debt), moneyDelta: b.moneyDelta, blocked: b.stats.blocked, cardsPlayed: b.stats.cardsPlayed, ttxScore: b.ttx?.score || 0, jewelSafe: !b.assets.some(a => a.jewel && a.down), noReveal: b.stats.noReveal };
+  const res = { won, how, rounds: b.round, resLost: b.stats.resLost, exposure: b.expo.cur, evictions: b.stats.evictions, adversary: b.adv.id, tier: b.adv.tier, boss: b.adv.boss, harvested: b.adv.harvested, debt, assetsDown: b.stats.assetsDown, resEnd: Math.max(0, b.res.cur - debt), moneyDelta: b.moneyDelta, blocked: b.stats.blocked, cardsPlayed: b.stats.cardsPlayed, ttxScore: b.ttx?.score || 0, jewelSafe: !b.assets.some(a => a.jewel && a.down), noReveal: b.stats.noReveal, spent: b.spent || [] };
   if (b.ttx) res.objectives = evalObjectives(content, b, won);
   b.result = res;
   ev(b, { t: 'battle_end', won, how });

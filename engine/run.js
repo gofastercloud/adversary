@@ -163,7 +163,7 @@ function makeShop(content, run) {
   return { slots: [...cards, ...relics], removeCost: sh.removeCost + sh.removeStep * run.stats.removed, removed: false, healed: false };
 }
 function makeWhiteboard(content, run) {
-  const sys = content.systems[run.act <= 1 ? 0 : run.act === 2 ? 1 : (run.step % 2)];
+  const sys = content.systems[Math.min(content.systems.length - 1, run.act <= 1 ? 0 : run.act === 2 ? 1 : (run.step % 2))];
   const sysIdx = content.systems.indexOf(sys);
   const used = new Set(run.usedScenarios || []); run.usedScenarios = [...used];
   let pool = sys.scenarios.filter(s => !used.has(s.id));
@@ -218,6 +218,7 @@ function finishBattle(content, run, events) {
   events.push({ t: 'battle_end', reveals: b.stats.reveals, deploys: b.stats.deploys, maxExposure: b.stats.maxExposure, resEnd: r.resEnd, won: r.won, how: r.how, adv: r.adversary, type: n.type, tier: r.tier, rounds: r.rounds, resLost: r.resLost, exposure: r.exposure, evictions: r.evictions, blocked: r.blocked, cardsPlayed: r.cardsPlayed, noReveal: r.noReveal, jewelSafe: r.jewelSafe, debt: r.debt, typesPlayed: b.stats.typesPlayed, fnsPlayed: b.stats.fnsPlayed, propsPlayed: b.stats.propsPlayed, augments: b.stats.augments, assetsDown: r.assetsDown, act: run.act, ttxScore: r.ttxScore, assurance: run.assurance, doctrine: run.doctrine });
   if (!r.won) { run.res.cur = 0; finish(content, run, false, events); return; }
   run.res.cur = clamp(r.resEnd, 1, run.res.max);
+  if (r.spent?.length) { run.deck = run.deck.filter(c => !r.spent.includes(c.iid)); events.push({ t: 'consumed_run', n: r.spent.length }); }
   run.money += r.moneyDelta;
   run.stats.battles++; run.stats.wins++;
   if (n.type === 'elite') run.stats.elites++; if (n.type === 'boss') run.stats.bosses++;

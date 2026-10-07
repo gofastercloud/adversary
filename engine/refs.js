@@ -72,14 +72,16 @@ const LANDING = {
   privacy: ['Privacy Act', 'https://www.oaic.gov.au/privacy/notifiable-data-breaches']
 };
 
+const CTID_SETS = { nist: 'NIST SP 800-53 → ATT&CK', aws: 'AWS security services → ATT&CK', azure: 'Azure security controls → ATT&CK', gcp: 'GCP security controls → ATT&CK', m365: 'Microsoft 365 → ATT&CK', cis: 'CIS Controls → ATT&CK', kev: 'CISA KEV → ATT&CK', veris: 'VERIS → ATT&CK', csa_ccm: 'CSA CCM → ATT&CK', cri_profile: 'CRI Profile → ATT&CK' };
+
 const RE = {
-  attack: /^(T\d{4}(\.\d{3})?|M\d{4}|TA\d{4}|G\d{4}|S\d{4}|C\d{4}|DS\d{4})$/,
+  attack: /^(T\d{4}(\.\d{3})?|M\d{4}|TA\d{4}|G\d{4}|S\d{4}|C\d{4}|DS\d{4}|A\d{4})$/,
   ics: /^(T0\d{3}|M0\d{3}|TA0\d{3}|G0\d{3}|S0\d{3})$/,
   nistCsf: /^(overview|[A-Z]{2}(\.[A-Z]{2}(-\d{2})?)?)$/,
   nist80053: /^[A-Z]{2}-\d{1,2}(\(\d{1,2}\))?$/
 };
 
-export const REF_SOURCES = ['attack', 'ics', 'd3fend', 'capec', 'cwe', 'owasp-top10', 'owasp-api', 'owasp-llm', 'owasp',
+export const REF_SOURCES = ['attack', 'ics', 'emb3d', 'ctid', 'd3fend', 'capec', 'cwe', 'owasp-top10', 'owasp-api', 'owasp-llm', 'owasp',
   'nist-csf', 'nist-800-53', 'nist', 'e8', 'iec62443', ...Object.keys(LANDING)];
 
 /** Parse + resolve. Returns null when malformed/unknown (validator reports it). */
@@ -93,7 +95,7 @@ export function resolveRef(ref) {
   switch (src) {
     case 'attack': {
       if (!RE.attack.test(id)) return null;
-      const t = id[0] === 'T' && id[1] !== 'A' ? 'techniques' : id[0] === 'M' ? 'mitigations' : id.startsWith('TA') ? 'tactics' : id[0] === 'G' ? 'groups' : id[0] === 'S' ? 'software' : id[0] === 'C' ? 'campaigns' : 'datasources';
+      const t = id[0] === 'T' && id[1] !== 'A' ? 'techniques' : id[0] === 'M' ? 'mitigations' : id.startsWith('TA') ? 'tactics' : id[0] === 'G' ? 'groups' : id[0] === 'S' ? 'software' : id[0] === 'C' ? 'campaigns' : id[0] === 'A' ? 'assets' : 'datasources';
       return { label: `ATT&CK ${id}`, url: `https://attack.mitre.org/${t}/${id.replace('.', '/')}/`, kind: 'mitre' };
     }
     case 'ics': {
@@ -101,6 +103,12 @@ export function resolveRef(ref) {
       const t = id.startsWith('TA') ? 'tactics' : id[0] === 'M' ? 'mitigations' : id[0] === 'T' ? 'techniques' : id[0] === 'G' ? 'groups' : 'software';
       return { label: `ICS ${id}`, url: `https://attack.mitre.org/${t}/${id}/`, kind: 'mitre' };
     }
+    case 'emb3d': {
+      const m = /^(TID|MID)-(\d{3})$|^PID-(\d{1,3})$/.exec(id); if (!m) return null;
+      const kind = id.startsWith('TID') ? 'threats' : id.startsWith('MID') ? 'mitigations' : 'properties';
+      return { label: `EMB3D ${id}`, url: kind === 'properties' ? 'https://emb3d.mitre.org/properties-list/' : `https://emb3d.mitre.org/${kind}/${id}`, kind: 'mitre' };
+    }
+    case 'ctid': return CTID_SETS[id] ? { label: `CTID Mappings: ${CTID_SETS[id]}`, url: `https://ctid.mitre.org/mappings/external/${id}/`, kind: 'mitre' } : null;
     case 'd3fend': return { label: `D3FEND ${id}`, url: `https://d3fend.mitre.org/technique/d3f:${id}/`, kind: 'mitre' };
     case 'capec': return /^\d+$/.test(id) ? { label: `CAPEC-${id}`, url: `https://capec.mitre.org/data/definitions/${id}.html`, kind: 'mitre' } : null;
     case 'cwe': return /^\d+$/.test(id) ? { label: `CWE-${id}`, url: `https://cwe.mitre.org/data/definitions/${id}.html`, kind: 'mitre' } : null;
@@ -127,6 +135,7 @@ export function resolveRef(ref) {
   }
 }
 
+export const CTID_IDS = Object.keys(CTID_SETS);
 export const ATTACK_ID_RE = RE.attack;
 export const ICS_ID_RE = RE.ics;
 export const E8_IDS = Object.keys(E8);

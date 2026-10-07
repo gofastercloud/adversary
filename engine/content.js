@@ -36,6 +36,9 @@ export function buildContent({ core, scenario = null, extras = [], attack, adver
       c.name = o.name; c.flavour = o.flavour; c.desc = o.desc; c.lesson = o.desc; c.refs = o.refs; c.skinned = true;
     }
     c.stride = STRIDE[c.prop];
+    // NIST 800-53 controls this card cites -> matched against CTID technique mappings in wardFor (leading zeros stripped)
+    const ctl = (c.refs || []).filter(r => r.startsWith('nist-800-53:')).map(r => normCtl(r.slice(12)));
+    if (ctl.length) c.ctl = ctl;
   }
   const relics = {};
   for (const r of core.relics.relics) relics[r.id] = r;
@@ -60,6 +63,7 @@ export function buildContent({ core, scenario = null, extras = [], attack, adver
   };
 }
 
+export const normCtl = id => id.replace(/-0(\d)/, '-$1').replace(/\(0(\d)\)/, '($1)');
 export const cardOf = (content, id) => content.cards[id];
 export const isControl = c => c.type === 'control';
 

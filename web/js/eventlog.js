@@ -5,7 +5,7 @@ import { clock } from './ui.js';
 export function whySummary(content, why) {
   return (why || []).map(w => {
     if (w.kind === 'ward') return `${content.cards[w.src]?.name || w.src} +${w.n}`;
-    if (w.kind === 'mitigation') return `${w.mit} ${content.mits[w.mit]?.n || ''} matched +${w.n}`;
+    if (w.kind === 'mitigation') return w.ctl ? `NIST ${w.ctl} (CTID-mapped) matched +${w.n}` : `${w.mit} ${content.mits[w.mit]?.n || ''} matched +${w.n}`;
     if (w.kind === 'counter') return `${content.cards[w.src]?.name || w.src} counters ${w.tech} +${w.n}`;
     if (w.kind === 'policy') return `policy +${w.n}`;
     if (w.kind === 'shield') return `shield +${w.n}`;

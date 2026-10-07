@@ -51,6 +51,8 @@ adv('G0007', { tier: 3, role: 'espionage / state', icon: 'mail-warning', color: 
     t('spray', 'Password Spraying', 'Ignores 1 Authentication ward.', { op: 'bypass', stride: 'S', n: 1 }),
     t('state', 'State Resources', '+1 energy each turn.', { op: 'energyBonus', n: 1 })
   ] });
+adv('G0045', { tier: 3, role: 'espionage / MSP compromise', icon: 'handshake', color: '#c77dff', motive: 'Intellectual-property theft by compromising managed service providers.', blurb: 'Chinese state-linked actor known for “Operation Cloud Hopper”: compromising managed service providers to reach their customers’ networks.',
+  traits: [t('msp', 'Trusted Relationship', 'Reaches victims through their service providers: begins with one hidden foothold.', { op: 'startFootholds', n: 1 }), t('stealth', 'Patient Tradecraft', 'Footholds start with +1 stealth.', { op: 'stealthBonus', n: 1 })] });
 adv('G0129', { tier: 3, role: 'espionage / state', icon: 'link', color: '#d9a441', motive: 'Intelligence collection, often via USB and phishing lures.',
   blurb: 'PRC-linked actor with a large toolset and broad targeting, frequently using phishing and removable-media propagation.',
   traits: [

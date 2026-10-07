@@ -206,6 +206,31 @@
    }
   ]
  },
+ "G0045": {
+  "name": "menuPass",
+  "icon": "handshake",
+  "tier": 3,
+  "role": "espionage / MSP compromise",
+  "color": "#c77dff",
+  "motive": "Intellectual-property theft by compromising managed service providers.",
+  "blurb": "Chinese state-linked actor known for “Operation Cloud Hopper”: compromising managed service providers to reach their customers’ networks.",
+  "traits": [
+   {
+    "id": "msp",
+    "name": "Trusted Relationship",
+    "text": "Reaches victims through their service providers: begins with one hidden foothold.",
+    "op": "startFootholds",
+    "n": 1
+   },
+   {
+    "id": "stealth",
+    "name": "Patient Tradecraft",
+    "text": "Footholds start with +1 stealth.",
+    "op": "stealthBonus",
+    "n": 1
+   }
+  ]
+ },
  "G0129": {
   "name": "Mustang Panda",
   "icon": "link",

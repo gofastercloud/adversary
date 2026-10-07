@@ -1,0 +1,1371 @@
+{
+ "schema": 2,
+ "id": "utilities",
+ "kind": "scenario",
+ "name": "Utilities",
+ "version": "1.0.0",
+ "tagline": "Critical electricity infrastructure. Safety first, availability second.",
+ "icon": "zap",
+ "theme": {
+  "accent": "#ffc83d",
+  "accent2": "#ff7a1a",
+  "bg": [
+   "#171004",
+   "#2a1a06",
+   "#3a1d08"
+  ]
+ },
+ "org": {
+  "name": "Gridline Energy",
+  "sector": "Electricity distribution & retail (Australia)",
+  "brief": "A regional distributor that keeps roughly 800,000 customers connected. A corporate IT network, a thin IT/OT DMZ and an ADMS/SCADA master that switches substations are separated by policy more than by architecture. A vendor team has remote support access to the control network.",
+  "crownJewels": [
+   "ADMS / SCADA master",
+   "Substation RTUs & protection relays",
+   "Customer & market data"
+  ],
+  "regimes": [
+   {
+    "name": "Security of Critical Infrastructure Act 2018 (Cth)",
+    "note": "Responsible entities for critical electricity assets must maintain a critical infrastructure risk management program and report cyber security incidents to the ACSC — within 12 hours when the impact on availability is significant, and 72 hours otherwise.",
+    "refs": [
+     "soci:cirmp",
+     "soci:csirp"
+    ]
+   },
+   {
+    "name": "AESCSF",
+    "note": "AEMO’s Australian Energy Sector Cyber Security Framework: a maturity-based self-assessment against the energy sector’s risks.",
+    "refs": [
+     "aescsf:overview"
+    ]
+   },
+   {
+    "name": "IEC 62443 / NIST SP 800-82",
+    "note": "The usual technical baselines for zones, conduits and ICS security.",
+    "refs": [
+     "iec62443:3-2",
+     "nist:800-82"
+    ]
+   }
+  ]
+ },
+ "assets": [
+  {
+   "id": "mail",
+   "name": "Corporate Email",
+   "kind": "email",
+   "zone": "Corporate IT",
+   "hp": 6,
+   "jewel": false,
+   "exposed": true,
+   "icon": "mail",
+   "desc": "Staff email, rostering and procurement traffic.",
+   "adjacent": [
+    "ws",
+    "ad"
+   ]
+  },
+  {
+   "id": "vpn",
+   "name": "Vendor & Remote Access",
+   "kind": "vendor",
+   "zone": "Corporate IT",
+   "hp": 6,
+   "jewel": false,
+   "exposed": true,
+   "icon": "unplug",
+   "desc": "VPN and remote-support portal used by staff and OT vendors.",
+   "adjacent": [
+    "ad",
+    "dmz",
+    "ws"
+   ]
+  },
+  {
+   "id": "ws",
+   "name": "Corporate Endpoints",
+   "kind": "endpoint",
+   "zone": "Corporate IT",
+   "hp": 8,
+   "jewel": false,
+   "exposed": true,
+   "icon": "laptop",
+   "desc": "Office laptops, some used by engineers.",
+   "adjacent": [
+    "mail",
+    "vpn",
+    "ad"
+   ]
+  },
+  {
+   "id": "ad",
+   "name": "Corporate Identity (AD)",
+   "kind": "identity",
+   "zone": "Corporate IT",
+   "hp": 8,
+   "jewel": false,
+   "exposed": false,
+   "icon": "id-card",
+   "desc": "Active Directory trusted by the DMZ.",
+   "adjacent": [
+    "mail",
+    "vpn",
+    "ws",
+    "dmz",
+    "ami"
+   ]
+  },
+  {
+   "id": "ami",
+   "name": "AMI Head-End & Billing",
+   "kind": "app",
+   "zone": "Corporate IT",
+   "hp": 8,
+   "jewel": false,
+   "exposed": false,
+   "icon": "receipt",
+   "desc": "Smart-meter head-end, meter data and billing.",
+   "adjacent": [
+    "ad"
+   ]
+  },
+  {
+   "id": "dmz",
+   "name": "IT/OT DMZ & Historian",
+   "kind": "server",
+   "zone": "DMZ",
+   "hp": 8,
+   "jewel": false,
+   "exposed": false,
+   "icon": "server",
+   "desc": "Jump hosts and the process historian.",
+   "adjacent": [
+    "vpn",
+    "ad",
+    "adms"
+   ]
+  },
+  {
+   "id": "adms",
+   "name": "ADMS / SCADA Master",
+   "kind": "ot",
+   "zone": "OT",
+   "hp": 12,
+   "jewel": true,
+   "exposed": false,
+   "icon": "factory",
+   "desc": "The control-room system that sees and switches the network.",
+   "adjacent": [
+    "dmz",
+    "rtu"
+   ]
+  },
+  {
+   "id": "rtu",
+   "name": "Substation RTUs & Relays",
+   "kind": "ot",
+   "zone": "OT",
+   "hp": 10,
+   "jewel": true,
+   "exposed": false,
+   "icon": "radio-tower",
+   "desc": "Field devices that open and close breakers.",
+   "adjacent": [
+    "adms"
+   ]
+  }
+ ],
+ "roster": {
+  "acts": [
+   {
+    "name": "Act I — Opportunists at the Edge",
+    "battle": [
+     "G1051",
+     "G0092",
+     "G1032",
+     "G1043"
+    ],
+    "elite": [
+     "G0117"
+    ],
+    "boss": "G0035",
+    "tiers": {
+     "battle": 1,
+     "elite": 2,
+     "boss": 2
+    }
+   },
+   {
+    "name": "Act II — Targeted Intrusions",
+    "battle": [
+     "G0049",
+     "G0125",
+     "G0129"
+    ],
+    "elite": [
+     "G0088"
+    ],
+    "boss": "G0034",
+    "tiers": {
+     "battle": 2,
+     "elite": 2,
+     "boss": 3
+    }
+   },
+   {
+    "name": "Act III — Pre-positioned",
+    "battle": [
+     "G0007",
+     "G0096",
+     "G0016"
+    ],
+    "elite": [
+     "G0032"
+    ],
+    "boss": "G1017",
+    "tiers": {
+     "battle": 2,
+     "elite": 3,
+     "boss": 3
+    }
+   }
+  ]
+ },
+ "reading": [
+  {
+   "title": "CISA AA24-038A — PRC state-sponsored actors compromise US critical infrastructure",
+   "url": "https://www.cisa.gov/news-events/cybersecurity-advisories/aa24-038a"
+  },
+  {
+   "title": "NIST SP 800-82 Rev. 3 — Guide to OT Security",
+   "url": "https://csrc.nist.gov/pubs/sp/800/82/r3/final"
+  },
+  {
+   "title": "MITRE ATT&CK for ICS",
+   "url": "https://attack.mitre.org/matrices/ics/"
+  },
+  {
+   "title": "ACSC Essential Eight",
+   "url": "https://www.cyber.gov.au/resources-business-and-government/essential-cyber-security/essential-eight"
+  }
+ ],
+ "systems": [
+  {
+   "id": "itot-boundary",
+   "name": "IT/OT boundary & control network",
+   "blurb": "Vendors and corporate staff reach the control network through a DMZ. The SCADA master switches substations using DNP3 over the OT network.",
+   "elements": [
+    {
+     "id": "vendor",
+     "type": "external",
+     "label": "Vendor remote support",
+     "x": 110,
+     "y": 110
+    },
+    {
+     "id": "corp",
+     "type": "external",
+     "label": "Corporate IT staff",
+     "x": 110,
+     "y": 450
+    },
+    {
+     "id": "vpn",
+     "type": "process",
+     "label": "Remote access gateway",
+     "x": 320,
+     "y": 110
+    },
+    {
+     "id": "dmz",
+     "type": "process",
+     "label": "DMZ jump host",
+     "x": 320,
+     "y": 280
+    },
+    {
+     "id": "hist",
+     "type": "store",
+     "label": "Process historian",
+     "x": 530,
+     "y": 280
+    },
+    {
+     "id": "proj",
+     "type": "store",
+     "label": "Logic project repository",
+     "x": 530,
+     "y": 450
+    },
+    {
+     "id": "scada",
+     "type": "process",
+     "label": "ADMS / SCADA master",
+     "x": 740,
+     "y": 280
+    },
+    {
+     "id": "rtu",
+     "type": "process",
+     "label": "Substation RTU & relays",
+     "x": 740,
+     "y": 450
+    },
+    {
+     "id": "aemo",
+     "type": "external",
+     "label": "AEMO market interface",
+     "x": 740,
+     "y": 110
+    }
+   ],
+   "flows": [
+    {
+     "id": "f1",
+     "from": "vendor",
+     "to": "vpn",
+     "label": "Remote support session"
+    },
+    {
+     "id": "f2",
+     "from": "vpn",
+     "to": "dmz",
+     "label": "Tunnelled access"
+    },
+    {
+     "id": "f3",
+     "from": "dmz",
+     "to": "hist",
+     "label": "Data replication"
+    },
+    {
+     "id": "f4",
+     "from": "proj",
+     "to": "scada",
+     "label": "Project downloads"
+    },
+    {
+     "id": "f5",
+     "from": "scada",
+     "to": "rtu",
+     "label": "Control commands (DNP3)"
+    },
+    {
+     "id": "f6",
+     "from": "scada",
+     "to": "aemo",
+     "label": "Market & outage data"
+    },
+    {
+     "id": "f7",
+     "from": "corp",
+     "to": "dmz",
+     "label": "Reports & file transfer"
+    }
+   ],
+   "boundaries": [
+    {
+     "id": "b1",
+     "label": "Corporate & third parties",
+     "x": 10,
+     "y": 20,
+     "w": 200,
+     "h": 520
+    },
+    {
+     "id": "b2",
+     "label": "IT/OT DMZ",
+     "x": 228,
+     "y": 60,
+     "w": 190,
+     "h": 270
+    },
+    {
+     "id": "b3",
+     "label": "OT zone",
+     "x": 440,
+     "y": 225,
+     "w": 395,
+     "h": 270
+    }
+   ],
+   "scenarios": [
+    {
+     "id": "ut1",
+     "target": {
+      "kind": "element",
+      "id": "vendor"
+     },
+     "text": "A contractor’s stolen credentials are used from overseas to open a remote-support session that the gateway treats as the vendor’s.",
+     "answer": "S",
+     "why": "The attacker is being accepted as someone they are not. Nothing has been altered or exposed yet; the failure is identity assurance for a third party.",
+     "refs": [
+      "attack:T1078",
+      "attack:T1199",
+      "nist-csf:GV.SC-07"
+     ]
+    },
+    {
+     "id": "ut2",
+     "target": {
+      "kind": "flow",
+      "id": "f5"
+     },
+     "text": "On a flat substation network an attacker alters the setpoint values inside control messages travelling between the master and a relay.",
+     "answer": "T",
+     "why": "The content of legitimate commands is modified in transit. The relay would act on altered values; confidentiality and availability are not the issue.",
+     "refs": [
+      "ics:T0831",
+      "ics:T0836",
+      "ics:M0802"
+     ]
+    },
+    {
+     "id": "ut3",
+     "target": {
+      "kind": "element",
+      "id": "hist"
+     },
+     "text": "The DMZ historian holds years of load profiles and network topology and is readable from corporate IT with a default read-only account.",
+     "answer": "I",
+     "why": "Sensitive operational data is exposed to people who do not need it. It helps an adversary plan, but no data is changed and no service is degraded.",
+     "refs": [
+      "ics:T0801",
+      "attack:T1005",
+      "nist:800-82"
+     ]
+    },
+    {
+     "id": "ut4",
+     "target": {
+      "kind": "element",
+      "id": "dmz"
+     },
+     "text": "A vendor technician’s limited account on the jump host exploits a local misconfiguration to become administrator and pivot towards the OT zone.",
+     "answer": "E",
+     "why": "A low-privilege identity gains rights it was never granted. The technician is not impersonating anyone (Spoofing); they escalated within their own account.",
+     "refs": [
+      "attack:T1068",
+      "attack:T1548",
+      "ics:M0801"
+     ]
+    },
+    {
+     "id": "ut5",
+     "target": {
+      "kind": "element",
+      "id": "proj"
+     },
+     "text": "An attacker with write access to the logic project repository quietly changes a protection setting that will be deployed at the next maintenance window.",
+     "answer": "T",
+     "why": "Stored data (the logic project) is altered without authority and will later be trusted. It is not disclosure or denial; it is integrity.",
+     "refs": [
+      "ics:T0889",
+      "attack:T1565.001",
+      "ics:M0813"
+     ]
+    },
+    {
+     "id": "ut6",
+     "target": {
+      "kind": "element",
+      "id": "scada"
+     },
+     "text": "A faulty vendor patch crashes the SCADA master’s polling service and operators lose view and control of the network during a storm.",
+     "answer": "D",
+     "why": "The service becomes unavailable to its legitimate users at the worst moment. No attacker needs to have forged, changed or read anything.",
+     "refs": [
+      "ics:T0814",
+      "ics:T0881",
+      "nist-csf:PR.IR-03"
+     ]
+    },
+    {
+     "id": "ut7",
+     "target": {
+      "kind": "element",
+      "id": "corp"
+     },
+     "text": "Engineers log in to a shared “engineering” account to push a change. Later no one can show which engineer approved it.",
+     "answer": "R",
+     "why": "Individuals can deny actions because the shared identity gives no attributable evidence. The remedy is named accounts and logging, not a stronger password.",
+     "refs": [
+      "nist-800-53:AU-10",
+      "nist-csf:PR.AA-01",
+      "ics:M0801"
+     ]
+    },
+    {
+     "id": "ut8",
+     "target": {
+      "kind": "flow",
+      "id": "f6"
+     },
+     "text": "Outage and load data sent to the market interface crosses an unencrypted link and is captured by a third party.",
+     "answer": "I",
+     "why": "The contents of the data flow are readable by an eavesdropper. Altering or blocking the flow would be a different threat.",
+     "refs": [
+      "attack:T1040",
+      "attack:M1041",
+      "ics:M0808"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ami-customer",
+   "name": "Smart meters & customer platform",
+   "blurb": "Smart meters report interval data to a head-end; meter data feeds billing and a customer portal that holds sensitive account details.",
+   "elements": [
+    {
+     "id": "cust",
+     "type": "external",
+     "label": "Customers & retailers",
+     "x": 110,
+     "y": 280
+    },
+    {
+     "id": "meters",
+     "type": "external",
+     "label": "Smart meters (field)",
+     "x": 110,
+     "y": 450
+    },
+    {
+     "id": "portal",
+     "type": "process",
+     "label": "Customer portal",
+     "x": 320,
+     "y": 110
+    },
+    {
+     "id": "head",
+     "type": "process",
+     "label": "AMI head-end",
+     "x": 320,
+     "y": 450
+    },
+    {
+     "id": "mdm",
+     "type": "store",
+     "label": "Meter data management",
+     "x": 530,
+     "y": 280
+    },
+    {
+     "id": "bill",
+     "type": "process",
+     "label": "Billing platform",
+     "x": 740,
+     "y": 280
+    },
+    {
+     "id": "crm",
+     "type": "store",
+     "label": "Customer records",
+     "x": 740,
+     "y": 110
+    }
+   ],
+   "flows": [
+    {
+     "id": "f1",
+     "from": "cust",
+     "to": "portal",
+     "label": "Web & app requests"
+    },
+    {
+     "id": "f2",
+     "from": "meters",
+     "to": "head",
+     "label": "Interval reads (mesh)"
+    },
+    {
+     "id": "f3",
+     "from": "head",
+     "to": "mdm",
+     "label": "Validated reads"
+    },
+    {
+     "id": "f4",
+     "from": "mdm",
+     "to": "bill",
+     "label": "Billing determinants"
+    },
+    {
+     "id": "f5",
+     "from": "portal",
+     "to": "crm",
+     "label": "Account lookups"
+    },
+    {
+     "id": "f6",
+     "from": "bill",
+     "to": "crm",
+     "label": "Invoices & payments"
+    }
+   ],
+   "boundaries": [
+    {
+     "id": "b1",
+     "label": "Internet & field",
+     "x": 10,
+     "y": 20,
+     "w": 200,
+     "h": 520
+    },
+    {
+     "id": "b2",
+     "label": "Corporate platform",
+     "x": 235,
+     "y": 50,
+     "w": 620,
+     "h": 470
+    }
+   ],
+   "scenarios": [
+    {
+     "id": "am1",
+     "target": {
+      "kind": "element",
+      "id": "cust"
+     },
+     "text": "An attacker uses leaked personal details to impersonate a customer on the phone and redirect account notices to a new email address.",
+     "answer": "S",
+     "why": "The attacker poses as a legitimate customer. The portal’s data and availability are unaffected; the weakness is how identity is verified.",
+     "refs": [
+      "attack:T1078",
+      "attack:T1078",
+      "nist-800-53:IA-4"
+     ]
+    },
+    {
+     "id": "am2",
+     "target": {
+      "kind": "element",
+      "id": "portal"
+     },
+     "text": "Changing the account number in a portal URL returns another customer’s usage history and street address.",
+     "answer": "I",
+     "why": "Customer data is disclosed to someone who is not authorised for it (broken object-level authorisation). Nothing is modified, and the attacker did not escalate their role.",
+     "refs": [
+      "owasp-api:API1",
+      "owasp-top10:A01",
+      "cwe:639"
+     ]
+    },
+    {
+     "id": "am3",
+     "target": {
+      "kind": "flow",
+      "id": "f2"
+     },
+     "text": "A compromised mesh node rewrites interval reads in transit so a large consumer’s usage appears lower.",
+     "answer": "T",
+     "why": "Data is altered while moving between the meter and head-end. This is integrity, not confidentiality or availability.",
+     "refs": [
+      "attack:T1565.002",
+      "attack:M1041",
+      "nist-800-53:SC-8"
+     ]
+    },
+    {
+     "id": "am4",
+     "target": {
+      "kind": "element",
+      "id": "head"
+     },
+     "text": "Any customer-support role can trigger the head-end’s mass remote-disconnect function because the capability was never restricted.",
+     "answer": "E",
+     "why": "A role can perform a powerful action it should never have been granted. The failure is authorisation design, not identity or logging.",
+     "refs": [
+      "owasp-api:API5",
+      "attack:M1018",
+      "nist-800-53:AC-6"
+     ]
+    },
+    {
+     "id": "am5",
+     "target": {
+      "kind": "element",
+      "id": "mdm"
+     },
+     "text": "An insider edits stored meter-read values to avoid a large bill; the original reads are not retained anywhere.",
+     "answer": "T",
+     "why": "Stored data is modified without authority. The absence of retained originals makes it worse, but the threat applied to this store is tampering.",
+     "refs": [
+      "attack:T1565.001",
+      "attack:M1029",
+      "nist-800-53:SI-7"
+     ]
+    },
+    {
+     "id": "am6",
+     "target": {
+      "kind": "element",
+      "id": "bill"
+     },
+     "text": "A $40,000 billing adjustment is approved but the system records only the approver’s team name, not the individual.",
+     "answer": "R",
+     "why": "There is no attributable evidence of who authorised the action — the defining Repudiation problem.",
+     "refs": [
+      "nist-800-53:AU-3",
+      "nist-800-53:AU-10",
+      "nist-csf:PR.PS-04"
+     ]
+    },
+    {
+     "id": "am7",
+     "target": {
+      "kind": "element",
+      "id": "crm"
+     },
+     "text": "A nightly export of customer records, including addresses of customers on life-support equipment, is left in a publicly readable storage bucket.",
+     "answer": "I",
+     "why": "Sensitive records stored at rest become readable by the public. The data is unchanged and the service is up, so this is disclosure.",
+     "refs": [
+      "attack:T1530",
+      "privacy:ndb",
+      "owasp-top10:A05"
+     ]
+    },
+    {
+     "id": "am8",
+     "target": {
+      "kind": "flow",
+      "id": "f1"
+     },
+     "text": "During a heatwave outage a botnet floods the portal while customers check restoration times, and the site goes down.",
+     "answer": "D",
+     "why": "Traffic is used to make the service unavailable to legitimate users when it is needed most.",
+     "refs": [
+      "attack:T1498",
+      "attack:M1037",
+      "owasp-api:API4"
+     ]
+    }
+   ]
+  }
+ ],
+ "ttx": [
+  {
+   "id": "util-ukraine-2016",
+   "name": "Blackout Rehearsal",
+   "blurb": "An Industroyer-style attack on a distributor, modelled on the documented December 2016 attack on Ukrainian electric power (MITRE C0025). Keep supply, make the SOCI call, and ground your decisions in safety.",
+   "adversary": {
+    "id": "C0025",
+    "tier": 3
+   },
+   "rounds": 8,
+   "maxScore": 250,
+   "injects": [
+    {
+     "id": "i1",
+     "round": 1,
+     "at": "T+00:00",
+     "kind": "ops",
+     "title": "A quiet Friday evening",
+     "text": "A corporate engineer opens a “rostering update” spreadsheet. Nothing visibly happens.",
+     "fx": []
+    },
+    {
+     "id": "i2",
+     "round": 2,
+     "at": "T+04:00",
+     "kind": "alert",
+     "title": "The mouse moves by itself",
+     "text": "The control-room operator reports cursor movement on an HMI they are not touching, and a breaker status flickers on the display.",
+     "fx": [
+      {
+       "op": "intel",
+       "n": 1
+      }
+     ],
+     "decision": {
+      "prompt": "What does the shift supervisor do?",
+      "choices": [
+       {
+        "id": "a",
+        "quality": "best",
+        "label": "Switch affected feeders to local/manual control, disconnect the HMI network segment, and preserve the workstation state for forensics.",
+        "fx": [
+         {
+          "op": "reveal",
+          "n": 2
+         },
+         {
+          "op": "shieldAll",
+          "n": 1
+         }
+        ],
+        "lesson": "In OT, keep the lights on first: manual control and isolation come before forensics purity, but preserve what you can.",
+        "refs": [
+         "ics:M0811",
+         "nist:800-82",
+         "iec62443:3-3"
+        ]
+       },
+       {
+        "id": "b",
+        "quality": "ok",
+        "label": "Watch the screen and ask IT to investigate remotely.",
+        "fx": [
+         {
+          "op": "intel",
+          "n": 1
+         }
+        ],
+        "lesson": "Observing without containing gives the adversary more time and may let them reach protection systems.",
+        "refs": [
+         "nist-csf:RS.MA-01"
+        ]
+       },
+       {
+        "id": "c",
+        "quality": "poor",
+        "label": "Reboot the HMI to clear the problem.",
+        "fx": [
+         {
+          "op": "plant"
+         },
+         {
+          "op": "resilience",
+          "n": -4
+         }
+        ],
+        "lesson": "A reboot destroys evidence and may drop operators’ view of the grid while the adversary still holds the master.",
+        "refs": [
+         "nist:800-82"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "i3",
+     "round": 3,
+     "at": "T+08:00",
+     "kind": "regulator",
+     "title": "Is this reportable under SOCI?",
+     "text": "The compliance lead asks whether this is a notifiable cyber security incident and how fast.",
+     "fx": [],
+     "decision": {
+      "prompt": "What is the correct approach?",
+      "choices": [
+       {
+        "id": "a",
+        "quality": "best",
+        "label": "Treat it as a critical cyber security incident: report to the ACSC within 12 hours of becoming aware because availability is significantly impacted, and follow with the written report.",
+        "fx": [
+         {
+          "op": "score",
+          "n": 2
+         }
+        ],
+        "lesson": "SOCI distinguishes incidents with a significant impact on availability (12 hours) from other relevant impacts (72 hours). When in doubt, report early.",
+        "refs": [
+         "soci:csirp"
+        ]
+       },
+       {
+        "id": "b",
+        "quality": "ok",
+        "label": "Wait for the forensic report to decide whether it is significant.",
+        "fx": [],
+        "lesson": "The clock starts when you become aware, not when forensics finishes.",
+        "refs": [
+         "soci:csirp"
+        ]
+       },
+       {
+        "id": "c",
+        "quality": "poor",
+        "label": "Do not report: supply has not actually been lost.",
+        "fx": [
+         {
+          "op": "resilience",
+          "n": -3
+         }
+        ],
+        "lesson": "Reportability turns on impact and the incident’s nature, not on whether the outage was finally prevented.",
+        "refs": [
+         "soci:csirp"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "i4",
+     "round": 4,
+     "at": "T+12:00",
+     "kind": "exec",
+     "title": "AEMO is on the line",
+     "text": "AEMO’s operations team asks whether you can shed load manually and hold the network stable while the incident is contained.",
+     "fx": [],
+     "decision": {
+      "prompt": "How do you respond?",
+      "choices": [
+       {
+        "id": "a",
+        "quality": "best",
+        "label": "Coordinate with AEMO: confirm manual switching capability, keep the compromised master isolated, and agree a communications cadence.",
+        "fx": [
+         {
+          "op": "shieldAll",
+          "n": 1
+         },
+         {
+          "op": "score",
+          "n": 2
+         }
+        ],
+        "lesson": "Sector coordination is a control: AEMO and state agencies need accurate capability and constraint information.",
+        "refs": [
+         "aescsf:overview",
+         "soci:cirmp"
+        ]
+       },
+       {
+        "id": "b",
+        "quality": "ok",
+        "label": "Promise normal service and defer details until morning.",
+        "fx": [],
+        "lesson": "Overpromising during an incident erodes trust and complicates system operation.",
+        "refs": [
+         "nist-csf:RS.CO-03"
+        ]
+       },
+       {
+        "id": "c",
+        "quality": "poor",
+        "label": "Reconnect the master to confirm everything is fine.",
+        "fx": [
+         {
+          "op": "plant"
+         }
+        ],
+        "lesson": "Reconnecting a suspected-compromised master to the live network invites worse.",
+        "refs": [
+         "ics:M0811"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "i5",
+     "round": 5,
+     "at": "T+16:00",
+     "kind": "vendor",
+     "title": "The vendor wants to push firmware",
+     "text": "The relay vendor offers an emergency firmware update delivered remotely to all substations “to close the hole”.",
+     "fx": [],
+     "decision": {
+      "prompt": "What do you say?",
+      "choices": [
+       {
+        "id": "a",
+        "quality": "best",
+        "label": "Decline remote push. Obtain the signed firmware, verify it offline, and deploy it under supervision in a planned, staged way.",
+        "fx": [
+         {
+          "op": "reveal",
+          "n": 1
+         },
+         {
+          "op": "intel",
+          "n": 2
+         }
+        ],
+        "lesson": "During an incident, a vendor’s remote update channel is itself an attack path. Verify and stage updates.",
+        "refs": [
+         "ics:M0813",
+         "attack:T1195",
+         "nist-csf:GV.SC-07"
+        ]
+       },
+       {
+        "id": "b",
+        "quality": "poor",
+        "label": "Accept immediately; speed matters.",
+        "fx": [
+         {
+          "op": "plant"
+         },
+         {
+          "op": "resilience",
+          "n": -3
+         }
+        ],
+        "lesson": "An unverified remote push to every substation risks a fleet-wide fault.",
+        "refs": [
+         "ics:T0831"
+        ]
+       },
+       {
+        "id": "c",
+        "quality": "ok",
+        "label": "Defer all updates indefinitely.",
+        "fx": [],
+        "lesson": "Never patching leaves the original weakness in place.",
+        "refs": [
+         "attack:M1051"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "i6",
+     "round": 6,
+     "at": "T+20:00",
+     "kind": "comms",
+     "title": "“Hackers black out suburb?”",
+     "text": "A news site is asking whether a cyber attack caused tonight’s outage.",
+     "fx": [],
+     "decision": {
+      "prompt": "What is the holding line?",
+      "choices": [
+       {
+        "id": "a",
+        "quality": "best",
+        "label": "Confirm you are investigating a possible cyber incident, that supply is being restored manually, and that you are working with government agencies; commit to updates.",
+        "fx": [
+         {
+          "op": "score",
+          "n": 1
+         },
+         {
+          "op": "resilience",
+          "n": 2
+         }
+        ],
+        "lesson": "Accurate, measured disclosure supports public safety and avoids speculation.",
+        "refs": [
+         "nist-csf:RS.CO-02"
+        ]
+       },
+       {
+        "id": "b",
+        "quality": "poor",
+        "label": "Deny any cyber link.",
+        "fx": [
+         {
+          "op": "resilience",
+          "n": -3
+         }
+        ],
+        "lesson": "A denial that is later reversed is costlier than a holding statement.",
+        "refs": [
+         "nist:800-61"
+        ]
+       },
+       {
+        "id": "c",
+        "quality": "ok",
+        "label": "No comment.",
+        "fx": [],
+        "lesson": "Silence leaves customers without safety information.",
+        "refs": [
+         "nist-csf:RS.CO-02"
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "objectives": [
+    {
+     "id": "o1",
+     "kind": "detectBy",
+     "round": 3,
+     "text": "Detect the intrusion by round 3 (T+8h)",
+     "points": 30
+    },
+    {
+     "id": "o2",
+     "kind": "keepJewel",
+     "text": "Keep the SCADA master and substation relays under your control",
+     "points": 40
+    },
+    {
+     "id": "o3",
+     "kind": "decisions",
+     "n": 3,
+     "text": "Make at least 3 best-practice decisions",
+     "points": 30
+    },
+    {
+     "id": "o4",
+     "kind": "resilienceAbove",
+     "n": 20,
+     "text": "Finish with Resilience above 20",
+     "points": 20
+    },
+    {
+     "id": "o5",
+     "kind": "win",
+     "text": "Contain the operation",
+     "points": 20
+    }
+   ]
+  }
+ ],
+ "cardOverrides": {
+  "govern.spoofing": {
+   "name": "Remote Access & Vendor Policy",
+   "flavour": "No vendor session without a ticket and a name",
+   "desc": "Policy that governs who may reach the control network, how, when and under whose supervision: named vendor accounts, approved windows, MFA and session recording.",
+   "refs": [
+    "nist-csf:GV.SC-07",
+    "iec62443:2-1",
+    "attack:M1032"
+   ]
+  },
+  "govern.dos": {
+   "name": "CIRMP & Impact Tolerance",
+   "flavour": "How long can a feeder stay dark?",
+   "desc": "A risk management program that sets maximum tolerable outage for critical functions and funds the controls to meet it. The foundation of SOCI compliance.",
+   "refs": [
+    "soci:cirmp",
+    "aescsf:overview",
+    "nist-csf:GV.OC-04"
+   ]
+  },
+  "identify.dos": {
+   "name": "Critical Asset & Dependency Register",
+   "flavour": "Every feeder, relay and the radio link they share",
+   "desc": "Inventory of critical electricity assets and what each depends on — communications, power, vendors, people — so a single dependency failure is understood before it happens.",
+   "refs": [
+    "soci:cirmp",
+    "nist-csf:ID.AM-05",
+    "nist-800-53:RA-9"
+   ]
+  },
+  "identify.disclosure": {
+   "name": "Purdue Network & Data-Flow Map",
+   "flavour": "If it is not on the diagram, it is not secured",
+   "desc": "Current diagrams of zones, conduits and data flows across IT, DMZ and OT, including the vendor paths nobody remembers authorising.",
+   "refs": [
+    "iec62443:3-2",
+    "purdue:model",
+    "nist:800-82"
+   ]
+  },
+  "protect.spoofing": {
+   "name": "Operator & Vendor MFA",
+   "flavour": "Hardware tokens at the HMI door",
+   "desc": "Strong, preferably hardware-bound multi-factor authentication for operators, engineers and vendors, enforced at the remote-access gateway and again before the control zone.",
+   "refs": [
+    "attack:M1032",
+    "nist-csf:PR.AA-03",
+    "iec62443:3-3",
+    "ics:M0932"
+   ]
+  },
+  "protect.tampering": {
+   "name": "Signed Firmware & Logic Integrity",
+   "flavour": "Only code the utility approved reaches a relay",
+   "desc": "Signed firmware and controller logic, verified at load, with baselines for protection settings. Counters tampering with logic and configuration.",
+   "refs": [
+    "attack:M1045",
+    "ics:M0813",
+    "iec62443:4-2",
+    "nist-800-53:SI-7"
+   ]
+  },
+  "protect.elevation": {
+   "name": "Zone-Based Least Privilege",
+   "flavour": "Access ends at the conduit",
+   "desc": "Role-based access per IEC 62443 zone and conduit: engineers reach what they maintain, vendors reach nothing standing, and privilege in IT never implies privilege in OT.",
+   "refs": [
+    "iec62443:3-2",
+    "attack:M1026",
+    "ics:M0801"
+   ]
+  },
+  "detect.tampering": {
+   "name": "Passive OT Network Monitoring",
+   "flavour": "Listen without poking the PLC",
+   "desc": "Passive monitoring of OT traffic and asset behaviour that never sends probes into fragile devices, flagging new devices, new commands and changed logic.",
+   "refs": [
+    "nist:800-82",
+    "ics:M0947",
+    "nist-csf:DE.CM-01"
+   ]
+  },
+  "respond.tampering": {
+   "name": "Segment Isolation & Manual Fallback",
+   "flavour": "Cut the link; switch it by hand",
+   "desc": "Pre-agreed ability to sever the IT/OT conduit and run substations under local or manual control while the investigation proceeds. Safety and supply continuity outrank forensics purity.",
+   "refs": [
+    "iec62443:3-2",
+    "nist-csf:RS.MI-01",
+    "ics:M0811"
+   ]
+  },
+  "respond.disclosure": {
+   "name": "SOCI Incident Reporting Playbook",
+   "flavour": "The 12-hour clock starts when you become aware",
+   "desc": "Decision tree and drafts for reporting a cyber security incident to the ACSC under SOCI — including who decides if the impact is significant — alongside notifications to AEMO and the state regulator.",
+   "refs": [
+    "soci:csirp",
+    "privacy:ndb",
+    "nist-csf:RS.CO-02"
+   ]
+  },
+  "recover.dos": {
+   "name": "Black-Start & Offline Control Backups",
+   "flavour": "Rebuild the control room from tape",
+   "desc": "Offline backups of SCADA/ADMS configurations and controller logic, with tested procedures to restore the control system and perform a black start when everything else is down.",
+   "refs": [
+    "ics:M0953",
+    "e8:backups",
+    "nist-csf:RC.RP-03"
+   ]
+  }
+ },
+ "cards": [
+  {
+   "id": "utilities.data-diode",
+   "name": "Unidirectional Gateway",
+   "type": "control",
+   "fn": "protect",
+   "prop": "elevation",
+   "cost": 2,
+   "rarity": "uncommon",
+   "target": "asset",
+   "ward": {
+    "E": 2,
+    "T": 1
+   },
+   "mit": [
+    "M1030",
+    "M0930"
+   ],
+   "flags": [
+    "segment"
+   ],
+   "desc": "A hardware data diode lets telemetry flow out of the control zone but nothing flow in. Spread into or out of this asset costs +1 and has −1 power.",
+   "lesson": "Hardware-enforced one-way flow removes whole classes of inbound attack from a zone, at the price of flexibility.",
+   "refs": [
+    "ics:M0930",
+    "iec62443:3-2",
+    "nist:800-82"
+   ]
+  },
+  {
+   "id": "utilities.manual-ops",
+   "name": "Manual Operations Fallback",
+   "type": "action",
+   "fn": "respond",
+   "prop": "dos",
+   "cost": 2,
+   "rarity": "uncommon",
+   "target": "asset",
+   "fx": [
+    {
+     "op": "isolate"
+    },
+    {
+     "op": "heal",
+     "n": 3
+    },
+    {
+     "op": "restore"
+    }
+   ],
+   "desc": "Operators switch to local and manual control while IT is isolated. Heals the asset, restores its controls and isolates it.",
+   "lesson": "Rehearsed manual operation is the ultimate availability control for the grid. Practise it before you need it.",
+   "refs": [
+    "ics:M0811",
+    "iec62443:3-3",
+    "soci:cirmp"
+   ]
+  },
+  {
+   "id": "utilities.passive-ot",
+   "name": "Passive OT Monitor",
+   "type": "control",
+   "fn": "detect",
+   "prop": "tampering",
+   "cost": 2,
+   "rarity": "uncommon",
+   "target": "asset",
+   "detect": {
+    "str": 4,
+    "n": 2,
+    "scope": "asset"
+   },
+   "mit": [
+    "M0947"
+   ],
+   "desc": "Listens to OT traffic without probing devices: reveals up to 2 footholds per round (stealth ≤ 4) on this asset.",
+   "lesson": "Active scanning can crash fragile controllers. Passive monitoring is the safe default in OT.",
+   "refs": [
+    "nist:800-82",
+    "ics:M0947",
+    "nist-csf:DE.CM-01"
+   ]
+  },
+  {
+   "id": "utilities.auth-commands",
+   "name": "Authenticated Control Commands",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "tampering",
+   "cost": 1,
+   "rarity": "rare",
+   "target": "control",
+   "base": [
+    "protect.tampering"
+   ],
+   "aug": {
+    "ward": {
+     "T": 2
+    },
+    "mit": [
+     "M0802",
+     "M0813"
+    ],
+    "resists": [
+     "T0831"
+    ]
+   },
+   "desc": "Control messages are authenticated end to end. Counters Manipulation of Control.",
+   "lesson": "Industrial protocols were designed for trust. Authenticating commands closes the gap between “reachable” and “allowed to operate”.",
+   "refs": [
+    "ics:T0831",
+    "ics:M0802",
+    "iec62443:3-3"
+   ]
+  }
+ ],
+ "relics": [
+  {
+   "id": "utilities.cirmp-uplift",
+   "name": "CIRMP Uplift Programme",
+   "icon": "clipboard-check",
+   "rarity": "uncommon",
+   "hooks": {
+    "passive": {
+     "maxResilience": 8
+    },
+    "roundStart": [
+     {
+      "op": "intel",
+      "n": 1
+     }
+    ]
+   },
+   "desc": "+8 max Resilience. +1 intel each round.",
+   "lesson": "A funded, board-owned risk management program is what turns standards into operating capability.",
+   "refs": [
+    "soci:cirmp",
+    "aescsf:overview"
+   ]
+  }
+ ]
+}

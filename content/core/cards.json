@@ -1967,6 +1967,510 @@
     "attack:M1053",
     "e8:backups"
    ]
+  },
+  {
+   "rarity": "common",
+   "target": "control",
+   "id": "a.emb-firmware-signing",
+   "name": "Secure Firmware Update",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "tampering",
+   "cost": 1,
+   "base": [
+    "protect.tampering"
+   ],
+   "aug": {
+    "ward": {
+     "T": 1
+    },
+    "expert": [
+     {
+      "tech": "T1693.001",
+      "ref": "emb3d:MID-026"
+     },
+     {
+      "tech": "T1693.002",
+      "ref": "emb3d:MID-026"
+     }
+    ]
+   },
+   "desc": "+1 Integrity ward. Counters malicious system and module firmware. EMB3D MID-026 (foundational).",
+   "lesson": "Devices that accept unauthenticated firmware (EMB3D TID-211) hand attackers persistence below the OS. Signed, verified updates turn a firmware implant from a one-liner into a key-theft problem.",
+   "refs": [
+    "emb3d:MID-026",
+    "attack:T1693.001",
+    "attack:T1693.002",
+    "iec62443:4-2"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.emb-hw-rot",
+   "name": "Hardware-backed Bootloader Authentication",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "tampering",
+   "cost": 1,
+   "base": [
+    "protect.tampering"
+   ],
+   "aug": {
+    "ward": {
+     "T": 1
+    },
+    "expert": [
+     {
+      "tech": "T1693.001",
+      "ref": "emb3d:MID-002"
+     }
+    ]
+   },
+   "desc": "+1 Integrity ward. A hardware root of trust verifies the bootloader before it runs. EMB3D MID-002 (intermediate).",
+   "lesson": "A bootloader check anchored in silicon cannot be patched out by the software it is checking (TID-201). It is the difference between a signed-image policy and an enforced one.",
+   "refs": [
+    "emb3d:MID-002",
+    "attack:T1693.001",
+    "iec62443:4-2"
+   ]
+  },
+  {
+   "rarity": "rare",
+   "target": "control",
+   "id": "a.emb-attest",
+   "name": "Remote Attestation",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "tampering",
+   "cost": 2,
+   "base": [
+    "protect.tampering",
+    "detect.tampering"
+   ],
+   "aug": {
+    "ward": {
+     "T": 1
+    },
+    "detectStr": 1,
+    "expert": [
+     {
+      "tech": "T1693.001",
+      "ref": "emb3d:MID-003"
+     },
+     {
+      "tech": "T1693.002",
+      "ref": "emb3d:MID-003"
+     },
+     {
+      "tech": "T0889",
+      "ref": "emb3d:MID-003"
+     }
+    ]
+   },
+   "desc": "+1 Integrity ward, +1 detection strength. Controllers continuously prove their firmware and logic are what you deployed. EMB3D MID-003 (leading).",
+   "lesson": "Attestation turns “is this PLC still running my logic?” from a site visit into a measurement. Leading practice in EMB3D because few fielded devices support it.",
+   "refs": [
+    "emb3d:MID-003",
+    "attack:T1693.001",
+    "attack:T1693.002",
+    "attack:T0889",
+    "nist:800-82"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "control",
+   "id": "a.emb-msgauth",
+   "name": "Authenticated Process Messages",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "spoofing",
+   "cost": 1,
+   "base": [
+    "protect.spoofing",
+    "protect.tampering"
+   ],
+   "aug": {
+    "ward": {
+     "S": 1
+    },
+    "expert": [
+     {
+      "tech": "T1692.001",
+      "ref": "emb3d:MID-034"
+     },
+     {
+      "tech": "T1692.002",
+      "ref": "emb3d:MID-034"
+     }
+    ]
+   },
+   "desc": "+1 Authentication ward. Control and reporting messages carry a MAC, so spoofed commands and fake sensor values are rejected. EMB3D MID-034 (foundational).",
+   "lesson": "Classic fieldbus and SCADA protocols trust anything that reaches the wire (TID-310, TID-406). Message authentication restores the integrity assumption the protocol never had; IEC 62443-3-3 SR 3.1 asks for it.",
+   "refs": [
+    "emb3d:MID-034",
+    "attack:T1692.001",
+    "attack:T1692.002",
+    "iec62443:3-3"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "control",
+   "id": "a.emb-physpresence",
+   "name": "Physical Presence Validation",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "elevation",
+   "cost": 1,
+   "base": [
+    "protect.elevation",
+    "protect.tampering"
+   ],
+   "aug": {
+    "ward": {
+     "E": 1
+    },
+    "expert": [
+     {
+      "tech": "T0858",
+      "ref": "emb3d:MID-031"
+     },
+     {
+      "tech": "T1693.001",
+      "ref": "emb3d:MID-031"
+     }
+    ]
+   },
+   "desc": "+1 Authorisation ward. Mode and firmware changes need a human at the key switch. EMB3D MID-031 (foundational).",
+   "lesson": "Triton reprogrammed safety controllers that were left in PROGRAM mode. A hardware key or button for risky actions makes remote attackers prove they are on site.",
+   "refs": [
+    "emb3d:MID-031",
+    "attack:T0858",
+    "attack:T1693.001",
+    "attack:C0030"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.emb-signedlogic",
+   "name": "Signed Control Logic",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "tampering",
+   "cost": 1,
+   "base": [
+    "protect.tampering"
+   ],
+   "aug": {
+    "ward": {
+     "T": 1
+    },
+    "expert": [
+     {
+      "tech": "T0889",
+      "ref": "emb3d:MID-040"
+     },
+     {
+      "tech": "T0843",
+      "ref": "emb3d:MID-040"
+     }
+    ]
+   },
+   "desc": "+1 Integrity ward. Only engineering-signed logic downloads are accepted. EMB3D MID-040 (intermediate).",
+   "lesson": "Unsigned program download is how an adversary turns network access into process control (TID-302). Signing moves trust from “who is on the network” to “who holds the engineering key”.",
+   "refs": [
+    "emb3d:MID-040",
+    "attack:T0889",
+    "attack:T0843"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "control",
+   "id": "a.emb-nofactory-creds",
+   "name": "No Default Credentials",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "spoofing",
+   "cost": 1,
+   "base": [
+    "protect.spoofing"
+   ],
+   "aug": {
+    "ward": {
+     "S": 1
+    },
+    "expert": [
+     {
+      "tech": "T1694.001",
+      "ref": "emb3d:MID-043"
+     },
+     {
+      "tech": "T1694.002",
+      "ref": "emb3d:MID-043"
+     }
+    ]
+   },
+   "desc": "+1 Authentication ward. Devices ship with unique credentials and force a change at commissioning. EMB3D MID-043 (foundational).",
+   "lesson": "Default and hardcoded credentials (TID-311, TID-328) are still the most observed way into field devices. Unique per-device secrets remove the shared master key.",
+   "refs": [
+    "emb3d:MID-043",
+    "attack:T1694.001",
+    "attack:T1694.002",
+    "cwe:798"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.emb-mfa",
+   "name": "On-device Multi-factor Authentication",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "spoofing",
+   "cost": 1,
+   "base": [
+    "protect.spoofing"
+   ],
+   "aug": {
+    "ward": {
+     "S": 1
+    },
+    "expert": [
+     {
+      "tech": "T0859",
+      "ref": "emb3d:MID-045"
+     }
+    ]
+   },
+   "desc": "+1 Authentication ward. Engineering access to the device needs a second factor. EMB3D MID-045 (intermediate).",
+   "lesson": "Valid-account abuse works when a stolen password is enough (TID-314). Device-level MFA is rare in OT, which is why EMB3D rates it intermediate.",
+   "refs": [
+    "emb3d:MID-045",
+    "attack:T0859"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "control",
+   "id": "a.emb-acl",
+   "name": "On-device Firewall / ACL",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "elevation",
+   "cost": 1,
+   "base": [
+    "protect.elevation",
+    "protect.disclosure"
+   ],
+   "aug": {
+    "ward": {
+     "E": 1
+    },
+    "expert": [
+     {
+      "tech": "T0886",
+      "ref": "emb3d:MID-083"
+     }
+    ]
+   },
+   "desc": "+1 Authorisation ward. The device itself allow-lists who may talk to which service. EMB3D MID-083 (foundational).",
+   "lesson": "Network segmentation fails open when one jump host is compromised. A device-resident ACL (TID-412) is the last line when the zone boundary is already crossed.",
+   "refs": [
+    "emb3d:MID-083",
+    "attack:T0886",
+    "iec62443:3-3"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.emb-pqc",
+   "name": "Post-Quantum Cryptography (Device)",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "disclosure",
+   "cost": 1,
+   "base": [
+    "protect.disclosure"
+   ],
+   "aug": {
+    "ward": {
+     "I": 2
+    },
+    "flags": [
+     "pqc"
+    ],
+    "expert": [
+     {
+      "tech": "T1040",
+      "ref": "emb3d:MID-082"
+     }
+    ]
+   },
+   "desc": "+2 Confidentiality ward. Device links use ML-KEM, immune to harvest-now-decrypt-later. EMB3D MID-082 (intermediate).",
+   "lesson": "A substation relay or meter installed today is still in service in 2045. Long-lived embedded devices cannot be re-keyed later, so they need crypto-agility now (NIST FIPS 203, IR 8547).",
+   "refs": [
+    "emb3d:MID-082",
+    "attack:T1040",
+    "nist:fips-203",
+    "nist:ir-8547"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "none",
+   "id": "x.retainer",
+   "fn": "respond",
+   "prop": "tampering",
+   "type": "action",
+   "cost": 2,
+   "consume": "run",
+   "name": "Activate Security Retainer",
+   "desc": "Call in the IR firm: reveal up to 3 footholds, +3 intel, draw 2 and restore 2 Resilience. Spent for the rest of the run.",
+   "lesson": "An IR retainer buys surge capacity and a priority queue, but the hours are finite and it is contracted before you need it, not during. Activate early enough to matter, and know what your retainer actually covers.",
+   "fx": [
+    {
+     "op": "reveal",
+     "n": 3,
+     "str": 5
+    },
+    {
+     "op": "intel",
+     "n": 3
+    },
+    {
+     "op": "draw",
+     "n": 2
+    },
+    {
+     "op": "resilience",
+     "n": 2
+    }
+   ],
+   "refs": [
+    "nist:800-61",
+    "nist-csf:RS.MA-01",
+    "nist-csf:GV.SC-08"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "x.killswitch",
+   "fn": "respond",
+   "prop": "dos",
+   "type": "action",
+   "cost": 0,
+   "consume": "battle",
+   "name": "Disable System",
+   "desc": "Pull the plug: isolate the asset and remove every foothold on it, at the cost of 3 integrity. Exhausts.",
+   "lesson": "Containment by shutdown always works and always costs availability. For IT it is a bad day; for OT it can be a safety event, which is why OT playbooks pre-agree safe-state and manual-operation procedures before anyone is allowed to pull the plug.",
+   "fx": [
+    {
+     "op": "isolate"
+    },
+    {
+     "op": "purge"
+    },
+    {
+     "op": "damage",
+     "n": 3
+    }
+   ],
+   "refs": [
+    "nist:800-61",
+    "nist:800-82",
+    "nist-csf:RS.MI-02"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "asset",
+   "id": "x.restore",
+   "fn": "recover",
+   "prop": "dos",
+   "type": "action",
+   "cost": 2,
+   "consume": "battle",
+   "name": "Restore from Backup",
+   "desc": "Wipe and rebuild the asset: remove every foothold and re-enable its controls. Full restore if you have a working Recovery control on the board; otherwise only 3 integrity. Exhausts.",
+   "lesson": "A restore is only as good as the backup you tested. Without an immutable, tested copy you are rebuilding from scratch at 3 a.m. Restore also destroys forensic evidence, so image first when you can.",
+   "fx": [
+    {
+     "op": "restoreBackup",
+     "n": 3
+    }
+   ],
+   "refs": [
+    "nist:800-61",
+    "nist-csf:RC.RP-03",
+    "e8:backups"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "none",
+   "id": "x.counsel",
+   "fn": "govern",
+   "prop": "disclosure",
+   "type": "action",
+   "cost": 1,
+   "consume": "battle",
+   "name": "Engage Breach Counsel & Comms",
+   "desc": "Restore 4 Resilience and cut this round’s exfiltration by 3. Exhausts.",
+   "lesson": "Counsel-led response preserves privilege, sequences notifications (OAIC NDB, SOCI 12/72-hour reports where they apply) and keeps the story consistent. It reduces regulatory and reputational damage, not the technical compromise.",
+   "fx": [
+    {
+     "op": "resilience",
+     "n": 4
+    },
+    {
+     "op": "shieldExfil",
+     "n": 3
+    }
+   ],
+   "refs": [
+    "soci:overview",
+    "privacy:overview",
+    "nist-csf:RS.CO-02"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "x.isac",
+   "fn": "identify",
+   "prop": "repudiation",
+   "type": "action",
+   "cost": 1,
+   "consume": "run",
+   "name": "ISAC / ACSC Tip-off",
+   "desc": "A peer shares fresh indicators: +4 intel, reveal up to 2 footholds, draw 1. Spent for the rest of the run.",
+   "lesson": "Sector sharing (AusCERT, ACSC Partnership, E-ISAC, FS-ISAC) is how defenders learn an adversary is active in the sector before they find it in their own environment. It only works if you have a seat and share back.",
+   "fx": [
+    {
+     "op": "intel",
+     "n": 4
+    },
+    {
+     "op": "reveal",
+     "n": 2,
+     "str": 4
+    },
+    {
+     "op": "draw",
+     "n": 1
+    }
+   ],
+   "refs": [
+    "nist:800-61",
+    "nist-csf:ID.RA-02",
+    "ism:overview"
+   ]
   }
  ]
 }

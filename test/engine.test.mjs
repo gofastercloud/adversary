@@ -172,3 +172,37 @@ test('tutorial script is reachable exactly as the coach describes it', async () 
   assert.ok(!b().footholds.some(x => x.id === f.id), 'evicted in one card');
   assert.ok(b().expo.cur >= 3);
 });
+
+test('EMB3D and CTID refs resolve and are offline-validated', () => {
+  assert.equal(resolveRef('emb3d:MID-002').url, 'https://emb3d.mitre.org/mitigations/MID-002');
+  assert.equal(resolveRef('emb3d:TID-201').url, 'https://emb3d.mitre.org/threats/TID-201');
+  assert.equal(resolveRef('emb3d:MID-2'), null);
+  assert.equal(resolveRef('ctid:aws').url, 'https://ctid.mitre.org/mappings/external/aws/');
+  assert.equal(resolveRef('attack:A0003').url, 'https://attack.mitre.org/assets/A0003/');
+  assert.equal(resolveRef('ctid:nope'), null);
+});
+
+test('CTID-mapped NIST controls add ward when ATT&CK lists no mitigation overlap', () => {
+  const b = B.newBattle(content, { seed: 'ctid-1', deck: starterDeck(content, 'phoenix'), adversary: { id: 'G0102', tier: 1 }, resilience: { cur: 20, max: 20 } });
+  const t = content.techs.T1078;
+  assert.ok(t.c?.length, 'T1078 carries CTID NIST mappings');
+  const ctl = Object.values(content.cards).find(c => c.type === 'control' && c.ctl?.some(x => t.c.includes(x)));
+  assert.ok(ctl, 'a control card cites a CTID-mapped 800-53 control');
+  const A = b.assets.find(a => !a.down);
+  b.controls.push({ kid: 'kx', iid: 'ix', card: ctl.id, ml: 1, asset: A.id, augs: [], disabledBy: null });
+  const w = B.wardFor(content, b, A.id, { id: 'T1078', stride: 'S', mit: [] });
+  assert.ok(w.why.some(x => x.ctl), 'ward reason cites the CTID mapping');
+});
+
+test('consumables: run-scope cards leave the deck after a won battle; battle-scope exhaust only', () => {
+  const run = R.newRun(content, { seed: 'cons-1', doctrine: 'phoenix', assurance: 0 });
+  const iid = 'zz1';
+  run.deck.push({ iid, id: 'x.retainer', ml: 1 }, { iid: 'zz2', id: 'x.restore', ml: 1 });
+  const b = B.newBattle(content, { seed: 'cons-2', deck: run.deck, adversary: { id: 'G0102', tier: 1 }, resilience: { cur: 20, max: 20 } });
+  b.hand.push(iid); b.draw = b.draw.filter(x => x !== iid); b.energy.cur = 9;
+  B.playCard(content, b, iid, {});
+  assert.ok(b.spent.includes(iid) && !b.discard.includes(iid), 'retainer is spent, not discarded');
+  b.hand.push('zz2'); b.draw = b.draw.filter(x => x !== 'zz2');
+  B.playCard(content, b, 'zz2', { asset: b.assets[0].id });
+  assert.ok(!b.spent.includes('zz2') && b.exhausted.includes('zz2') && !b.discard.includes('zz2'), 'restore exhausts for the battle only');
+});

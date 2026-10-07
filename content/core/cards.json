@@ -1,0 +1,1972 @@
+{
+ "schema": 2,
+ "cards": [
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.govern.spoofing",
+   "cell": "govern.spoofing",
+   "fn": "govern",
+   "prop": "spoofing",
+   "type": "policy",
+   "cost": 1,
+   "aura": {
+    "ward": {
+     "S": 1
+    }
+   },
+   "name": "Identity & Access Policy",
+   "flavour": "Who may be who, and how we prove it",
+   "desc": "Board-endorsed policy that sets identity assurance levels, MFA expectations and account lifecycle rules. Without it, authentication controls are optional in practice.",
+   "lesson": "Board-endorsed policy that sets identity assurance levels, MFA expectations and account lifecycle rules. Without it, authentication controls are optional in practice.",
+   "refs": [
+    "nist-csf:GV.PO-01",
+    "nist-800-53:IA-1",
+    "e8:mfa"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.govern.tampering",
+   "cell": "govern.tampering",
+   "fn": "govern",
+   "prop": "tampering",
+   "type": "policy",
+   "cost": 1,
+   "aura": {
+    "advTax": {
+     "tactics": [
+      "persistence",
+      "defense-impairment"
+     ],
+     "n": 1
+    }
+   },
+   "name": "Change Management Board",
+   "flavour": "Nothing ships without a name on it",
+   "desc": "Formal change control: approvals, separation between requester and deployer, and rollback plans. Unauthorised change is Tampering by another name.",
+   "lesson": "Formal change control: approvals, separation between requester and deployer, and rollback plans. Unauthorised change is Tampering by another name.",
+   "refs": [
+    "nist-csf:PR.PS-01",
+    "nist-800-53:CM-3",
+    "cis:4"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.govern.repudiation",
+   "cell": "govern.repudiation",
+   "fn": "govern",
+   "prop": "repudiation",
+   "type": "policy",
+   "cost": 1,
+   "aura": {
+    "stealthMinus": 1
+   },
+   "name": "Logging & Retention Standard",
+   "flavour": "If it is not logged it did not happen",
+   "desc": "Defines what must be logged, for how long, and who may delete it. Sets the evidentiary baseline for every investigation and regulator question.",
+   "lesson": "Defines what must be logged, for how long, and who may delete it. Sets the evidentiary baseline for every investigation and regulator question.",
+   "refs": [
+    "nist-csf:GV.PO-01",
+    "nist-800-53:AU-11",
+    "cis:8"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.govern.disclosure",
+   "cell": "govern.disclosure",
+   "fn": "govern",
+   "prop": "disclosure",
+   "type": "policy",
+   "cost": 1,
+   "aura": {
+    "exfilMinus": 2
+   },
+   "name": "Data Classification Policy",
+   "flavour": "Label it before you lose it",
+   "desc": "A classification scheme with handling rules per tier. Drives encryption, access and DLP decisions and decides what a breach actually costs.",
+   "lesson": "A classification scheme with handling rules per tier. Drives encryption, access and DLP decisions and decides what a breach actually costs.",
+   "refs": [
+    "nist-csf:ID.AM-07",
+    "nist-800-53:RA-2",
+    "iso27001:A.5.12"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.govern.dos",
+   "cell": "govern.dos",
+   "fn": "govern",
+   "prop": "dos",
+   "type": "policy",
+   "cost": 1,
+   "aura": {
+    "shield": 1
+   },
+   "name": "Resilience & Impact Tolerance",
+   "flavour": "How long can we be down? Write it down",
+   "desc": "Board-set maximum tolerable downtime for critical services, funded and tested. Turns “availability” from a wish into a requirement.",
+   "lesson": "Board-set maximum tolerable downtime for critical services, funded and tested. Turns “availability” from a wish into a requirement.",
+   "refs": [
+    "nist-csf:GV.OC-04",
+    "nist-800-53:CP-2",
+    "iso27001:A.5.30"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.govern.elevation",
+   "cell": "govern.elevation",
+   "fn": "govern",
+   "prop": "elevation",
+   "type": "policy",
+   "cost": 1,
+   "aura": {
+    "advTax": {
+     "tactics": [
+      "privilege-escalation",
+      "lateral-movement"
+     ],
+     "n": 1
+    }
+   },
+   "name": "Separation of Duties",
+   "flavour": "No one person holds every key",
+   "desc": "Policy that splits request, approve and execute for sensitive actions. Limits what a single stolen or malicious privileged account can do.",
+   "lesson": "Policy that splits request, approve and execute for sensitive actions. Limits what a single stolen or malicious privileged account can do.",
+   "refs": [
+    "nist-csf:PR.AA-05",
+    "nist-800-53:AC-5",
+    "iso27001:A.5.3"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.identify.spoofing",
+   "cell": "identify.spoofing",
+   "fn": "identify",
+   "prop": "spoofing",
+   "type": "action",
+   "cost": 1,
+   "fx": [
+    {
+     "op": "scanKinds",
+     "kinds": [
+      "identity",
+      "email"
+     ],
+     "str": 3
+    },
+    {
+     "op": "draw",
+     "n": 1
+    }
+   ],
+   "name": "Identity Inventory",
+   "flavour": "Humans, services, keys, bots — all of them",
+   "desc": "A complete inventory of human, service and machine identities and their owners. Orphaned service accounts are a favourite foothold.",
+   "lesson": "A complete inventory of human, service and machine identities and their owners. Orphaned service accounts are a favourite foothold.",
+   "refs": [
+    "nist-csf:ID.AM-02",
+    "nist-800-53:IA-4",
+    "cis:5"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.identify.tampering",
+   "cell": "identify.tampering",
+   "fn": "identify",
+   "prop": "tampering",
+   "type": "action",
+   "cost": 1,
+   "fx": [
+    {
+     "op": "scanKinds",
+     "kinds": [
+      "app",
+      "vendor",
+      "server"
+     ],
+     "str": 3
+    },
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "name": "Software Bill of Materials",
+   "flavour": "Know what is inside the box",
+   "desc": "SBOMs and provenance records for software and firmware so a poisoned component can be found and scoped in hours.",
+   "lesson": "SBOMs and provenance records for software and firmware so a poisoned component can be found and scoped in hours.",
+   "refs": [
+    "nist-csf:ID.AM-02",
+    "nist-800-53:SR-4",
+    "nist:800-218"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.identify.repudiation",
+   "cell": "identify.repudiation",
+   "fn": "identify",
+   "prop": "repudiation",
+   "type": "action",
+   "cost": 1,
+   "fx": [
+    {
+     "op": "intel",
+     "n": 2
+    },
+    {
+     "op": "draw",
+     "n": 1
+    }
+   ],
+   "name": "Log Source Inventory",
+   "flavour": "Map every blind spot",
+   "desc": "An inventory of what generates telemetry, what is collected and what is silent. Gaps here become “we cannot tell what happened”.",
+   "lesson": "An inventory of what generates telemetry, what is collected and what is silent. Gaps here become “we cannot tell what happened”.",
+   "refs": [
+    "nist-csf:ID.AM-03",
+    "nist-800-53:AU-2",
+    "cis:8"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.identify.disclosure",
+   "cell": "identify.disclosure",
+   "fn": "identify",
+   "prop": "disclosure",
+   "type": "action",
+   "cost": 1,
+   "fx": [
+    {
+     "op": "scanKinds",
+     "kinds": [
+      "data",
+      "cloud",
+      "backup",
+      "server"
+     ],
+     "str": 3
+    },
+    {
+     "op": "draw",
+     "n": 1
+    }
+   ],
+   "name": "Data Flow Mapping",
+   "flavour": "Where does the sensitive stuff actually go?",
+   "desc": "Diagrams and discovery tooling showing where sensitive data is stored, processed and transmitted. The raw material of every threat model.",
+   "lesson": "Diagrams and discovery tooling showing where sensitive data is stored, processed and transmitted. The raw material of every threat model.",
+   "refs": [
+    "nist-csf:ID.AM-03",
+    "nist-800-53:CM-12",
+    "owasp:threat-modeling-manifesto"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.identify.dos",
+   "cell": "identify.dos",
+   "fn": "identify",
+   "prop": "dos",
+   "type": "action",
+   "cost": 1,
+   "fx": [
+    {
+     "op": "draw",
+     "n": 2
+    }
+   ],
+   "name": "Critical Dependency Map",
+   "flavour": "The thing the thing depends on",
+   "desc": "Maps the services, suppliers and utilities each critical function needs — including the boring ones like DNS, power and the one SaaS nobody remembers.",
+   "lesson": "Maps the services, suppliers and utilities each critical function needs — including the boring ones like DNS, power and the one SaaS nobody remembers.",
+   "refs": [
+    "nist-csf:ID.AM-05",
+    "nist-800-53:RA-9",
+    "nist-csf:GV.OC-05"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.identify.elevation",
+   "cell": "identify.elevation",
+   "fn": "identify",
+   "prop": "elevation",
+   "type": "action",
+   "cost": 1,
+   "fx": [
+    {
+     "op": "blockPath"
+    },
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "name": "Attack Path Mapping",
+   "flavour": "See the route to Domain Admin first",
+   "desc": "Graph-based analysis of privilege relationships and attack paths, plus authenticated vulnerability scanning, so the shortest path to crown jewels is closed before an attacker walks it.",
+   "lesson": "Graph-based analysis of privilege relationships and attack paths, plus authenticated vulnerability scanning, so the shortest path to crown jewels is closed before an attacker walks it.",
+   "refs": [
+    "nist-csf:ID.RA-01",
+    "nist-800-53:RA-5",
+    "attack:M1016"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.protect.spoofing",
+   "cell": "protect.spoofing",
+   "fn": "protect",
+   "prop": "spoofing",
+   "type": "control",
+   "cost": 2,
+   "ward": {
+    "S": 2
+   },
+   "mit": [
+    "M1032",
+    "M1027"
+   ],
+   "tags": [
+    "identity"
+   ],
+   "name": "Phishing-Resistant MFA",
+   "flavour": "FIDO2 beats a lookalike login page",
+   "desc": "Hardware-bound, origin-checked authenticators (FIDO2/passkeys) that cannot be replayed by an adversary-in-the-middle. The single highest-value identity control.",
+   "lesson": "Hardware-bound, origin-checked authenticators (FIDO2/passkeys) that cannot be replayed by an adversary-in-the-middle. The single highest-value identity control.",
+   "refs": [
+    "nist-csf:PR.AA-03",
+    "nist-800-53:IA-2",
+    "attack:M1032",
+    "e8:mfa",
+    "d3fend:Multi-factorAuthentication"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.protect.tampering",
+   "cell": "protect.tampering",
+   "fn": "protect",
+   "prop": "tampering",
+   "type": "control",
+   "cost": 2,
+   "ward": {
+    "T": 2
+   },
+   "mit": [
+    "M1045",
+    "M1038"
+   ],
+   "name": "Code Signing & Integrity Checks",
+   "flavour": "Trust the signature, not the filename",
+   "desc": "Cryptographic signing of code, firmware and configuration, verified at install and boot. Stops unauthorised modification being silently accepted.",
+   "lesson": "Cryptographic signing of code, firmware and configuration, verified at install and boot. Stops unauthorised modification being silently accepted.",
+   "refs": [
+    "nist-csf:PR.PS-05",
+    "nist-800-53:SI-7",
+    "attack:M1045"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.protect.repudiation",
+   "cell": "protect.repudiation",
+   "fn": "protect",
+   "prop": "repudiation",
+   "type": "control",
+   "cost": 2,
+   "ward": {
+    "R": 2
+   },
+   "mit": [
+    "M1029",
+    "M1047"
+   ],
+   "flags": [
+    "stealthMinus1"
+   ],
+   "name": "Tamper-Evident Audit Logging",
+   "flavour": "Logs the intruder cannot quietly edit",
+   "desc": "Logs shipped off-host to append-only storage with integrity protection, so an intruder with local admin cannot erase their trail.",
+   "lesson": "Logs shipped off-host to append-only storage with integrity protection, so an intruder with local admin cannot erase their trail.",
+   "refs": [
+    "nist-csf:PR.PS-04",
+    "nist-800-53:AU-9",
+    "attack:M1029"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.protect.disclosure",
+   "cell": "protect.disclosure",
+   "fn": "protect",
+   "prop": "disclosure",
+   "type": "control",
+   "cost": 2,
+   "ward": {
+    "I": 2
+   },
+   "mit": [
+    "M1041",
+    "M1057"
+   ],
+   "name": "Encryption In Transit & At Rest",
+   "flavour": "Make a stolen disk a boring disk",
+   "desc": "TLS everywhere and strong at-rest encryption with managed keys. Turns many data-theft events into non-events.",
+   "lesson": "TLS everywhere and strong at-rest encryption with managed keys. Turns many data-theft events into non-events.",
+   "refs": [
+    "nist-csf:PR.DS-01",
+    "nist-800-53:SC-28",
+    "attack:M1041",
+    "d3fend:MessageEncryption"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.protect.dos",
+   "cell": "protect.dos",
+   "fn": "protect",
+   "prop": "dos",
+   "type": "control",
+   "cost": 2,
+   "ward": {
+    "D": 2
+   },
+   "mit": [
+    "M1037",
+    "M1031"
+   ],
+   "name": "Rate Limiting & DDoS Shield",
+   "flavour": "Absorb the flood, serve the humans",
+   "desc": "Upstream scrubbing, rate limits, autoscaling and sane timeouts so volumetric and application-layer floods degrade gracefully.",
+   "lesson": "Upstream scrubbing, rate limits, autoscaling and sane timeouts so volumetric and application-layer floods degrade gracefully.",
+   "refs": [
+    "nist-csf:PR.IR-04",
+    "nist-800-53:SC-5",
+    "attack:M1037"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.protect.elevation",
+   "cell": "protect.elevation",
+   "fn": "protect",
+   "prop": "elevation",
+   "type": "control",
+   "cost": 2,
+   "ward": {
+    "E": 2
+   },
+   "mit": [
+    "M1026",
+    "M1018"
+   ],
+   "name": "Least Privilege & PAM",
+   "flavour": "Admin rights are a loan, not a gift",
+   "desc": "Role-based access with just-in-time elevation, vaulted privileged credentials and no standing admin. Limits blast radius when any one account falls.",
+   "lesson": "Role-based access with just-in-time elevation, vaulted privileged credentials and no standing admin. Limits blast radius when any one account falls.",
+   "refs": [
+    "nist-csf:PR.AA-05",
+    "nist-800-53:AC-6",
+    "attack:M1026",
+    "e8:restrict-admin"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.detect.spoofing",
+   "cell": "detect.spoofing",
+   "fn": "detect",
+   "prop": "spoofing",
+   "type": "control",
+   "cost": 2,
+   "detect": {
+    "str": 3,
+    "n": 1,
+    "scope": "asset"
+   },
+   "name": "Identity Threat Detection",
+   "flavour": "Impossible travel, impossible Tuesday",
+   "desc": "Behavioural analytics on sign-ins and sessions: impossible travel, token replay, MFA fatigue patterns and anomalous consent grants.",
+   "lesson": "Behavioural analytics on sign-ins and sessions: impossible travel, token replay, MFA fatigue patterns and anomalous consent grants.",
+   "refs": [
+    "nist-csf:DE.CM-03",
+    "nist-800-53:AC-2",
+    "d3fend:UserGeolocationLogonPatternAnalysis"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.detect.tampering",
+   "cell": "detect.tampering",
+   "fn": "detect",
+   "prop": "tampering",
+   "type": "control",
+   "cost": 2,
+   "detect": {
+    "str": 3,
+    "n": 1,
+    "scope": "asset"
+   },
+   "name": "File Integrity Monitoring",
+   "flavour": "Tell me when the binary changes",
+   "desc": "Baseline hashes and alerts on unexpected changes to critical files, configs and firmware. Catches implants and web shells.",
+   "lesson": "Baseline hashes and alerts on unexpected changes to critical files, configs and firmware. Catches implants and web shells.",
+   "refs": [
+    "nist-csf:DE.CM-09",
+    "nist-800-53:SI-7",
+    "d3fend:FileIntegrityMonitoring"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.detect.repudiation",
+   "cell": "detect.repudiation",
+   "fn": "detect",
+   "prop": "repudiation",
+   "type": "control",
+   "cost": 2,
+   "detect": {
+    "str": 2,
+    "n": 1,
+    "scope": "global"
+   },
+   "name": "SIEM Correlation",
+   "flavour": "One alert is noise, five is a story",
+   "desc": "Correlates events across sources to turn scattered log lines into a timeline. The heart of a SOC.",
+   "lesson": "Correlates events across sources to turn scattered log lines into a timeline. The heart of a SOC.",
+   "refs": [
+    "nist-csf:DE.AE-03",
+    "nist-800-53:AU-6",
+    "cis:8"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.detect.disclosure",
+   "cell": "detect.disclosure",
+   "fn": "detect",
+   "prop": "disclosure",
+   "type": "control",
+   "cost": 2,
+   "detect": {
+    "str": 3,
+    "n": 1,
+    "scope": "asset"
+   },
+   "ward": {
+    "I": 1
+   },
+   "name": "DLP & Egress Anomaly Detection",
+   "flavour": "Why is the file server talking to Moldova?",
+   "desc": "Content-aware and volumetric detection of data leaving the environment, including slow-drip exfiltration over allowed channels.",
+   "lesson": "Content-aware and volumetric detection of data leaving the environment, including slow-drip exfiltration over allowed channels.",
+   "refs": [
+    "nist-csf:DE.CM-01",
+    "nist-800-53:AU-13",
+    "attack:TA0010"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.detect.dos",
+   "cell": "detect.dos",
+   "fn": "detect",
+   "prop": "dos",
+   "type": "control",
+   "cost": 2,
+   "detect": {
+    "str": 2,
+    "n": 1,
+    "scope": "asset"
+   },
+   "ward": {
+    "D": 1
+   },
+   "name": "Saturation & Health Monitoring",
+   "flavour": "The graph went vertical at 03:12",
+   "desc": "Capacity, latency and error-budget monitoring that spots degradation before customers do and separates attack from success.",
+   "lesson": "Capacity, latency and error-budget monitoring that spots degradation before customers do and separates attack from success.",
+   "refs": [
+    "nist-csf:DE.CM-01",
+    "nist-800-53:SI-4",
+    "cis:13"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.detect.elevation",
+   "cell": "detect.elevation",
+   "fn": "detect",
+   "prop": "elevation",
+   "type": "control",
+   "cost": 2,
+   "detect": {
+    "str": 3,
+    "n": 1,
+    "scope": "asset",
+    "privBonus": 1
+   },
+   "name": "Privilege Escalation Analytics",
+   "flavour": "Why did svc-backup become Domain Admin?",
+   "desc": "Alerts on privilege grants, group changes, token manipulation and use of privileged functions outside change windows.",
+   "lesson": "Alerts on privilege grants, group changes, token manipulation and use of privileged functions outside change windows.",
+   "refs": [
+    "nist-csf:DE.AE-02",
+    "nist-800-53:AC-6(9)",
+    "attack:TA0004"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "foothold",
+   "id": "c.respond.spoofing",
+   "cell": "respond.spoofing",
+   "fn": "respond",
+   "prop": "spoofing",
+   "type": "action",
+   "cost": 1,
+   "fx": [
+    {
+     "op": "evict",
+     "n": 1
+    },
+    {
+     "op": "clearCreds"
+    }
+   ],
+   "name": "Credential Revocation & Session Kill",
+   "flavour": "Reset it all. Now.",
+   "desc": "Rapid, rehearsed ability to revoke sessions, tokens, API keys and passwords for suspected-compromised identities across every system.",
+   "lesson": "Rapid, rehearsed ability to revoke sessions, tokens, API keys and passwords for suspected-compromised identities across every system.",
+   "refs": [
+    "nist-csf:RS.MI-02",
+    "nist-800-53:IR-4",
+    "nist-800-53:AC-2"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.respond.tampering",
+   "cell": "respond.tampering",
+   "fn": "respond",
+   "prop": "tampering",
+   "type": "action",
+   "cost": 1,
+   "fx": [
+    {
+     "op": "isolate"
+    },
+    {
+     "op": "reveal",
+     "n": 1,
+     "str": 3
+    }
+   ],
+   "name": "Host Isolation & Quarantine",
+   "flavour": "Pull the cable, keep the evidence",
+   "desc": "EDR-driven network containment of compromised hosts that preserves memory and disk state for analysis.",
+   "lesson": "EDR-driven network containment of compromised hosts that preserves memory and disk state for analysis.",
+   "refs": [
+    "nist-csf:RS.MI-01",
+    "nist-800-53:IR-4",
+    "d3fend:NetworkIsolation"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "foothold",
+   "id": "c.respond.repudiation",
+   "cell": "respond.repudiation",
+   "fn": "respond",
+   "prop": "repudiation",
+   "type": "action",
+   "cost": 2,
+   "fx": [
+    {
+     "op": "evict",
+     "n": 1
+    },
+    {
+     "op": "exposure",
+     "n": 2
+    }
+   ],
+   "name": "Forensic Evidence Preservation",
+   "flavour": "Chain of custody or it never happened",
+   "desc": "Collect and protect volatile and persistent evidence with integrity guarantees so findings stand up to regulators, insurers and courts.",
+   "lesson": "Collect and protect volatile and persistent evidence with integrity guarantees so findings stand up to regulators, insurers and courts.",
+   "refs": [
+    "nist-csf:RS.AN-07",
+    "nist-800-53:IR-4",
+    "nist:800-61"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.respond.disclosure",
+   "cell": "respond.disclosure",
+   "fn": "respond",
+   "prop": "disclosure",
+   "type": "action",
+   "cost": 1,
+   "fx": [
+    {
+     "op": "resilience",
+     "n": 3
+    },
+    {
+     "op": "shieldExfil",
+     "n": 2
+    }
+   ],
+   "name": "Breach Notification Playbook",
+   "flavour": "The 72-hour clock is already running",
+   "desc": "Pre-agreed decision tree, drafts and contacts for regulator, customer and partner notification. Legal duties start at awareness, not at root cause.",
+   "lesson": "Pre-agreed decision tree, drafts and contacts for regulator, customer and partner notification. Legal duties start at awareness, not at root cause.",
+   "refs": [
+    "nist-csf:RS.CO-02",
+    "nist-800-53:IR-6",
+    "nist:800-61"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.respond.dos",
+   "cell": "respond.dos",
+   "fn": "respond",
+   "prop": "dos",
+   "type": "action",
+   "cost": 2,
+   "fx": [
+    {
+     "op": "shield",
+     "n": 3
+    },
+    {
+     "op": "heal",
+     "n": 2
+    }
+   ],
+   "name": "Traffic Scrubbing & Failover",
+   "flavour": "Shift the load before the pager melts",
+   "desc": "Runbooks to activate scrubbing, traffic diversion and failover regions during a sustained attack.",
+   "lesson": "Runbooks to activate scrubbing, traffic diversion and failover regions during a sustained attack.",
+   "refs": [
+    "nist-csf:RS.MI-01",
+    "nist-800-53:CP-10",
+    "nist-800-53:SC-5"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.respond.elevation",
+   "cell": "respond.elevation",
+   "fn": "respond",
+   "prop": "elevation",
+   "type": "action",
+   "cost": 2,
+   "fx": [
+    {
+     "op": "unprivilege"
+    },
+    {
+     "op": "evictPrivileged",
+     "n": 2
+    },
+    {
+     "op": "clearCreds"
+    }
+   ],
+   "name": "Emergency Privilege Revocation",
+   "flavour": "Break glass, then break their access",
+   "desc": "Break-glass procedures to strip standing and delegated privilege, rotate privileged secrets and lock down admin tiers mid-incident.",
+   "lesson": "Break-glass procedures to strip standing and delegated privilege, rotate privileged secrets and lock down admin tiers mid-incident.",
+   "refs": [
+    "nist-csf:RS.MI-02",
+    "nist-800-53:AC-2",
+    "attack:M1026"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.recover.spoofing",
+   "cell": "recover.spoofing",
+   "fn": "recover",
+   "prop": "spoofing",
+   "type": "action",
+   "cost": 2,
+   "fx": [
+    {
+     "op": "heal",
+     "n": 3
+    },
+    {
+     "op": "restore"
+    },
+    {
+     "op": "clearCreds"
+    }
+   ],
+   "name": "Identity Rebuild & Re-proofing",
+   "flavour": "Trust no one until re-verified",
+   "desc": "Re-issue credentials and re-verify identities after compromise, including help-desk procedures resistant to social engineering.",
+   "lesson": "Re-issue credentials and re-verify identities after compromise, including help-desk procedures resistant to social engineering.",
+   "refs": [
+    "nist-csf:RC.RP-03",
+    "nist-800-53:IA-12",
+    "nist-800-53:IA-5"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "asset",
+   "id": "c.recover.tampering",
+   "cell": "recover.tampering",
+   "fn": "recover",
+   "prop": "tampering",
+   "type": "action",
+   "cost": 3,
+   "fx": [
+    {
+     "op": "purge"
+    },
+    {
+     "op": "heal",
+     "n": 3
+    },
+    {
+     "op": "restore"
+    }
+   ],
+   "name": "Golden Image Rebuild",
+   "flavour": "Rebuild, do not clean",
+   "desc": "Rebuild compromised systems from known-good, signed images and verified config rather than trusting a “cleaned” host.",
+   "lesson": "Rebuild compromised systems from known-good, signed images and verified config rather than trusting a “cleaned” host.",
+   "refs": [
+    "nist-csf:RC.RP-05",
+    "nist-800-53:CP-10",
+    "nist-800-53:CM-2"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "c.recover.repudiation",
+   "cell": "recover.repudiation",
+   "fn": "recover",
+   "prop": "repudiation",
+   "type": "action",
+   "cost": 1,
+   "fx": [
+    {
+     "op": "draw",
+     "n": 2
+    },
+    {
+     "op": "energyNext",
+     "n": 1
+    }
+   ],
+   "name": "Post-Incident Review",
+   "flavour": "Blameless, evidence-led, actually actioned",
+   "desc": "Structured lessons-learned that feed back into detections, playbooks and risk register. Closes the loop to Govern.",
+   "lesson": "Structured lessons-learned that feed back into detections, playbooks and risk register. Closes the loop to Govern.",
+   "refs": [
+    "nist-csf:ID.IM-03",
+    "nist-800-53:IR-4",
+    "nist:800-61"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.recover.disclosure",
+   "cell": "recover.disclosure",
+   "fn": "recover",
+   "prop": "disclosure",
+   "type": "action",
+   "cost": 1,
+   "fx": [
+    {
+     "op": "clearCreds"
+    },
+    {
+     "op": "unstage"
+    },
+    {
+     "op": "shield",
+     "n": 1
+    }
+   ],
+   "name": "Secret & Key Rotation",
+   "flavour": "Assume every key in memory is burned",
+   "desc": "Fast, automated rotation of keys, certificates and secrets that may have been exposed, with revocation of the old material.",
+   "lesson": "Fast, automated rotation of keys, certificates and secrets that may have been exposed, with revocation of the old material.",
+   "refs": [
+    "nist-csf:RC.RP-03",
+    "nist-800-53:SC-12",
+    "nist-800-53:IA-5"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "c.recover.dos",
+   "cell": "recover.dos",
+   "fn": "recover",
+   "prop": "dos",
+   "type": "control",
+   "cost": 2,
+   "mit": [
+    "M1053"
+   ],
+   "aegis": {
+    "revive": 4
+   },
+   "tags": [
+    "backup"
+   ],
+   "name": "Immutable Backups & Tested Restore",
+   "flavour": "A backup you have not restored is a hope",
+   "desc": "Offline or immutable backups with regular restoration tests against defined recovery objectives. Your answer to ransomware.",
+   "lesson": "Offline or immutable backups with regular restoration tests against defined recovery objectives. Your answer to ransomware.",
+   "refs": [
+    "nist-csf:PR.DS-11",
+    "nist-800-53:CP-9",
+    "attack:M1053",
+    "e8:backups"
+   ]
+  },
+  {
+   "rarity": "rare",
+   "target": "asset",
+   "id": "c.recover.elevation",
+   "cell": "recover.elevation",
+   "fn": "recover",
+   "prop": "elevation",
+   "type": "action",
+   "cost": 3,
+   "fx": [
+    {
+     "op": "heal",
+     "n": 99
+    },
+    {
+     "op": "unprivilegeAll"
+    },
+    {
+     "op": "clearCreds"
+    },
+    {
+     "op": "restore"
+    }
+   ],
+   "name": "Directory & Trust Rebuild",
+   "flavour": "Reset krbtgt. Twice.",
+   "desc": "Procedures to recover the identity plane itself — forest recovery, trust re-establishment, tiered rebuild — when the attacker owned the directory.",
+   "lesson": "Procedures to recover the identity plane itself — forest recovery, trust re-establishment, tiered rebuild — when the attacker owned the directory.",
+   "refs": [
+    "nist-csf:RC.RP-03",
+    "nist-800-53:CP-10",
+    "attack:M1026"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "x.patch",
+   "fn": "protect",
+   "prop": "tampering",
+   "type": "action",
+   "cost": 1,
+   "mit": [
+    "M1051"
+   ],
+   "fx": [
+    {
+     "op": "shield",
+     "n": 2
+    },
+    {
+     "op": "heal",
+     "n": 1
+    }
+   ],
+   "name": "Emergency Patch",
+   "desc": "Patch the exploited component now. ACSC expects exploited vulnerabilities in internet-facing services to be patched within 48 hours.",
+   "lesson": "Patch internet-facing services fast when exploitation is known: Essential Eight “patch applications”.",
+   "refs": [
+    "e8:patch-apps",
+    "attack:M1051"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "asset",
+   "id": "x.segment",
+   "fn": "protect",
+   "prop": "elevation",
+   "type": "control",
+   "cost": 2,
+   "ward": {
+    "E": 1
+   },
+   "mit": [
+    "M1030"
+   ],
+   "flags": [
+    "segment"
+   ],
+   "name": "Network Segmentation",
+   "desc": "Zone the asset. Adversary Spread into or out of it costs 1 more energy and has 1 less power.",
+   "lesson": "Segmentation turns one foothold into a contained incident; IEC 62443 calls the boundaries zones and conduits.",
+   "refs": [
+    "attack:M1030",
+    "iec62443:3-2",
+    "d3fend:NetworkIsolation"
+   ]
+  },
+  {
+   "rarity": "rare",
+   "target": "asset",
+   "id": "x.edr",
+   "fn": "detect",
+   "prop": "tampering",
+   "type": "control",
+   "cost": 3,
+   "detect": {
+    "str": 3,
+    "n": 2,
+    "scope": "asset"
+   },
+   "ward": {
+    "T": 1
+   },
+   "mit": [
+    "M1049",
+    "M1040"
+   ],
+   "flags": [
+    "autoEvict"
+   ],
+   "name": "EDR with Auto-Containment",
+   "desc": "Detects on this asset and, each round, reduces the grip of revealed footholds here by 1.",
+   "lesson": "Endpoint detection and response combines telemetry with containment actions; speed matters more than perfect fidelity.",
+   "refs": [
+    "attack:M1049",
+    "attack:M1040",
+    "d3fend:FileIntegrityMonitoring"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "x.waf",
+   "fn": "protect",
+   "prop": "elevation",
+   "type": "control",
+   "cost": 2,
+   "ward": {
+    "E": 2
+   },
+   "mit": [
+    "M1050",
+    "M1016"
+   ],
+   "name": "WAF & Virtual Patching",
+   "desc": "Blocks known exploit patterns in front of an internet-facing app while the real fix is prepared.",
+   "lesson": "A WAF buys time for patching; it is not a substitute for fixing the flaw.",
+   "refs": [
+    "attack:M1050",
+    "owasp-top10:A06",
+    "attack:T1190"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "asset",
+   "id": "x.training",
+   "fn": "govern",
+   "prop": "spoofing",
+   "type": "control",
+   "cost": 1,
+   "ward": {
+    "S": 1
+   },
+   "mit": [
+    "M1017"
+   ],
+   "name": "Awareness Training & Phishing Simulation",
+   "desc": "People are a control layer too. Counts against social-engineering techniques that ATT&CK lists User Training for.",
+   "lesson": "User training reduces — never eliminates — social engineering success; pair it with technical controls.",
+   "refs": [
+    "attack:M1017",
+    "attack:T1566"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "none",
+   "id": "x.threathunt",
+   "fn": "detect",
+   "prop": "repudiation",
+   "type": "action",
+   "cost": 2,
+   "fx": [
+    {
+     "op": "reveal",
+     "n": 2,
+     "str": 5
+    }
+   ],
+   "name": "Threat Hunt",
+   "desc": "Hypothesis-driven hunting: reveal up to 2 hidden footholds anywhere, whatever their stealth (up to 5).",
+   "lesson": "Hunting finds what detection rules miss; it starts from an adversary hypothesis, ideally a specific ATT&CK technique.",
+   "refs": [
+    "nist-csf:DE.AE-02",
+    "attack:TA0043"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "x.tabletop",
+   "fn": "identify",
+   "prop": "dos",
+   "type": "action",
+   "cost": 1,
+   "fx": [
+    {
+     "op": "intel",
+     "n": 3
+    },
+    {
+     "op": "draw",
+     "n": 1
+    }
+   ],
+   "name": "Tabletop Exercise",
+   "desc": "See the adversary’s next moves clearly and draw a card.",
+   "lesson": "Exercising the scenario before it happens is the cheapest control in the programme.",
+   "refs": [
+    "nist-csf:ID.IM-02",
+    "nist:800-61"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "none",
+   "id": "x.purple",
+   "fn": "detect",
+   "prop": "tampering",
+   "type": "action",
+   "cost": 2,
+   "fx": [
+    {
+     "op": "reveal",
+     "n": 1,
+     "str": 4
+    },
+    {
+     "op": "exposure",
+     "n": 2
+    },
+    {
+     "op": "draw",
+     "n": 1
+    }
+   ],
+   "name": "Purple Team Exercise",
+   "desc": "Reveal a foothold, expose the adversary’s tradecraft (+2 Exposure), draw a card.",
+   "lesson": "Red and blue working together turns each emulated technique into a detection or control improvement.",
+   "refs": [
+    "nist-csf:ID.IM-02",
+    "attack:TA0043"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "none",
+   "id": "x.soar",
+   "fn": "respond",
+   "prop": "tampering",
+   "type": "policy",
+   "cost": 2,
+   "aura": {
+    "onReveal": {
+     "evict": 1,
+     "oncePerRound": true
+    }
+   },
+   "name": "SOAR Automation",
+   "desc": "The first time each round a foothold is revealed, its grip is reduced by 1 automatically.",
+   "lesson": "Automate the first response step — containment in seconds — and keep humans for judgement.",
+   "refs": [
+    "nist-csf:RS.MI-01",
+    "d3fend:NetworkIsolation"
+   ]
+  },
+  {
+   "rarity": "rare",
+   "target": "none",
+   "id": "x.zerotrust",
+   "fn": "protect",
+   "prop": "elevation",
+   "type": "policy",
+   "cost": 2,
+   "aura": {
+    "layered": {
+     "minControls": 2,
+     "ward": 1
+    }
+   },
+   "name": "Zero Trust Architecture",
+   "desc": "Assets with 2 or more controls gain +1 ward against every property.",
+   "lesson": "Zero trust is layered verification of identity, device and context for every request, not a single product.",
+   "refs": [
+    "nist:800-207",
+    "e8:maturity-model"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "none",
+   "id": "x.e8",
+   "fn": "govern",
+   "prop": "elevation",
+   "type": "policy",
+   "cost": 2,
+   "aura": {
+    "protectBonus": 1
+   },
+   "name": "Essential Eight Maturity Uplift",
+   "desc": "Every Protect control gains +1 ward on its own property.",
+   "lesson": "The Essential Eight maturity model measures how consistently controls are implemented, not just whether they exist.",
+   "refs": [
+    "e8:maturity-model",
+    "ism:overview"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "none",
+   "id": "x.assume",
+   "fn": "detect",
+   "prop": "repudiation",
+   "type": "policy",
+   "cost": 2,
+   "aura": {
+    "startReveal": 1
+   },
+   "name": "Assume Breach",
+   "desc": "At the start of each of your turns, reveal the hidden foothold with the lowest stealth.",
+   "lesson": "Design and operate as if the adversary is already inside — then compromise is a routine to detect, not a surprise.",
+   "refs": [
+    "nist:800-207",
+    "nist-csf:DE.CM-01"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "none",
+   "id": "x.insurance",
+   "fn": "govern",
+   "prop": "disclosure",
+   "type": "policy",
+   "cost": 1,
+   "aura": {
+    "resilienceShield": 2
+   },
+   "name": "Cyber Insurance",
+   "desc": "The first Resilience loss each round is reduced by 2.",
+   "lesson": "Insurance transfers financial loss; underwriters increasingly require MFA, EDR and tested backups.",
+   "refs": [
+    "nist-csf:ID.RA-06",
+    "nist:800-39"
+   ]
+  },
+  {
+   "rarity": "status",
+   "target": "none",
+   "id": "status.techdebt",
+   "fn": "govern",
+   "prop": "tampering",
+   "type": "status",
+   "cost": 0,
+   "unplayable": true,
+   "name": "Technical Debt",
+   "desc": "Unplayable. Clogs your hand until you pay it down (Decommission it at a Rest site or shop).",
+   "lesson": "Deferred maintenance and unmanaged exceptions accrue interest in the form of risk.",
+   "refs": [
+    "nist-csf:ID.RA-07",
+    "nist-800-53:CM-7"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "control",
+   "id": "a.mfa-numbermatch",
+   "name": "Number Matching",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "spoofing",
+   "cost": 1,
+   "base": [
+    "protect.spoofing"
+   ],
+   "aug": {
+    "mit": [
+     "M1032"
+    ],
+    "resists": [
+     "T1621"
+    ]
+   },
+   "desc": "Push approvals now need the number shown at login. Counters MFA-fatigue (push bombing).",
+   "lesson": "Plain push MFA is defeated by Multi-Factor Authentication Request Generation (T1621). Number matching forces the user to prove presence at the login screen.",
+   "refs": [
+    "attack:T1621",
+    "attack:M1032"
+   ]
+  },
+  {
+   "rarity": "rare",
+   "target": "control",
+   "id": "a.fido2",
+   "name": "FIDO2 / Passkeys",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "spoofing",
+   "cost": 2,
+   "base": [
+    "protect.spoofing"
+   ],
+   "aug": {
+    "ward": {
+     "S": 2
+    },
+    "mit": [
+     "M1032"
+    ],
+    "resists": [
+     "T1621"
+    ],
+    "expert": [
+     {
+      "tech": "T1557",
+      "ref": "nist:800-63"
+     }
+    ]
+   },
+   "desc": "+2 Authentication ward. Origin-bound credentials: counters MFA fatigue and adversary-in-the-middle phishing.",
+   "lesson": "Phishing-resistant authenticators bind the credential to the legitimate origin, so a lookalike site or a relayed session gets nothing usable. (ATT&CK lists no mitigation for T1557 under MFA; the adversary-in-the-middle resistance here comes from NIST SP 800-63B guidance.)",
+   "refs": [
+    "nist:800-63",
+    "attack:T1557",
+    "attack:T1621",
+    "e8:mfa"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.cond-access",
+   "name": "Conditional Access",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "spoofing",
+   "cost": 1,
+   "base": [
+    "protect.spoofing",
+    "protect.elevation"
+   ],
+   "aug": {
+    "ward": {
+     "S": 1,
+     "E": 1
+    },
+    "mit": [
+     "M1032",
+     "M1036"
+    ]
+   },
+   "desc": "+1 Authentication and Authorisation ward: sign-ins need a compliant device and acceptable risk.",
+   "lesson": "Context-aware policy (device health, location, risk) makes stolen credentials alone insufficient.",
+   "refs": [
+    "attack:M1036",
+    "nist:800-207"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.credguard",
+   "name": "Credential Guard",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "elevation",
+   "cost": 1,
+   "base": [
+    "protect.elevation",
+    "protect.spoofing"
+   ],
+   "aug": {
+    "mit": [
+     "M1043",
+     "M1040"
+    ],
+    "resists": [
+     "T1003",
+     "T1558"
+    ]
+   },
+   "desc": "Isolates secrets from the OS. Counters OS credential dumping and Kerberos ticket theft.",
+   "lesson": "LSASS dumping (T1003.001) is a staple of ransomware and nation-state intrusions; virtualisation-based credential isolation removes the easy target.",
+   "refs": [
+    "attack:M1043",
+    "attack:T1003"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.pam-jit",
+   "name": "Just-in-Time Privilege",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "elevation",
+   "cost": 1,
+   "base": [
+    "protect.elevation"
+   ],
+   "aug": {
+    "ward": {
+     "E": 1
+    },
+    "mit": [
+     "M1026"
+    ],
+    "flags": [
+     "jit"
+    ]
+   },
+   "desc": "+1 Authorisation ward. Privileged footholds on this asset lose their privilege at the start of each round.",
+   "lesson": "Standing admin rights are a loan the attacker can call in. Time-boxed elevation shrinks the window.",
+   "refs": [
+    "attack:M1026",
+    "e8:restrict-admin"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.tiering",
+   "name": "Tiered Admin Model",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "elevation",
+   "cost": 2,
+   "base": [
+    "protect.elevation"
+   ],
+   "aug": {
+    "ward": {
+     "E": 2
+    },
+    "mit": [
+     "M1026",
+     "M1018"
+    ]
+   },
+   "desc": "+2 Authorisation ward: domain-admin credentials never touch lower tiers.",
+   "lesson": "Credential tiering stops one compromised workstation from handing over the directory.",
+   "refs": [
+    "attack:M1026",
+    "e8:restrict-admin"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "control",
+   "id": "a.tls13",
+   "name": "TLS 1.3 + HSTS",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "disclosure",
+   "cost": 1,
+   "base": [
+    "protect.disclosure"
+   ],
+   "aug": {
+    "ward": {
+     "I": 1
+    },
+    "mit": [
+     "M1041"
+    ],
+    "resists": [
+     "T1040",
+     "T1557"
+    ]
+   },
+   "desc": "+1 Confidentiality ward. Counters network sniffing and adversary-in-the-middle on this asset.",
+   "lesson": "Strong transport encryption with pinned expectations removes passive sniffing and most downgrade tricks.",
+   "refs": [
+    "attack:M1041",
+    "attack:T1040"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.kms",
+   "name": "Customer-Managed Keys (KMS/HSM)",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "disclosure",
+   "cost": 1,
+   "base": [
+    "protect.disclosure"
+   ],
+   "aug": {
+    "ward": {
+     "I": 1
+    },
+    "mit": [
+     "M1041"
+    ]
+   },
+   "desc": "+1 Confidentiality ward. Keys live in a hardened module with separate access control.",
+   "lesson": "Separating key custody from data custody means a data breach is not automatically a key breach.",
+   "refs": [
+    "nist-800-53:SC-12",
+    "attack:M1041"
+   ]
+  },
+  {
+   "rarity": "rare",
+   "target": "control",
+   "id": "a.pqc",
+   "name": "Post-Quantum Hybrid Crypto",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "disclosure",
+   "cost": 2,
+   "base": [
+    "protect.disclosure"
+   ],
+   "aug": {
+    "ward": {
+     "I": 2
+    },
+    "mit": [
+     "M1041"
+    ],
+    "flags": [
+     "pqc"
+    ]
+   },
+   "desc": "+2 Confidentiality ward. Immunises this asset against “harvest now, decrypt later”.",
+   "lesson": "Adversaries can steal encrypted data today and decrypt it once quantum computers mature. NIST has standardised ML-KEM (FIPS 203) and signature schemes (FIPS 204/205) and is planning the retirement of quantum-vulnerable algorithms (NIST IR 8547).",
+   "refs": [
+    "nist:fips-203",
+    "nist:fips-204",
+    "nist:ir-8547"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.allowlist",
+   "name": "Application Allowlisting",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "tampering",
+   "cost": 2,
+   "base": [
+    "protect.tampering"
+   ],
+   "aug": {
+    "ward": {
+     "T": 2
+    },
+    "mit": [
+     "M1038"
+    ],
+    "resists": [
+     "T1204",
+     "T1059",
+     "T1218",
+     "T1047"
+    ]
+   },
+   "desc": "+2 Integrity ward. Only approved code runs: counters user execution, scripting and LOLBin proxy execution.",
+   "lesson": "The Essential Eight’s most effective strategy against commodity malware; also blunts living-off-the-land tradecraft when rules cover script hosts and proxy binaries.",
+   "refs": [
+    "e8:app-control",
+    "attack:M1038",
+    "attack:T1218"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.slsa",
+   "name": "SBOM + Build Provenance",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "tampering",
+   "cost": 1,
+   "base": [
+    "protect.tampering"
+   ],
+   "aug": {
+    "ward": {
+     "T": 1
+    },
+    "mit": [
+     "M1013",
+     "M1016"
+    ],
+    "resists": [
+     "T1195"
+    ]
+   },
+   "desc": "+1 Integrity ward. Counters supply-chain compromise by verifying what you build and deploy.",
+   "lesson": "You cannot patch or contain a poisoned component you cannot find: inventories and signed provenance make that a query.",
+   "refs": [
+    "nist:800-218",
+    "attack:T1195",
+    "attack:M1013"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.secureboot",
+   "name": "Secure Boot & Firmware Signing",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "tampering",
+   "cost": 1,
+   "base": [
+    "protect.tampering"
+   ],
+   "aug": {
+    "mit": [
+     "M1046"
+    ],
+    "resists": [
+     "T1542",
+     "T1495"
+    ]
+   },
+   "desc": "Counters pre-OS boot implants and firmware corruption.",
+   "lesson": "Boot integrity extends trust from silicon up; bootkits and firmware implants survive reinstalls.",
+   "refs": [
+    "attack:M1046",
+    "attack:T1542"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.cdn",
+   "name": "Anycast CDN & DDoS Scrubbing",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "dos",
+   "cost": 2,
+   "base": [
+    "protect.dos"
+   ],
+   "aug": {
+    "ward": {
+     "D": 2
+    },
+    "mit": [
+     "M1037"
+    ],
+    "resists": [
+     "T1498"
+    ]
+   },
+   "desc": "+2 Availability ward. Counters volumetric network denial of service.",
+   "lesson": "Absorb floods upstream where capacity is cheap; protect the origin by only accepting traffic from the edge.",
+   "refs": [
+    "attack:M1037",
+    "attack:T1498"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "control",
+   "id": "a.autoscale",
+   "name": "Autoscaling & Graceful Degradation",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "dos",
+   "cost": 1,
+   "base": [
+    "protect.dos"
+   ],
+   "aug": {
+    "ward": {
+     "D": 1
+    },
+    "flags": [
+     "regen1"
+    ]
+   },
+   "desc": "+1 Availability ward. The asset recovers 1 integrity at the start of each round.",
+   "lesson": "Designing for partial failure keeps core functions up while capacity returns.",
+   "refs": [
+    "nist-csf:PR.IR-04",
+    "nist-800-53:SC-5"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.worm-logs",
+   "name": "WORM Log Storage",
+   "type": "augment",
+   "fn": "protect",
+   "prop": "repudiation",
+   "cost": 1,
+   "base": [
+    "protect.repudiation"
+   ],
+   "aug": {
+    "ward": {
+     "R": 1
+    },
+    "mit": [
+     "M1029"
+    ],
+    "resists": [
+     "T1070",
+     "T1685.005"
+    ]
+   },
+   "desc": "+1 Non-repudiation ward. Counters indicator removal and event-log clearing.",
+   "lesson": "Write-once, off-host logging makes evidence deletion an alert instead of a cover-up.",
+   "refs": [
+    "attack:M1029",
+    "attack:T1070"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "control",
+   "id": "a.edr-telemetry",
+   "name": "EDR Telemetry",
+   "type": "augment",
+   "fn": "detect",
+   "prop": "repudiation",
+   "cost": 1,
+   "base": [
+    "detect.*"
+   ],
+   "aug": {
+    "detectStr": 1
+   },
+   "desc": "+1 detection strength on this monitor.",
+   "lesson": "Richer telemetry raises the signal-to-noise ratio of every analytic that sits on top.",
+   "refs": [
+    "attack:M1049",
+    "nist-csf:DE.CM-09"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.sigma",
+   "name": "Detection-as-Code (Sigma)",
+   "type": "augment",
+   "fn": "detect",
+   "prop": "repudiation",
+   "cost": 1,
+   "base": [
+    "detect.*"
+   ],
+   "aug": {
+    "detectStr": 1,
+    "flags": [
+     "sigma"
+    ]
+   },
+   "desc": "+1 detection strength. Footholds created through execution techniques here get 1 less stealth.",
+   "lesson": "Treat detections like software: version them, test them against ATT&CK-mapped emulations, and share them as Sigma rules.",
+   "refs": [
+    "attack:TA0002",
+    "nist-csf:DE.AE-02"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.hunt",
+   "name": "Hypothesis-Driven Hunting",
+   "type": "augment",
+   "fn": "detect",
+   "prop": "repudiation",
+   "cost": 2,
+   "base": [
+    "detect.*"
+   ],
+   "aug": {
+    "detectN": 1
+   },
+   "desc": "This monitor reveals 1 additional foothold each round.",
+   "lesson": "Human-led hunting finds the activity your rules were never written for.",
+   "refs": [
+    "nist-csf:DE.AE-02",
+    "attack:TA0043"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.ueba",
+   "name": "UEBA Baselines",
+   "type": "augment",
+   "fn": "detect",
+   "prop": "spoofing",
+   "cost": 1,
+   "base": [
+    "detect.spoofing",
+    "detect.elevation"
+   ],
+   "aug": {
+    "detectStr": 1,
+    "privBonus": 1
+   },
+   "desc": "+1 detection strength, +1 more against privileged footholds.",
+   "lesson": "Behavioural baselines catch valid-account abuse that signature matching cannot.",
+   "refs": [
+    "attack:T1078",
+    "d3fend:UserGeolocationLogonPatternAnalysis"
+   ]
+  },
+  {
+   "rarity": "uncommon",
+   "target": "control",
+   "id": "a.honeytoken",
+   "name": "Canary Tokens & Honeytokens",
+   "type": "augment",
+   "fn": "detect",
+   "prop": "repudiation",
+   "cost": 1,
+   "base": [
+    "detect.*"
+   ],
+   "aug": {
+    "flags": [
+     "canary"
+    ]
+   },
+   "desc": "The first Credential Access or Collection card the adversary plays here reveals its foothold and gives +2 Exposure.",
+   "lesson": "Decoy credentials and files produce near-zero-false-positive alerts the moment an intruder touches them.",
+   "refs": [
+    "d3fend:DecoyUserCredential",
+    "d3fend:DecoyFile"
+   ]
+  },
+  {
+   "rarity": "common",
+   "target": "control",
+   "id": "a.immutable-backup",
+   "name": "Immutable Backups",
+   "type": "augment",
+   "fn": "recover",
+   "prop": "dos",
+   "cost": 1,
+   "base": [
+    "recover.dos"
+   ],
+   "aug": {
+    "aegis": {
+     "revive": 2
+    }
+   },
+   "desc": "Your recovery control revives an asset for 2 more integrity.",
+   "lesson": "Backups that cannot be altered or deleted by the production environment survive the ransomware that hits it.",
+   "refs": [
+    "e8:backups",
+    "attack:M1053"
+   ]
+  },
+  {
+   "rarity": "rare",
+   "target": "control",
+   "id": "a.airgap",
+   "name": "Air-Gapped Vault",
+   "type": "augment",
+   "fn": "recover",
+   "prop": "dos",
+   "cost": 2,
+   "base": [
+    "recover.dos"
+   ],
+   "aug": {
+    "mit": [
+     "M1053"
+    ],
+    "resists": [
+     "T1490",
+     "T1486",
+     "T1485",
+     "T1561"
+    ],
+    "flags": [
+     "vault"
+    ]
+   },
+   "desc": "Counters ransomware, wipers and recovery inhibition; adjacent Strike spillover cannot reach it.",
+   "lesson": "Offline copies sit outside the blast radius; ransomware crews delete reachable backups first (T1490).",
+   "refs": [
+    "attack:T1490",
+    "attack:M1053",
+    "e8:backups"
+   ]
+  }
+ ]
+}

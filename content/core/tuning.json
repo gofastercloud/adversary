@@ -1,0 +1,156 @@
+{
+ "schema": 2,
+ "battle": {
+  "handSize": 5,
+  "energy": 3,
+  "policySlots": 2,
+  "assetSlots": 3,
+  "maxRounds": 10,
+  "energyCap": 6,
+  "startResilience": 40,
+  "questions": 3
+ },
+ "adversary": {
+  "tiers": {
+   "1": {
+    "name": "Opportunistic",
+    "exposureMax": 10,
+    "energy": [
+     3,
+     3,
+     4,
+     4,
+     4,
+     5
+    ],
+    "hand": 5,
+    "powerBonus": 0,
+    "rounds": 7
+   },
+   "2": {
+    "name": "Targeted",
+    "exposureMax": 14,
+    "energy": [
+     4,
+     4,
+     5,
+     5,
+     5,
+     6
+    ],
+    "hand": 5,
+    "powerBonus": 0,
+    "rounds": 8
+   },
+   "3": {
+    "name": "Apex",
+    "exposureMax": 18,
+    "energy": [
+     5,
+     5,
+     6,
+     6,
+     7,
+     7
+    ],
+    "hand": 6,
+    "powerBonus": 1,
+    "rounds": 9
+   }
+  }
+ },
+ "assurance": [
+  {
+   "id": 0,
+   "name": "Training",
+   "note": "Gentler adversaries. Learn the loop.",
+   "advPower": -1,
+   "advEnergy": -1,
+   "resilienceBonus": 10
+  },
+  {
+   "id": 1,
+   "name": "Maturity Level 1",
+   "note": "The intended experience.",
+   "advPower": 0,
+   "advEnergy": 0,
+   "resilienceBonus": 0
+  },
+  {
+   "id": 2,
+   "name": "Maturity Level 2",
+   "note": "Adversaries start with a foothold and tools.",
+   "advPower": 0,
+   "advEnergy": 0,
+   "resilienceBonus": 0,
+   "startFoothold": 1
+  },
+  {
+   "id": 3,
+   "name": "Maturity Level 3",
+   "note": "Targeted, resourced, patient.",
+   "advPower": 1,
+   "advEnergy": 0,
+   "resilienceBonus": -4,
+   "startFoothold": 1
+  }
+ ],
+ "rewards": {
+  "battle": [
+   18,
+   24,
+   30
+  ],
+  "elite": [
+   30,
+   40,
+   50
+  ],
+  "boss": [
+   60,
+   80,
+   100
+  ],
+  "fastBonus": 10
+ },
+ "shop": {
+  "cardCost": {
+   "common": 25,
+   "uncommon": 45,
+   "rare": 75
+  },
+  "relicCost": {
+   "common": 120,
+   "uncommon": 160,
+   "rare": 220
+  },
+  "removeCost": 50,
+  "removeStep": 25,
+  "healCost": 40,
+  "healAmount": 12
+ },
+ "xp": {
+  "win": 250,
+  "battle": 40,
+  "achievement": {
+   "bronze": 25,
+   "silver": 60,
+   "gold": 120,
+   "platinum": 250
+  }
+ },
+ "clearance": [
+  0,
+  150,
+  400,
+  800,
+  1400,
+  2200,
+  3200,
+  4500,
+  6200,
+  8200,
+  10500,
+  14000
+ ]
+}

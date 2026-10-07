@@ -41,7 +41,12 @@ const NIST_PUBS = {
   '800-161': ['SP 800-161 Rev.1', 'https://csrc.nist.gov/pubs/sp/800/161/r1/final'],
   '800-171': ['SP 800-171 Rev.3', 'https://csrc.nist.gov/pubs/sp/800/171/r3/final'],
   '800-207': ['SP 800-207 Zero Trust', 'https://csrc.nist.gov/pubs/sp/800/207/final'],
-  '800-218': ['SP 800-218 SSDF', 'https://csrc.nist.gov/pubs/sp/800/218/final']
+  '800-218': ['SP 800-218 SSDF', 'https://csrc.nist.gov/pubs/sp/800/218/final'],
+  '800-63': ['SP 800-63-4 Digital Identity', 'https://csrc.nist.gov/pubs/sp/800/63/4/final'],
+  'fips-203': ['FIPS 203 (ML-KEM)', 'https://csrc.nist.gov/pubs/fips/203/final'],
+  'fips-204': ['FIPS 204 (ML-DSA)', 'https://csrc.nist.gov/pubs/fips/204/final'],
+  'fips-205': ['FIPS 205 (SLH-DSA)', 'https://csrc.nist.gov/pubs/fips/205/final'],
+  'ir-8547': ['IR 8547 PQC Transition', 'https://csrc.nist.gov/pubs/ir/8547/ipd']
 };
 const E8 = {
   'app-control': 'Application control', 'patch-apps': 'Patch applications', macros: 'Restrict Office macros',

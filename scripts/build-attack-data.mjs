@@ -71,7 +71,7 @@ function classifyObs(s) {
   return null;
 }
 
-const tacticOrder = ['reconnaissance', 'resource-development', 'initial-access', 'execution', 'persistence', 'privilege-escalation', 'defense-evasion', 'credential-access', 'discovery', 'lateral-movement', 'collection', 'command-and-control', 'exfiltration', 'inhibit-response-function', 'impair-process-control', 'impact'];
+const tacticOrder = ['reconnaissance', 'resource-development', 'initial-access', 'execution', 'persistence', 'privilege-escalation', 'stealth', 'defense-evasion', 'defense-impairment', 'credential-access', 'discovery', 'lateral-movement', 'collection', 'command-and-control', 'exfiltration', 'inhibit-response-function', 'impair-process-control', 'impact'];
 const normTactic = t => (t === 'evasion' ? 'defense-evasion' : t);
 
 // ---------- shared tables
@@ -136,6 +136,7 @@ function build(id) {
   // gather this entity's stix ids across both domains (same id in both bundles)
   const uses = new Map();   // technique ext id -> { texts:[], cites:[] }
   const sw = new Map();     // software ext id -> { n, t, techs:Set }
+  const swStix = [];        // [dom, software stix id, ext id, name]
   for (const dom of hit.doms) {
     const objs = bundles[dom].objects;
     const idx = new Map(objs.map(x => [x.id, x]));
@@ -150,14 +151,30 @@ function build(id) {
         for (const s of codeSnippets(r.description)) { const k = classifyObs(s); if (k) u.obs.push({ kind: k, value: s }); }
       } else if (['malware', 'tool'].includes(tgt.type)) {
         const sid = extId(tgt); if (!sid) continue;
-        sw.set(sid, { id: sid, n: tgt.name, t: tgt.type });
+        sw.set(sid, { id: sid, n: tgt.name, t: tgt.type }); swStix.push([dom, tgt.id, sid, tgt.name]);
       }
     }
   }
-  const techs = [...uses.keys()].map(tid => {
+  // techniques implemented by the adversary's documented software (ATT&CK models these as software -> technique)
+  const viaSw = new Map();   // tech id -> { names:Set, text, cites }
+  for (const [dom, sstix, sid, sname] of swStix) {
+    for (const r of bundles[dom].objects) {
+      if (r.type !== 'relationship' || r.revoked || r.relationship_type !== 'uses' || r.source_ref !== sstix) continue;
+      const tgt = byStixId.get(r.target_ref)?.o; if (!tgt || tgt.type !== 'attack-pattern' || !live(tgt)) continue;
+      const tid = extId(tgt); if (!tid || !techniques[tid]) continue;
+      const v = viaSw.get(tid) || { names: new Set(), text: null, cites: [], obs: [] }; viaSw.set(tid, v);
+      v.names.add(sname);
+      if (!v.text) { const c = clean(r.description, refs, 300); if (c.text) { v.text = `${sname}: ` + c.text; v.cites = c.cites; } }
+      for (const sn of codeSnippets(r.description)) { const k = classifyObs(sn); if (k) v.obs.push({ kind: k, value: sn }); }
+    }
+  }
+  const techs0 = [...uses.keys()].map(tid => {
     const t = techniques[tid];
-    return { id: tid, n: t.n, tac: t.tac.sort((a, b) => tacticOrder.indexOf(a) - tacticOrder.indexOf(b)), m: t.m || [], ev: uses.get(tid).texts.length };
-  }).sort((a, b) => tacticOrder.indexOf(a.tac[0]) - tacticOrder.indexOf(b.tac[0]) || b.ev - a.ev || a.id.localeCompare(b.id));
+    const sv = viaSw.get(tid);
+    return { id: tid, n: t.n, tac: t.tac.sort((a, b) => tacticOrder.indexOf(a) - tacticOrder.indexOf(b)), m: t.m || [], d: uses.get(tid).texts.length, ev: uses.get(tid).texts.length * 2 + (sv ? sv.names.size : 0), ...(sv ? { sw: [...sv.names].sort() } : {}) };
+  });
+  const extra = [...viaSw.keys()].filter(tid => !uses.has(tid)).map(tid => { const t = techniques[tid]; const sv = viaSw.get(tid); return { id: tid, n: t.n, tac: t.tac.slice().sort((a, b) => tacticOrder.indexOf(a) - tacticOrder.indexOf(b)), m: t.m || [], d: 0, ev: sv.names.size, sw: [...sv.names].sort() }; });
+  const techs = [...techs0, ...extra].sort((a, b) => tacticOrder.indexOf(a.tac[0]) - tacticOrder.indexOf(b.tac[0]) || b.ev - a.ev || a.id.localeCompare(b.id));
 
   const aliases = (o.aliases || o.x_mitre_aliases || []).filter(a => a !== o.name);
   const pageUrl = extUrl(o) || `https://attack.mitre.org/${kind === 'group' ? 'groups' : 'campaigns'}/${id}/`;
@@ -166,11 +183,11 @@ function build(id) {
   // ---- dossier (UI)
   const d = clean(o.description, refs, 900);
   const obsAll = []; const seenObs = new Set();
-  for (const [tid, u] of uses) for (const ob of u.obs) { const k = ob.kind + ob.value.toLowerCase(); if (!seenObs.has(k)) { seenObs.add(k); obsAll.push({ ...ob, tech: tid }); } }
+  for (const [tid, u] of [...uses, ...[...viaSw].filter(([k]) => !uses.has(k))]) for (const ob of u.obs) { const k = ob.kind + ob.value.toLowerCase(); if (!seenObs.has(k)) { seenObs.add(k); obsAll.push({ ...ob, tech: tid }); } }
   const dossier = {
     id, name: o.name, aliases, url: pageUrl,
     summary: d.text, summaryCites: d.cites,
-    procedures: techs.map(t => { const u = uses.get(t.id); const first = u.texts[0]; return { id: t.id, text: first?.text || '', cites: first?.cites || [] }; }).filter(p => p.text),
+    procedures: techs.map(t => { const u = uses.get(t.id); const first = u?.texts[0]; if (first) return { id: t.id, text: first.text, cites: first.cites }; const sv = viaSw.get(t.id); return sv?.text ? { id: t.id, text: sv.text, cites: sv.cites, via: t.sw } : null; }).filter(Boolean),
     observables: obsAll.sort((a, b) => ['file', 'path', 'registry', 'command', 'lolbin', 'tool'].indexOf(a.kind) - ['file', 'path', 'registry', 'command', 'lolbin', 'tool'].indexOf(b.kind)).slice(0, 24),
     sources: (o.external_references || []).filter(r => r.url && !/attack\.mitre\.org/.test(r.url)).map(r => ({ name: r.source_name, url: r.url, desc: r.description?.slice(0, 200) })).slice(0, 14),
     softwareLinks: deck.software.map(s => ({ ...s, url: `https://attack.mitre.org/software/${s.id}/` }))

@@ -1,0 +1,513 @@
+{
+ "schema": 2,
+ "events": [
+  {
+   "id": "e.audit",
+   "title": "Audit Finding",
+   "text": "Internal audit has flagged an unmanaged exception on a critical system: a legacy service that bypasses your MFA policy.",
+   "choices": [
+    {
+     "text": "Remediate now",
+     "fx": [
+      {
+       "op": "money",
+       "n": -20
+      },
+      {
+       "op": "upgradeRandom"
+      }
+     ],
+     "result": "You pay for the fix and tighten a control while you are at it.",
+     "lesson": "Closing the finding removes a real path; budget it as risk reduction, not overhead."
+    },
+    {
+     "text": "Accept the risk (document it)",
+     "fx": [
+      {
+       "op": "money",
+       "n": 15
+      },
+      {
+       "op": "addStatus",
+       "id": "status.techdebt"
+      }
+     ],
+     "result": "You bank the saving and sign the exception. The risk is now yours.",
+     "lesson": "Risk acceptance is legitimate when explicit, time-boxed and owned by someone with authority."
+    }
+   ],
+   "lesson": "Exceptions that nobody reviews become the attack path."
+  },
+  {
+   "id": "e.zeroday",
+   "title": "Zero-Day in the VPN Appliance",
+   "text": "A vendor advisory lands at 02:10: an edge appliance you run is being exploited in the wild. No patch yet.",
+   "choices": [
+    {
+     "text": "Take it offline until a patch ships",
+     "fx": [
+      {
+       "op": "resilience",
+       "n": -6
+      }
+     ],
+     "result": "Staff lose remote access for two days — painful, but nobody is in your network.",
+     "lesson": "When exploitation is active and no patch exists, removing exposure is the control."
+    },
+    {
+     "text": "Apply the vendor’s mitigation and watch closely",
+     "fx": [
+      {
+       "op": "money",
+       "n": -10
+      },
+      {
+       "op": "addCard",
+       "id": "x.waf"
+      }
+     ],
+     "result": "You deploy virtual patching and add monitoring.",
+     "lesson": "Mitigations buy time; verify them and hunt for prior compromise."
+    },
+    {
+     "text": "Leave it up — revenue first",
+     "fx": [
+      {
+       "op": "money",
+       "n": 20
+      },
+      {
+       "op": "flag",
+       "id": "preBreach"
+      }
+     ],
+     "result": "Nothing happens… that you can see. Your next fight starts with an intruder already inside.",
+     "lesson": "Known-exploited edge devices are a favourite of state actors: assume compromise if you could not patch.",
+     "refs": [
+      "attack:T1190",
+      "attack:T1133"
+     ]
+    }
+   ],
+   "lesson": "Edge devices are repeatedly exploited as initial access; ASD/CISA advisories are the early warning."
+  },
+  {
+   "id": "e.phish",
+   "title": "Staff Report a Phish",
+   "text": "A finance officer reported a convincing invoice email in minutes — the SOC has triaged and blocked it.",
+   "choices": [
+    {
+     "text": "Publicly thank and reward them",
+     "fx": [
+      {
+       "op": "money",
+       "n": -5
+      },
+      {
+       "op": "flag",
+       "id": "intel1"
+      }
+     ],
+     "result": "Reporting culture strengthens. Next battle you start with extra intelligence.",
+     "lesson": "People who report quickly are a sensor network; punishing clicks silences it."
+    },
+    {
+     "text": "Quietly close the ticket",
+     "fx": [
+      {
+       "op": "money",
+       "n": 5
+      }
+     ],
+     "result": "Efficient. Also forgettable."
+    }
+   ],
+   "lesson": "Make reporting easy, rewarded and blame-free."
+  },
+  {
+   "id": "e.vendor",
+   "title": "The Silver-Bullet Pitch",
+   "text": "A vendor promises an “AI-native autonomous SOC” that makes detection engineering unnecessary.",
+   "choices": [
+    {
+     "text": "Buy it at list price",
+     "fx": [
+      {
+       "op": "money",
+       "n": -40
+      },
+      {
+       "op": "addRandomCard",
+       "rarity": "rare"
+      },
+      {
+       "op": "addStatus",
+       "id": "status.techdebt"
+      }
+     ],
+     "result": "You get a powerful tool and an integration headache.",
+     "lesson": "Tools do not remove the need to engineer detections and own the outcomes."
+    },
+    {
+     "text": "Run a scoped pilot",
+     "fx": [
+      {
+       "op": "money",
+       "n": -15
+      },
+      {
+       "op": "upgradeRandom"
+      }
+     ],
+     "result": "The pilot sharpens an existing control and teaches your team where the gaps are.",
+     "lesson": "Proofs of value with success criteria beat roadmap promises."
+    },
+    {
+     "text": "Decline politely",
+     "fx": [
+      {
+       "op": "money",
+       "n": 10
+      }
+     ],
+     "result": "You keep the budget for people and process."
+    }
+   ],
+   "lesson": "Evaluate tools against the techniques you actually face."
+  },
+  {
+   "id": "e.regulator",
+   "title": "Regulator Information Request",
+   "text": "A regulator asks for evidence of your incident notification procedure and last test.",
+   "choices": [
+    {
+     "text": "Respond fully and share your last exercise report",
+     "fx": [
+      {
+       "op": "resilience",
+       "n": -3
+      },
+      {
+       "op": "upgradeRandom"
+      }
+     ],
+     "result": "It takes your team away from the console, but the exercise findings drive real changes.",
+     "lesson": "Evidence of exercising is evidence of capability. In Australia obligations differ by sector — e.g. SOCI critical-infrastructure reporting and APRA CPS 234 notification.",
+     "refs": [
+      "soci:csirp",
+      "apra:cps234",
+      "privacy:ndb"
+     ]
+    },
+    {
+     "text": "Send a minimal response",
+     "fx": [
+      {
+       "op": "money",
+       "n": 10
+      },
+      {
+       "op": "addStatus",
+       "id": "status.techdebt"
+      }
+     ],
+     "result": "You save effort now and create a follow-up later."
+    }
+   ],
+   "lesson": "Know your notification clocks before the incident."
+  },
+  {
+   "id": "e.msp",
+   "title": "MSP Offers “Free” Remote Access",
+   "text": "Your managed service provider wants always-on, privileged remote access “to speed up tickets”, at a discount.",
+   "choices": [
+    {
+     "text": "Accept — the discount is attractive",
+     "fx": [
+      {
+       "op": "money",
+       "n": 25
+      },
+      {
+       "op": "flag",
+       "id": "vendorFoothold"
+      }
+     ],
+     "result": "Costs fall. A third party now holds standing admin into your estate.",
+     "lesson": "Trusted relationships are a documented initial access path.",
+     "refs": [
+      "attack:T1199",
+      "nist-csf:GV.SC-07"
+     ]
+    },
+    {
+     "text": "Insist on just-in-time, recorded sessions",
+     "fx": [
+      {
+       "op": "money",
+       "n": -10
+      },
+      {
+       "op": "addCard",
+       "id": "a.pam-jit"
+      }
+     ],
+     "result": "The MSP grumbles but complies.",
+     "lesson": "Vendor access should be time-boxed, MFA-gated and logged."
+    }
+   ],
+   "lesson": "Third-party access is your attack surface."
+  },
+  {
+   "id": "e.training",
+   "title": "Security Awareness Week",
+   "text": "You can run a company-wide awareness and phishing-simulation week.",
+   "choices": [
+    {
+     "text": "Run it",
+     "fx": [
+      {
+       "op": "resilience",
+       "n": -2
+      },
+      {
+       "op": "addCard",
+       "id": "x.training"
+      }
+     ],
+     "result": "Productivity dips slightly; click rates drop.",
+     "lesson": "Training is a layer, not a wall."
+    },
+    {
+     "text": "Skip it",
+     "fx": [
+      {
+       "op": "money",
+       "n": 10
+      }
+     ],
+     "result": "You save the time."
+    }
+   ],
+   "lesson": "People are controls too."
+  },
+  {
+   "id": "e.restoretest",
+   "title": "Backup Restore Test",
+   "text": "It is time for the quarterly restore test of your critical systems.",
+   "choices": [
+    {
+     "text": "Run a full restore in a sandbox",
+     "fx": [
+      {
+       "op": "money",
+       "n": -10
+      },
+      {
+       "op": "ifHasCard",
+       "id": "c.recover.dos",
+       "then": [
+        {
+         "op": "upgradeCard",
+         "id": "c.recover.dos"
+        }
+       ],
+       "else": [
+        {
+         "op": "addStatus",
+         "id": "status.techdebt"
+        }
+       ]
+      }
+     ],
+     "result": "You find out what really works.",
+     "lesson": "A backup you have not restored is a hope. The test either upgrades your confidence or exposes the gap."
+    },
+    {
+     "text": "Mark it “passed” from the dashboard",
+     "fx": [
+      {
+       "op": "money",
+       "n": 5
+      },
+      {
+       "op": "flag",
+       "id": "brokenBackups"
+      }
+     ],
+     "result": "The dashboard is green. Is the data?",
+     "lesson": "Backup success ≠ restore success."
+    }
+   ],
+   "lesson": "Test restoration, not just backup jobs."
+  },
+  {
+   "id": "e.bounty",
+   "title": "Bug Bounty Submission",
+   "text": "A researcher has reported a serious flaw in your customer portal and asks for a bounty and a public thank-you.",
+   "choices": [
+    {
+     "text": "Pay and fix within a week",
+     "fx": [
+      {
+       "op": "money",
+       "n": -15
+      },
+      {
+       "op": "removeStatus",
+       "id": "status.techdebt"
+      },
+      {
+       "op": "relicChance",
+       "id": "r.bug-bounty"
+      }
+     ],
+     "result": "You close the hole and build goodwill.",
+     "lesson": "Coordinated disclosure only works if researchers are treated well.",
+     "refs": [
+      "nist-csf:ID.RA-08"
+     ]
+    },
+    {
+     "text": "Threaten legal action",
+     "fx": [
+      {
+       "op": "money",
+       "n": 5
+      },
+      {
+       "op": "flag",
+       "id": "preBreach"
+      }
+     ],
+     "result": "The researcher goes public. So does everyone else.",
+     "lesson": "Hostile responses push findings to the open market."
+    }
+   ],
+   "lesson": "Make it safe to tell you about your bugs."
+  },
+  {
+   "id": "e.merger",
+   "title": "Merger: Integrate the Acquisition",
+   "text": "You have acquired a smaller firm. Leadership wants the networks joined by Friday.",
+   "choices": [
+    {
+     "text": "Join them now",
+     "fx": [
+      {
+       "op": "money",
+       "n": 40
+      },
+      {
+       "op": "addStatus",
+       "id": "status.techdebt"
+      },
+      {
+       "op": "addStatus",
+       "id": "status.techdebt"
+      }
+     ],
+     "result": "A flat, unmapped network and two new problems.",
+     "lesson": "M&A inherits risk; integrate through a segmented, monitored interconnect."
+    },
+    {
+     "text": "Phase it: segment, assess, then connect",
+     "fx": [
+      {
+       "op": "money",
+       "n": 10
+      },
+      {
+       "op": "addCard",
+       "id": "x.segment"
+      }
+     ],
+     "result": "Slower and safer."
+    }
+   ],
+   "lesson": "Acquisitions import the target’s vulnerabilities."
+  },
+  {
+   "id": "e.tabletop",
+   "title": "Executive Tabletop",
+   "text": "The executive team agrees to a half-day tabletop on a ransomware scenario.",
+   "choices": [
+    {
+     "text": "Facilitate it properly",
+     "fx": [
+      {
+       "op": "resilience",
+       "n": -2
+      },
+      {
+       "op": "flag",
+       "id": "intel1"
+      },
+      {
+       "op": "addCard",
+       "id": "x.tabletop"
+      }
+     ],
+     "result": "Decision rights, comms and legal triggers all get tested.",
+     "lesson": "Executives who have rehearsed the decisions make them faster under pressure.",
+     "refs": [
+      "nist:800-61",
+      "nist-csf:ID.IM-02"
+     ]
+    },
+    {
+     "text": "Reschedule indefinitely",
+     "fx": [
+      {
+       "op": "money",
+       "n": 5
+      }
+     ],
+     "result": "Everyone is relieved."
+    }
+   ],
+   "lesson": "Exercise the decisions, not just the tooling."
+  },
+  {
+   "id": "e.insider",
+   "title": "Insider Tip-off",
+   "text": "An anonymous message warns that a contractor has been selling access to your VPN.",
+   "choices": [
+    {
+     "text": "Reset all contractor credentials and review access",
+     "fx": [
+      {
+       "op": "resilience",
+       "n": -3
+      },
+      {
+       "op": "flag",
+       "id": "intel1"
+      }
+     ],
+     "result": "Disruptive, but you find two dormant accounts.",
+     "lesson": "Dormant and shared accounts are routinely sold: valid accounts is the most reused technique.",
+     "refs": [
+      "attack:T1078",
+      "attack:T1133"
+     ]
+    },
+    {
+     "text": "Ignore it — probably noise",
+     "fx": [
+      {
+       "op": "money",
+       "n": 5
+      },
+      {
+       "op": "flag",
+       "id": "preBreach"
+      }
+     ],
+     "result": "Quiet… for now."
+    }
+   ],
+   "lesson": "Valid accounts are the quiet way in."
+  }
+ ]
+}

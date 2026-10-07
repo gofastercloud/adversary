@@ -1,0 +1,39 @@
+{
+ "schema": 2, "id": "enterprise", "kind": "scenario", "name": "Enterprise IT", "version": "1.0.0",
+ "tagline": "Hybrid identity, ransomware crews and the long road to APT29.",
+ "icon": "building-2",
+ "theme": { "accent": "#5ad1ff", "accent2": "#8b7bff", "bg": ["#0a1024", "#151a3a", "#241a52"] },
+ "org": {
+  "name": "Harbourline Group", "sector": "Professional services & health-adjacent advisory",
+  "brief": "A 2,500-person Australian advisory firm running hybrid Microsoft 365 and Active Directory, a handful of legacy file servers, an outsourced service desk and a growing SaaS estate. Staff work remotely; client records and payroll are the prizes.",
+  "crownJewels": ["Client records database", "Finance & payroll platform", "Identity plane (AD / Entra ID)"],
+  "regimes": [
+   { "name": "Privacy Act 1988 — Notifiable Data Breaches scheme", "note": "Eligible data breaches likely to cause serious harm must be assessed promptly and notified to the OAIC and affected individuals.", "refs": ["privacy:ndb"] },
+   { "name": "ACSC Essential Eight", "note": "The baseline mitigation strategies most Australian organisations are measured against, scored by maturity level 1–3.", "refs": ["e8:maturity-model"] },
+   { "name": "ASD Information Security Manual", "note": "Controls catalogue used across Australian government and many regulated suppliers.", "refs": ["ism:overview"] }
+  ]
+ },
+ "assets": [
+  { "id": "mail", "name": "Email Gateway", "kind": "email", "zone": "Edge", "hp": 6, "jewel": false, "exposed": true, "icon": "mail", "desc": "Inbound mail, attachments and links for every staff member.", "adjacent": ["ws", "idp"] },
+  { "id": "vpn", "name": "Remote Access Gateway", "kind": "network", "zone": "Edge", "hp": 6, "jewel": false, "exposed": true, "icon": "unplug", "desc": "Internet-facing VPN and remote-access appliance.", "adjacent": ["idp", "files", "ws"] },
+  { "id": "ws", "name": "Staff Endpoints", "kind": "endpoint", "zone": "Corporate", "hp": 8, "jewel": false, "exposed": true, "icon": "laptop", "desc": "Laptops and desktops, many working from home.", "adjacent": ["mail", "vpn", "idp", "files"] },
+  { "id": "idp", "name": "Identity Plane (AD / Entra)", "kind": "identity", "zone": "Core", "hp": 8, "jewel": false, "exposed": false, "icon": "id-card", "desc": "Directory, SSO and conditional access for everything.", "adjacent": ["mail", "vpn", "ws", "files", "erp", "crm"] },
+  { "id": "files", "name": "File & Collaboration Servers", "kind": "server", "zone": "Core", "hp": 8, "jewel": false, "exposed": false, "icon": "server", "desc": "Legacy shares plus SharePoint document stores.", "adjacent": ["vpn", "ws", "idp", "backup"] },
+  { "id": "erp", "name": "Finance & Payroll", "kind": "app", "zone": "Core", "hp": 10, "jewel": true, "exposed": false, "icon": "receipt", "desc": "Payroll, invoicing and the general ledger.", "adjacent": ["idp", "crm", "backup"] },
+  { "id": "crm", "name": "Client Records Database", "kind": "data", "zone": "Core", "hp": 10, "jewel": true, "exposed": false, "icon": "database", "desc": "Engagement files and personal information for every client.", "adjacent": ["idp", "erp", "backup"] },
+  { "id": "backup", "name": "Backup Platform", "kind": "backup", "zone": "Core", "hp": 6, "jewel": false, "exposed": false, "icon": "database-backup", "desc": "Nightly backups of servers and databases.", "adjacent": ["files", "erp", "crm"] }
+ ],
+ "roster": { "acts": [
+  { "name": "Act I — Opportunists", "battle": ["G0092", "G1043", "G1032", "G1051"], "elite": ["G0046"], "boss": "G0102", "tiers": { "battle": 1, "elite": 2, "boss": 2 } },
+  { "name": "Act II — Targeted Intrusions", "battle": ["G1057", "G0125", "G0117", "G0114"], "elite": ["G1015"], "boss": "G0096", "tiers": { "battle": 2, "elite": 2, "boss": 3 } },
+  { "name": "Act III — Apex Adversaries", "battle": ["G0049", "G0007", "G0129"], "elite": ["G0032"], "boss": "G0016", "tiers": { "battle": 2, "elite": 3, "boss": 3 } }
+ ] },
+ "cardOverrides": {},
+ "systems": [],
+ "ttx": [],
+ "reading": [
+  { "title": "ACSC Essential Eight", "url": "https://www.cyber.gov.au/resources-business-and-government/essential-cyber-security/essential-eight" },
+  { "title": "MITRE ATT&CK", "url": "https://attack.mitre.org/" },
+  { "title": "NIST Cybersecurity Framework 2.0", "url": "https://www.nist.gov/cyberframework" }
+ ]
+}

@@ -1,0 +1,364 @@
+{
+ "schema": 2,
+ "relics": [
+  {
+   "id": "r.zero-trust-seed",
+   "name": "Zero Trust Roadmap",
+   "icon": "shield-ban",
+   "rarity": "starter",
+   "hooks": {
+    "battleStart": [
+     {
+      "op": "wardRandomAsset",
+      "n": 1
+     }
+    ]
+   },
+   "desc": "Battle start: a random asset gains a permanent +1 ward (all properties).",
+   "lesson": "A roadmap beats a product: start by protecting the assets that matter most.",
+   "refs": [
+    "nist:800-207"
+   ]
+  },
+  {
+   "id": "r.mdr",
+   "name": "Managed Detection & Response",
+   "icon": "cctv",
+   "rarity": "starter",
+   "hooks": {
+    "roundStart": [
+     {
+      "op": "reveal",
+      "n": 1,
+      "str": 2
+     }
+    ]
+   },
+   "desc": "Each round start: reveal 1 hidden foothold with stealth up to 2.",
+   "lesson": "MDR gives smaller teams a 24×7 monitoring floor — but a floor is not a ceiling.",
+   "refs": [
+    "nist-csf:DE.CM-01"
+   ]
+  },
+  {
+   "id": "r.golden-image",
+   "name": "Golden Image Pipeline",
+   "icon": "copy-plus",
+   "rarity": "starter",
+   "hooks": {
+    "passive": {
+     "reviveOnce": 3
+    }
+   },
+   "desc": "The first asset to go down each battle is rebuilt at 3 integrity.",
+   "lesson": "Rebuild from a known-good, signed image rather than cleaning a compromised host.",
+   "refs": [
+    "nist-800-53:CM-2",
+    "nist-csf:RC.RP-05"
+   ]
+  },
+  {
+   "id": "r.board-sponsor",
+   "name": "Executive Sponsor",
+   "icon": "landmark",
+   "rarity": "starter",
+   "hooks": {
+    "passive": {
+     "maxResilience": 6
+    },
+    "battleWin": [
+     {
+      "op": "money",
+      "n": 5
+     }
+    ]
+   },
+   "desc": "+6 max Resilience. +$5 after each battle.",
+   "lesson": "Funding and air cover from the board are the control that makes the other controls possible.",
+   "refs": [
+    "nist-csf:GV.RR-01"
+   ]
+  },
+  {
+   "id": "r.runbooks",
+   "name": "IR Runbooks",
+   "icon": "book-open",
+   "rarity": "starter",
+   "hooks": {
+    "passive": {
+     "discountFirst": {
+      "fn": "respond",
+      "n": 1
+     }
+    }
+   },
+   "desc": "The first Respond card you play each round costs 1 less.",
+   "lesson": "Rehearsed runbooks make the first ten minutes of an incident boringly fast.",
+   "refs": [
+    "nist-csf:RS.MA-01",
+    "nist:800-61"
+   ]
+  },
+  {
+   "id": "r.threat-intel",
+   "name": "Threat Intel Feed",
+   "icon": "radio-tower",
+   "rarity": "common",
+   "hooks": {
+    "roundStart": [
+     {
+      "op": "intel",
+      "n": 1
+     }
+    ]
+   },
+   "desc": "Each round start: +1 intel (see the adversary’s plans more clearly).",
+   "lesson": "Intelligence is only valuable when it changes what you do next.",
+   "refs": [
+    "nist-csf:ID.RA-02",
+    "attack:M1019"
+   ]
+  },
+  {
+   "id": "r.kev",
+   "name": "KEV Subscription",
+   "icon": "bell-ring",
+   "rarity": "common",
+   "hooks": {
+    "passive": {
+     "firstBreachMinus": 1
+    }
+   },
+   "desc": "The adversary’s first Breach each battle has 1 less power.",
+   "lesson": "Patch what is known to be exploited first; CISA’s KEV catalogue is the shortlist.",
+   "refs": [
+    "nist-csf:ID.RA-01",
+    "attack:M1051"
+   ]
+  },
+  {
+   "id": "r.pentest",
+   "name": "Penetration Test Report",
+   "icon": "file-search",
+   "rarity": "common",
+   "hooks": {
+    "battleStart": [
+     {
+      "op": "intel",
+      "n": 2
+     }
+    ]
+   },
+   "desc": "Battle start: +2 intel.",
+   "lesson": "A good pen test report is a map of the adversary’s likeliest path.",
+   "refs": [
+    "nist-800-53:CA-8"
+   ]
+  },
+  {
+   "id": "r.bug-bounty",
+   "name": "Bug Bounty Programme",
+   "icon": "bug",
+   "rarity": "common",
+   "hooks": {
+    "reveal": [
+     {
+      "op": "money",
+      "n": 1
+     }
+    ]
+   },
+   "desc": "Gain $1 each time a foothold is revealed.",
+   "lesson": "Pay researchers for finding flaws before adversaries do.",
+   "refs": [
+    "nist-csf:ID.RA-08",
+    "owasp:samm"
+   ]
+  },
+  {
+   "id": "r.soc247",
+   "name": "24×7 SOC",
+   "icon": "siren",
+   "rarity": "uncommon",
+   "hooks": {
+    "passive": {
+     "draw": 1
+    }
+   },
+   "desc": "Draw 1 additional card each turn.",
+   "lesson": "Round-the-clock coverage widens what you can see and act on.",
+   "refs": [
+    "nist-csf:DE.CM-01"
+   ]
+  },
+  {
+   "id": "r.honeynet",
+   "name": "Honeynet",
+   "icon": "bug-play",
+   "rarity": "uncommon",
+   "hooks": {
+    "reveal": [
+     {
+      "op": "exposure",
+      "n": 1
+     }
+    ]
+   },
+   "desc": "Revealing a foothold also gives +1 Exposure.",
+   "lesson": "Deception turns every adversary mistake into a detection.",
+   "refs": [
+    "d3fend:DecoyEnvironment"
+   ]
+  },
+  {
+   "id": "r.purple-budget",
+   "name": "Purple Team Budget",
+   "icon": "swords",
+   "rarity": "uncommon",
+   "hooks": {
+    "evict": [
+     {
+      "op": "draw",
+      "n": 1
+     }
+    ]
+   },
+   "desc": "Draw a card each time you remove a foothold.",
+   "lesson": "Every eviction should teach you something to feed back into detections.",
+   "refs": [
+    "nist-csf:ID.IM-02"
+   ]
+  },
+  {
+   "id": "r.siem-license",
+   "name": "SIEM Licence Uplift",
+   "icon": "activity",
+   "rarity": "uncommon",
+   "hooks": {
+    "passive": {
+     "detectStr": 1
+    }
+   },
+   "desc": "All your monitors have +1 detection strength.",
+   "lesson": "Telemetry volume is a budget line; detection value comes from correlation.",
+   "refs": [
+    "nist-csf:DE.AE-03",
+    "nist-800-53:AU-6"
+   ]
+  },
+  {
+   "id": "r.crisis-comms",
+   "name": "Crisis Communications Plan",
+   "icon": "megaphone",
+   "rarity": "uncommon",
+   "hooks": {
+    "passive": {
+     "beaconMinus": 1
+    }
+   },
+   "desc": "Beacons drain 1 less Resilience each round.",
+   "lesson": "Calm, pre-agreed communications keep an incident from becoming a second incident.",
+   "refs": [
+    "nist-csf:RS.CO-02"
+   ]
+  },
+  {
+   "id": "r.cyber-range",
+   "name": "Cyber Range Training",
+   "icon": "graduation-cap",
+   "rarity": "uncommon",
+   "hooks": {
+    "passive": {
+     "maxResilience": 10
+    }
+   },
+   "desc": "+10 max Resilience.",
+   "lesson": "Teams that have rehearsed under pressure recover faster and make fewer errors.",
+   "refs": [
+    "nist-csf:PR.AT"
+   ]
+  },
+  {
+   "id": "r.change-freeze",
+   "name": "Change Freeze",
+   "icon": "snowflake",
+   "rarity": "uncommon",
+   "hooks": {
+    "passive": {
+     "advTax": {
+      "tactics": [
+       "persistence",
+       "defense-impairment",
+       "stealth"
+      ],
+      "n": 1
+     }
+    }
+   },
+   "desc": "Adversary Persistence, Stealth and Defense Impairment cards cost 1 more.",
+   "lesson": "Tight change control makes unauthorised change loud.",
+   "refs": [
+    "nist-800-53:CM-3"
+   ]
+  },
+  {
+   "id": "r.vault",
+   "name": "Backup Vault Contract",
+   "icon": "database-backup",
+   "rarity": "rare",
+   "hooks": {
+    "battleStart": [
+     {
+      "op": "healAll",
+      "n": 1
+     }
+    ],
+    "passive": {
+     "strikeMinus": 1
+    }
+   },
+   "desc": "Strike and Impair cards deal 1 less damage. Battle start: heal all assets 1.",
+   "lesson": "Tested, immutable backups are what turn a ransom demand into an inconvenience.",
+   "refs": [
+    "e8:backups",
+    "attack:M1053"
+   ]
+  },
+  {
+   "id": "r.zero-day-fund",
+   "name": "Emergency Patch Fund",
+   "icon": "wrench",
+   "rarity": "rare",
+   "hooks": {
+    "passive": {
+     "energy": 1
+    }
+   },
+   "desc": "+1 energy each turn.",
+   "lesson": "Pre-approved emergency budget removes the argument from the first hour.",
+   "refs": [
+    "nist-csf:GV.RR-03"
+   ]
+  },
+  {
+   "id": "r.resilience-board",
+   "name": "Cyber Resilience Committee",
+   "icon": "users",
+   "rarity": "rare",
+   "hooks": {
+    "roundStart": [
+     {
+      "op": "resilience",
+      "n": 1
+     }
+    ]
+   },
+   "desc": "Each round start: restore 1 Resilience.",
+   "lesson": "Resilience is governed: someone owns the impact tolerances and tests them.",
+   "refs": [
+    "nist-csf:GV.OV-01",
+    "iso27001:A.5.30"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,489 @@
+{
+ "schema": 2,
+ "id": "taxonomy",
+ "functions": [
+  {
+   "id": "govern",
+   "name": "Govern",
+   "short": "GV",
+   "csf": "GV",
+   "color": "#f5c542",
+   "icon": "scale",
+   "blurb": "Risk strategy, roles, policy, oversight and supply-chain risk. New in CSF 2.0 — the function that makes the rest accountable."
+  },
+  {
+   "id": "identify",
+   "name": "Identify",
+   "short": "ID",
+   "csf": "ID",
+   "color": "#5ad1ff",
+   "icon": "search",
+   "blurb": "Know your assets, data flows, threats and weaknesses. You cannot defend what you cannot enumerate."
+  },
+  {
+   "id": "protect",
+   "name": "Protect",
+   "short": "PR",
+   "csf": "PR",
+   "color": "#58e07a",
+   "icon": "shield",
+   "blurb": "Safeguards that prevent or limit impact: identity, data security, platform hardening, resilient infrastructure."
+  },
+  {
+   "id": "detect",
+   "name": "Detect",
+   "short": "DE",
+   "csf": "DE",
+   "color": "#ffa94d",
+   "icon": "radar",
+   "blurb": "Continuous monitoring and adverse-event analysis so compromise is found in minutes, not months."
+  },
+  {
+   "id": "respond",
+   "name": "Respond",
+   "short": "RS",
+   "csf": "RS",
+   "color": "#ff5a6e",
+   "icon": "siren",
+   "blurb": "Incident management, analysis, communication and mitigation once a detection is declared an incident."
+  },
+  {
+   "id": "recover",
+   "name": "Recover",
+   "short": "RC",
+   "csf": "RC",
+   "color": "#b58cff",
+   "icon": "refresh-cw",
+   "blurb": "Restore assets and operations, verify integrity, and communicate recovery."
+  }
+ ],
+ "properties": [
+  {
+   "id": "spoofing",
+   "name": "Authentication",
+   "stride": "Spoofing",
+   "letter": "S",
+   "property": "Authenticity",
+   "color": "#ff5470",
+   "icon": "fingerprint",
+   "blurb": "Spoofing — pretending to be someone or something else. Countered by strong authentication."
+  },
+  {
+   "id": "tampering",
+   "name": "Integrity",
+   "stride": "Tampering",
+   "letter": "T",
+   "property": "Integrity",
+   "color": "#ffb02e",
+   "icon": "wrench",
+   "blurb": "Tampering — modifying data, code or configuration without authority. Countered by integrity controls."
+  },
+  {
+   "id": "repudiation",
+   "name": "Non-repudiation",
+   "stride": "Repudiation",
+   "letter": "R",
+   "property": "Non-repudiability",
+   "color": "#a78bfa",
+   "icon": "scroll-text",
+   "blurb": "Repudiation — denying an action because nobody can prove it. Countered by trustworthy audit trails."
+  },
+  {
+   "id": "disclosure",
+   "name": "Confidentiality",
+   "stride": "Information disclosure",
+   "letter": "I",
+   "property": "Confidentiality",
+   "color": "#38bdf8",
+   "icon": "eye-off",
+   "blurb": "Information disclosure — exposing data to those not authorised to see it. Countered by encryption and access control."
+  },
+  {
+   "id": "dos",
+   "name": "Availability",
+   "stride": "Denial of service",
+   "letter": "D",
+   "property": "Availability",
+   "color": "#4ade80",
+   "icon": "zap",
+   "blurb": "Denial of service — degrading or denying legitimate use. Countered by capacity, redundancy and recovery."
+  },
+  {
+   "id": "elevation",
+   "name": "Authorisation",
+   "stride": "Elevation of privilege",
+   "letter": "E",
+   "property": "Authorisation",
+   "color": "#f472d0",
+   "icon": "key-round",
+   "blurb": "Elevation of privilege — gaining capabilities without authorisation. Countered by least privilege and separation of duties."
+  }
+ ],
+ "cells": {
+  "govern.spoofing": {
+   "name": "Identity & Access Policy",
+   "flavour": "Who may be who, and how we prove it",
+   "desc": "Board-endorsed policy that sets identity assurance levels, MFA expectations and account lifecycle rules. Without it, authentication controls are optional in practice.",
+   "refs": [
+    "nist-csf:GV.PO-01",
+    "nist-800-53:IA-1",
+    "e8:mfa"
+   ]
+  },
+  "govern.tampering": {
+   "name": "Change Management Board",
+   "flavour": "Nothing ships without a name on it",
+   "desc": "Formal change control: approvals, separation between requester and deployer, and rollback plans. Unauthorised change is Tampering by another name.",
+   "refs": [
+    "nist-csf:PR.PS-01",
+    "nist-800-53:CM-3",
+    "cis:4"
+   ]
+  },
+  "govern.repudiation": {
+   "name": "Logging & Retention Standard",
+   "flavour": "If it is not logged it did not happen",
+   "desc": "Defines what must be logged, for how long, and who may delete it. Sets the evidentiary baseline for every investigation and regulator question.",
+   "refs": [
+    "nist-csf:GV.PO-01",
+    "nist-800-53:AU-11",
+    "cis:8"
+   ]
+  },
+  "govern.disclosure": {
+   "name": "Data Classification Policy",
+   "flavour": "Label it before you lose it",
+   "desc": "A classification scheme with handling rules per tier. Drives encryption, access and DLP decisions and decides what a breach actually costs.",
+   "refs": [
+    "nist-csf:ID.AM-07",
+    "nist-800-53:RA-2",
+    "iso27001:A.5.12"
+   ]
+  },
+  "govern.dos": {
+   "name": "Resilience & Impact Tolerance",
+   "flavour": "How long can we be down? Write it down",
+   "desc": "Board-set maximum tolerable downtime for critical services, funded and tested. Turns “availability” from a wish into a requirement.",
+   "refs": [
+    "nist-csf:GV.OC-04",
+    "nist-800-53:CP-2",
+    "iso27001:A.5.30"
+   ]
+  },
+  "govern.elevation": {
+   "name": "Separation of Duties",
+   "flavour": "No one person holds every key",
+   "desc": "Policy that splits request, approve and execute for sensitive actions. Limits what a single stolen or malicious privileged account can do.",
+   "refs": [
+    "nist-csf:PR.AA-05",
+    "nist-800-53:AC-5",
+    "iso27001:A.5.3"
+   ]
+  },
+  "identify.spoofing": {
+   "name": "Identity Inventory",
+   "flavour": "Humans, services, keys, bots — all of them",
+   "desc": "A complete inventory of human, service and machine identities and their owners. Orphaned service accounts are a favourite foothold.",
+   "refs": [
+    "nist-csf:ID.AM-02",
+    "nist-800-53:IA-4",
+    "cis:5"
+   ]
+  },
+  "identify.tampering": {
+   "name": "Software Bill of Materials",
+   "flavour": "Know what is inside the box",
+   "desc": "SBOMs and provenance records for software and firmware so a poisoned component can be found and scoped in hours.",
+   "refs": [
+    "nist-csf:ID.AM-02",
+    "nist-800-53:SR-4",
+    "nist:800-218"
+   ]
+  },
+  "identify.repudiation": {
+   "name": "Log Source Inventory",
+   "flavour": "Map every blind spot",
+   "desc": "An inventory of what generates telemetry, what is collected and what is silent. Gaps here become “we cannot tell what happened”.",
+   "refs": [
+    "nist-csf:ID.AM-03",
+    "nist-800-53:AU-2",
+    "cis:8"
+   ]
+  },
+  "identify.disclosure": {
+   "name": "Data Flow Mapping",
+   "flavour": "Where does the sensitive stuff actually go?",
+   "desc": "Diagrams and discovery tooling showing where sensitive data is stored, processed and transmitted. The raw material of every threat model.",
+   "refs": [
+    "nist-csf:ID.AM-03",
+    "nist-800-53:CM-12",
+    "owasp:threat-modeling-manifesto"
+   ]
+  },
+  "identify.dos": {
+   "name": "Critical Dependency Map",
+   "flavour": "The thing the thing depends on",
+   "desc": "Maps the services, suppliers and utilities each critical function needs — including the boring ones like DNS, power and the one SaaS nobody remembers.",
+   "refs": [
+    "nist-csf:ID.AM-05",
+    "nist-800-53:RA-9",
+    "nist-csf:GV.OC-05"
+   ]
+  },
+  "identify.elevation": {
+   "name": "Attack Path Mapping",
+   "flavour": "See the route to Domain Admin first",
+   "desc": "Graph-based analysis of privilege relationships and attack paths, plus authenticated vulnerability scanning, so the shortest path to crown jewels is closed before an attacker walks it.",
+   "refs": [
+    "nist-csf:ID.RA-01",
+    "nist-800-53:RA-5",
+    "attack:M1016"
+   ]
+  },
+  "protect.spoofing": {
+   "name": "Phishing-Resistant MFA",
+   "flavour": "FIDO2 beats a lookalike login page",
+   "desc": "Hardware-bound, origin-checked authenticators (FIDO2/passkeys) that cannot be replayed by an adversary-in-the-middle. The single highest-value identity control.",
+   "refs": [
+    "nist-csf:PR.AA-03",
+    "nist-800-53:IA-2",
+    "attack:M1032",
+    "e8:mfa",
+    "d3fend:Multi-factorAuthentication"
+   ]
+  },
+  "protect.tampering": {
+   "name": "Code Signing & Integrity Checks",
+   "flavour": "Trust the signature, not the filename",
+   "desc": "Cryptographic signing of code, firmware and configuration, verified at install and boot. Stops unauthorised modification being silently accepted.",
+   "refs": [
+    "nist-csf:PR.PS-05",
+    "nist-800-53:SI-7",
+    "attack:M1045"
+   ]
+  },
+  "protect.repudiation": {
+   "name": "Tamper-Evident Audit Logging",
+   "flavour": "Logs the intruder cannot quietly edit",
+   "desc": "Logs shipped off-host to append-only storage with integrity protection, so an intruder with local admin cannot erase their trail.",
+   "refs": [
+    "nist-csf:PR.PS-04",
+    "nist-800-53:AU-9",
+    "attack:M1029"
+   ]
+  },
+  "protect.disclosure": {
+   "name": "Encryption In Transit & At Rest",
+   "flavour": "Make a stolen disk a boring disk",
+   "desc": "TLS everywhere and strong at-rest encryption with managed keys. Turns many data-theft events into non-events.",
+   "refs": [
+    "nist-csf:PR.DS-01",
+    "nist-800-53:SC-28",
+    "attack:M1041",
+    "d3fend:MessageEncryption"
+   ]
+  },
+  "protect.dos": {
+   "name": "Rate Limiting & DDoS Shield",
+   "flavour": "Absorb the flood, serve the humans",
+   "desc": "Upstream scrubbing, rate limits, autoscaling and sane timeouts so volumetric and application-layer floods degrade gracefully.",
+   "refs": [
+    "nist-csf:PR.IR-04",
+    "nist-800-53:SC-5",
+    "attack:M1037"
+   ]
+  },
+  "protect.elevation": {
+   "name": "Least Privilege & PAM",
+   "flavour": "Admin rights are a loan, not a gift",
+   "desc": "Role-based access with just-in-time elevation, vaulted privileged credentials and no standing admin. Limits blast radius when any one account falls.",
+   "refs": [
+    "nist-csf:PR.AA-05",
+    "nist-800-53:AC-6",
+    "attack:M1026",
+    "e8:restrict-admin"
+   ]
+  },
+  "detect.spoofing": {
+   "name": "Identity Threat Detection",
+   "flavour": "Impossible travel, impossible Tuesday",
+   "desc": "Behavioural analytics on sign-ins and sessions: impossible travel, token replay, MFA fatigue patterns and anomalous consent grants.",
+   "refs": [
+    "nist-csf:DE.CM-03",
+    "nist-800-53:AC-2",
+    "d3fend:UserGeolocationLogonPatternAnalysis"
+   ]
+  },
+  "detect.tampering": {
+   "name": "File Integrity Monitoring",
+   "flavour": "Tell me when the binary changes",
+   "desc": "Baseline hashes and alerts on unexpected changes to critical files, configs and firmware. Catches implants and web shells.",
+   "refs": [
+    "nist-csf:DE.CM-09",
+    "nist-800-53:SI-7",
+    "d3fend:FileIntegrityMonitoring"
+   ]
+  },
+  "detect.repudiation": {
+   "name": "SIEM Correlation",
+   "flavour": "One alert is noise, five is a story",
+   "desc": "Correlates events across sources to turn scattered log lines into a timeline. The heart of a SOC.",
+   "refs": [
+    "nist-csf:DE.AE-03",
+    "nist-800-53:AU-6",
+    "cis:8"
+   ]
+  },
+  "detect.disclosure": {
+   "name": "DLP & Egress Anomaly Detection",
+   "flavour": "Why is the file server talking to Moldova?",
+   "desc": "Content-aware and volumetric detection of data leaving the environment, including slow-drip exfiltration over allowed channels.",
+   "refs": [
+    "nist-csf:DE.CM-01",
+    "nist-800-53:AU-13",
+    "attack:TA0010"
+   ]
+  },
+  "detect.dos": {
+   "name": "Saturation & Health Monitoring",
+   "flavour": "The graph went vertical at 03:12",
+   "desc": "Capacity, latency and error-budget monitoring that spots degradation before customers do and separates attack from success.",
+   "refs": [
+    "nist-csf:DE.CM-01",
+    "nist-800-53:SI-4",
+    "cis:13"
+   ]
+  },
+  "detect.elevation": {
+   "name": "Privilege Escalation Analytics",
+   "flavour": "Why did svc-backup become Domain Admin?",
+   "desc": "Alerts on privilege grants, group changes, token manipulation and use of privileged functions outside change windows.",
+   "refs": [
+    "nist-csf:DE.AE-02",
+    "nist-800-53:AC-6(9)",
+    "attack:TA0004"
+   ]
+  },
+  "respond.spoofing": {
+   "name": "Credential Revocation & Session Kill",
+   "flavour": "Reset it all. Now.",
+   "desc": "Rapid, rehearsed ability to revoke sessions, tokens, API keys and passwords for suspected-compromised identities across every system.",
+   "refs": [
+    "nist-csf:RS.MI-02",
+    "nist-800-53:IR-4",
+    "nist-800-53:AC-2"
+   ]
+  },
+  "respond.tampering": {
+   "name": "Host Isolation & Quarantine",
+   "flavour": "Pull the cable, keep the evidence",
+   "desc": "EDR-driven network containment of compromised hosts that preserves memory and disk state for analysis.",
+   "refs": [
+    "nist-csf:RS.MI-01",
+    "nist-800-53:IR-4",
+    "d3fend:NetworkIsolation"
+   ]
+  },
+  "respond.repudiation": {
+   "name": "Forensic Evidence Preservation",
+   "flavour": "Chain of custody or it never happened",
+   "desc": "Collect and protect volatile and persistent evidence with integrity guarantees so findings stand up to regulators, insurers and courts.",
+   "refs": [
+    "nist-csf:RS.AN-07",
+    "nist-800-53:IR-4",
+    "nist:800-61"
+   ]
+  },
+  "respond.disclosure": {
+   "name": "Breach Notification Playbook",
+   "flavour": "The 72-hour clock is already running",
+   "desc": "Pre-agreed decision tree, drafts and contacts for regulator, customer and partner notification. Legal duties start at awareness, not at root cause.",
+   "refs": [
+    "nist-csf:RS.CO-02",
+    "nist-800-53:IR-6",
+    "nist:800-61"
+   ]
+  },
+  "respond.dos": {
+   "name": "Traffic Scrubbing & Failover",
+   "flavour": "Shift the load before the pager melts",
+   "desc": "Runbooks to activate scrubbing, traffic diversion and failover regions during a sustained attack.",
+   "refs": [
+    "nist-csf:RS.MI-01",
+    "nist-800-53:CP-10",
+    "nist-800-53:SC-5"
+   ]
+  },
+  "respond.elevation": {
+   "name": "Emergency Privilege Revocation",
+   "flavour": "Break glass, then break their access",
+   "desc": "Break-glass procedures to strip standing and delegated privilege, rotate privileged secrets and lock down admin tiers mid-incident.",
+   "refs": [
+    "nist-csf:RS.MI-02",
+    "nist-800-53:AC-2",
+    "attack:M1026"
+   ]
+  },
+  "recover.spoofing": {
+   "name": "Identity Rebuild & Re-proofing",
+   "flavour": "Trust no one until re-verified",
+   "desc": "Re-issue credentials and re-verify identities after compromise, including help-desk procedures resistant to social engineering.",
+   "refs": [
+    "nist-csf:RC.RP-03",
+    "nist-800-53:IA-12",
+    "nist-800-53:IA-5"
+   ]
+  },
+  "recover.tampering": {
+   "name": "Golden Image Rebuild",
+   "flavour": "Rebuild, do not clean",
+   "desc": "Rebuild compromised systems from known-good, signed images and verified config rather than trusting a “cleaned” host.",
+   "refs": [
+    "nist-csf:RC.RP-05",
+    "nist-800-53:CP-10",
+    "nist-800-53:CM-2"
+   ]
+  },
+  "recover.repudiation": {
+   "name": "Post-Incident Review",
+   "flavour": "Blameless, evidence-led, actually actioned",
+   "desc": "Structured lessons-learned that feed back into detections, playbooks and risk register. Closes the loop to Govern.",
+   "refs": [
+    "nist-csf:ID.IM-03",
+    "nist-800-53:IR-4",
+    "nist:800-61"
+   ]
+  },
+  "recover.disclosure": {
+   "name": "Secret & Key Rotation",
+   "flavour": "Assume every key in memory is burned",
+   "desc": "Fast, automated rotation of keys, certificates and secrets that may have been exposed, with revocation of the old material.",
+   "refs": [
+    "nist-csf:RC.RP-03",
+    "nist-800-53:SC-12",
+    "nist-800-53:IA-5"
+   ]
+  },
+  "recover.dos": {
+   "name": "Immutable Backups & Tested Restore",
+   "flavour": "A backup you have not restored is a hope",
+   "desc": "Offline or immutable backups with regular restoration tests against defined recovery objectives. Your answer to ransomware.",
+   "refs": [
+    "nist-csf:PR.DS-11",
+    "nist-800-53:CP-9",
+    "attack:M1053",
+    "e8:backups"
+   ]
+  },
+  "recover.elevation": {
+   "name": "Directory & Trust Rebuild",
+   "flavour": "Reset krbtgt. Twice.",
+   "desc": "Procedures to recover the identity plane itself — forest recovery, trust re-establishment, tiered rebuild — when the attacker owned the directory.",
+   "refs": [
+    "nist-csf:RC.RP-03",
+    "nist-800-53:CP-10",
+    "attack:M1026"
+   ]
+  }
+ }
+}

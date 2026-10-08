@@ -73,7 +73,7 @@ for (const [w, h] of VIEWPORTS) {
       if (st.phase === 'won' || st.phase === 'lost' || st.screen === 'result') { await page.screenshot({ path: `${SHOTS}/${vp}-result-${run}.png` }); break; }
       stuck = key === lastKey ? stuck + 1 : 0; lastKey = key;
       if (stuck > 25) { bad(vp, `stuck at ${JSON.stringify(st)}`); await page.screenshot({ path: `${SHOTS}/${vp}-stuck-${run}.png` }); await page.evaluate(() => window.__adv.app.act({ type: 'FORFEIT' })); break; }
-      if (st.over && st.phase === 'battle' && await click('text=Debrief')) { await page.waitForTimeout(400); continue; }
+      if (st.over && await click('button:has-text("Debrief")')) { await page.waitForTimeout(400); continue; }
       switch (st.phase) {
         case 'map': await click('.node.avail >> nth=' + Math.floor(rnd() * 2)) || await click('.node.avail'); break;
         case 'briefing': await checkLayout(page, vp, 'briefing'); await click('text=Begin battle'); break;

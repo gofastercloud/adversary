@@ -9,7 +9,8 @@ import { buildWeb } from './build-web.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist/web');
-const port = +(process.argv[process.argv.indexOf('--port') + 1] || process.env.PORT || 5173);
+const pi = process.argv.indexOf('--port');
+const port = +((pi > 0 && process.argv[pi + 1]) || process.env.PORT || 5173);
 if (!process.argv.includes('--no-build')) await buildWeb();
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.map': 'application/json', '.md': 'text/markdown', '.txt': 'text/plain' };
 let api = null;

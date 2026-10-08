@@ -1,0 +1,47 @@
+{
+  "name": "adversary",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ADVERSARY — a roguelike deckbuilder that teaches threat modelling and blue-team concepts.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "validate": "node scripts/validate-content.mjs",
+    "test": "node --test \"test/*.test.mjs\"",
+    "build": "node scripts/build-web.mjs",
+    "dev": "node scripts/dev-server.mjs",
+    "sim": "node scripts/simulate.mjs",
+    "links": "node scripts/check-links.mjs",
+    "synth": "npm run build && npm --prefix infra run synth",
+    "deploy": "npm run build && npm --prefix infra run deploy",
+    "data": "node scripts/build-attack-data.mjs && node scripts/build-custom-adversaries.mjs && node scripts/build-mapping-data.mjs && node scripts/build-flows.mjs && node scripts/build-baseline.mjs",
+    "local:table": "node scripts/lib/local-table.mjs",
+    "dev:ddb": "DYNAMODB_ENDPOINT=http://localhost:8000 TABLE_NAME=adversary node scripts/dev-server.mjs",
+    "dev:floci": "DYNAMODB_ENDPOINT=http://localhost:4566 TABLE_NAME=adversary node scripts/dev-server.mjs",
+    "icons": "node scripts/check-icons.mjs",
+    "ci": "npm run validate && npm test && npm run icons && npm run build",
+    "e2e": "node scripts/e2e.mjs",
+    "lab:ladder": "node lab/cli.mjs ladder",
+    "lab:fuzz": "node lab/cli.mjs fuzz --n 60",
+    "lab:tune": "node lab/tune.mjs",
+    "lab:report": "node lab/report.mjs",
+    "lab:variants": "node lab/variants.mjs"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1147.0",
+    "@aws-sdk/lib-dynamodb": "^3.1147.0",
+    "@fontsource/jetbrains-mono": "^5.2.0",
+    "@fontsource/pixelify-sans": "^5.2.0",
+    "@fontsource/vt323": "^5.2.0",
+    "axe-core": "^4.14.0",
+    "dynalite": "^4.0.0",
+    "esbuild": "^0.25.0",
+    "htm": "^3.1.1",
+    "lucide-static": "^0.544.0",
+    "playwright-core": "^1.63.0",
+    "preact": "^11.0.0"
+  }
+}

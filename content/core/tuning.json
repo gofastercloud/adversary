@@ -1,0 +1,337 @@
+{
+ "schema": 2,
+ "battle": {
+  "handSize": 6,
+  "energy": 3,
+  "policySlots": 2,
+  "assetSlots": 3,
+  "maxRounds": 10,
+  "energyCap": 6,
+  "startResilience": 40,
+  "questions": 3
+ },
+ "goals": {
+  "preposition": {
+   "name": "Pre-position",
+   "icon": "anchor",
+   "rule": "dwell",
+   "targets": [
+    "ot",
+    "server",
+    "identity",
+    "data"
+   ],
+   "need": [
+    12,
+    12,
+    11
+   ],
+   "blurb": "Sit undetected inside critical systems so access already exists when a crisis makes it useful.",
+   "how": "+1 at the end of each adversary turn while it holds an undetected foothold on OT, a server, identity or data (or a crown jewel); −1 when it holds none.",
+   "lesson": "Pre-positioning is a win condition for the adversary even if nothing breaks: the damage is the option value. Defenders counter it with detection of living-off-the-land behaviour and by evicting persistence, not by waiting for an incident.",
+   "refs": [
+    "attack:TA0003",
+    "attack:G1017",
+    "nist-csf:DE.CM-01"
+   ]
+  },
+  "access": {
+   "name": "Sell access",
+   "icon": "key-round",
+   "rule": "reach",
+   "need": [
+    9,
+    9,
+    9
+   ],
+   "blurb": "Establish broad, durable access across the estate to hand to ransomware affiliates or other buyers.",
+   "how": "Breach if it holds undetected footholds on 5 different assets at the end of an adversary turn.",
+   "lesson": "Initial access brokers monetise breadth and persistence, not data. The signal is lateral spread and new persistence, long before any ransomware appears.",
+   "refs": [
+    "attack:TA0001",
+    "attack:TA0008",
+    "nist-csf:DE.AE-02"
+   ]
+  },
+  "exfil": {
+   "name": "Steal data",
+   "icon": "download",
+   "rule": "payoff",
+   "kinds": [
+    "exfil"
+   ],
+   "need": [
+    11,
+    11,
+    11
+   ],
+   "blurb": "Collect and remove sensitive data: espionage, extortion without encryption, or resale.",
+   "how": "Each successful exfiltration scores 1 (2 from a crown jewel). Reaching the target is a breach.",
+   "lesson": "Exfiltration-only extortion skips encryption entirely, so backups do not help. Egress control, data classification and staging detection do.",
+   "refs": [
+    "attack:TA0010",
+    "nist-csf:PR.DS-01"
+   ]
+  },
+  "ransom": {
+   "name": "Encrypt & extort",
+   "icon": "lock",
+   "rule": "payoff",
+   "kinds": [
+    "strike"
+   ],
+   "need": [
+    15,
+    15,
+    15
+   ],
+   "blurb": "Encrypt systems and destroy recovery options to force payment.",
+   "how": "Each successful impact scores 1 (2 on a crown jewel). Reaching the target is a breach.",
+   "lesson": "Ransomware operators remove recovery first. Immutable, tested backups and fast containment change the economics.",
+   "refs": [
+    "attack:T1486",
+    "attack:T1490",
+    "e8:backups"
+   ]
+  },
+  "destroy": {
+   "name": "Destroy",
+   "icon": "bomb",
+   "rule": "payoff",
+   "kinds": [
+    "strike"
+   ],
+   "need": [
+    5,
+    5,
+    5
+   ],
+   "blurb": "Irreversibly destroy data or systems: wipers disguised as ransomware, or destruction in support of a state objective.",
+   "how": "Each successful destructive strike scores 1 (2 on a crown jewel). Reaching the target is a breach.",
+   "lesson": "Wipers offer no decryption key and no negotiation. Recovery capability, not payment, is the control.",
+   "refs": [
+    "attack:T1485",
+    "attack:T1561",
+    "nist-csf:RC.RP-03"
+   ]
+  },
+  "disrupt": {
+   "name": "Disrupt service",
+   "icon": "plug-zap",
+   "rule": "payoff",
+   "kinds": [
+    "strike",
+    "impair",
+    "inhibit"
+   ],
+   "need": [
+    13,
+    13,
+    13
+   ],
+   "blurb": "Take down a service or the physical process: grid, water, telco, or a public-facing service.",
+   "how": "Each successful disruptive action scores 1 (2 on OT or a crown jewel). Reaching the target is a breach.",
+   "lesson": "In OT the control objective is availability and safety. Manual-operation and safe-state procedures are the real recovery plan.",
+   "refs": [
+    "attack:TA0105",
+    "nist:800-82",
+    "iec62443:overview"
+   ]
+  },
+  "fraud": {
+   "name": "Steal money",
+   "icon": "banknote",
+   "rule": "payoff",
+   "kinds": [
+    "exfil",
+    "strike"
+   ],
+   "jewelOnly": true,
+   "need": [
+    16,
+    16,
+    16
+   ],
+   "blurb": "Reach the system that moves money (payments, SWIFT, exchange) and make a fraudulent transaction.",
+   "how": "Only actions against a crown jewel score (2 each). Two successes is a breach.",
+   "lesson": "Financial fraud targets the payment path and the humans who approve it. Dual control and out-of-band verification are the compensating controls.",
+   "refs": [
+    "attack:T1657",
+    "swift:CSP"
+   ]
+  },
+  "resource": {
+   "name": "Hijack resources",
+   "icon": "pickaxe",
+   "rule": "dwell",
+   "targets": "any",
+   "minFootholds": 2,
+   "need": [
+    9,
+    9,
+    9
+   ],
+   "blurb": "Quietly burn the victim’s compute for mining or botnet use.",
+   "how": "+1 at the end of each adversary turn while it holds 2 or more undetected footholds; −1 otherwise.",
+   "lesson": "Resource hijacking is noisy on the bill rather than on the SIEM. Cloud cost anomalies and exposed management planes are the tell.",
+   "refs": [
+    "attack:T1496",
+    "cloud:shared-responsibility"
+   ]
+  }
+ },
+ "adversary": {
+  "tiers": {
+   "1": {
+    "name": "Opportunistic",
+    "exposureMax": 7,
+    "energy": [
+     5,
+     5,
+     6,
+     6,
+     6,
+     7
+    ],
+    "hand": 5,
+    "powerBonus": 0,
+    "rounds": 9
+   },
+   "2": {
+    "name": "Targeted",
+    "exposureMax": 11,
+    "energy": [
+     6,
+     6,
+     7,
+     7,
+     7,
+     8
+    ],
+    "hand": 5,
+    "powerBonus": 0,
+    "rounds": 10
+   },
+   "3": {
+    "name": "Apex",
+    "exposureMax": 15,
+    "energy": [
+     7,
+     7,
+     8,
+     8,
+     9,
+     9
+    ],
+    "hand": 6,
+    "powerBonus": 1,
+    "rounds": 11
+   }
+  },
+  "goalAI": false,
+  "baselineSlots": [
+   7,
+   5,
+   4
+  ]
+ },
+ "assurance": [
+  {
+   "id": 0,
+   "name": "Training",
+   "note": "Gentler adversaries. Learn the loop.",
+   "advPower": -1,
+   "advEnergy": -1,
+   "resilienceBonus": 10
+  },
+  {
+   "id": 1,
+   "name": "Maturity Level 1",
+   "note": "The intended experience.",
+   "advPower": 0,
+   "advEnergy": 0,
+   "resilienceBonus": 0
+  },
+  {
+   "id": 2,
+   "name": "Maturity Level 2",
+   "note": "Adversaries start with a foothold and tools.",
+   "advPower": 0,
+   "advEnergy": 0,
+   "resilienceBonus": 0,
+   "startFoothold": 1
+  },
+  {
+   "id": 3,
+   "name": "Maturity Level 3",
+   "note": "Targeted, resourced, patient.",
+   "advPower": 1,
+   "advEnergy": 0,
+   "resilienceBonus": -4,
+   "startFoothold": 1
+  }
+ ],
+ "rewards": {
+  "battle": [
+   18,
+   24,
+   30
+  ],
+  "elite": [
+   30,
+   40,
+   50
+  ],
+  "boss": [
+   60,
+   80,
+   100
+  ],
+  "fastBonus": 10
+ },
+ "shop": {
+  "cardCost": {
+   "common": 25,
+   "uncommon": 45,
+   "rare": 75
+  },
+  "relicCost": {
+   "common": 120,
+   "uncommon": 160,
+   "rare": 220
+  },
+  "removeCost": 50,
+  "removeStep": 25,
+  "healCost": 40,
+  "healAmount": 12
+ },
+ "xp": {
+  "win": 250,
+  "battle": 40,
+  "achievement": {
+   "bronze": 25,
+   "silver": 60,
+   "gold": 120,
+   "platinum": 250
+  }
+ },
+ "clearance": [
+  0,
+  150,
+  400,
+  800,
+  1400,
+  2200,
+  3200,
+  4500,
+  6200,
+  8200,
+  10500,
+  14000
+ ],
+ "balance": {
+  "wardAdd": 1,
+  "healAdd": 0,
+  "detectNAdd": 1
+ }
+}

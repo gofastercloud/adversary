@@ -1,0 +1,471 @@
+{
+ "id": "notpetya-ttx",
+ "draft": true,
+ "name": "NotPetya",
+ "blurb": "Draft exercise based on the documented incident “NotPetya” (CTID Attack Flow corpus). Analysis of 2017 malware outbreak.",
+ "adversary": {
+  "id": "G0034",
+  "tier": 2
+ },
+ "rounds": 8,
+ "maxScore": 250,
+ "injects": [
+  {
+   "id": "i1",
+   "round": 1,
+   "at": "T+00:00",
+   "kind": "ops",
+   "title": "Search Open Websites/Domains",
+   "text": "Attackers conducted reconnaissance by learning about EDRPOU and M.E.Doc, queried EDRPOU website, and changed their computer language sets to the… Attackers added malicious functionality to the files containing software updates for M.E.Doc to collect a list of all EDRPOUs associated with… NotPetya drops the ransomware DLL perfc.dat, writes a resource to C:\\Windows\\dllhost.dat, and drops its ransomware splash and warning files.",
+   "refs": [
+    "attack:T1593",
+    "attack:T1195.002",
+    "attack:T1036"
+   ],
+   "fx": []
+  },
+  {
+   "id": "i2",
+   "round": 2,
+   "at": "T+04:00",
+   "kind": "alert",
+   "title": "Security Software Discovery",
+   "text": "Malware starts subroutine and hashes every running process on the system and sets PROC_FLAG. It is looking for three hardcoded hashes: Kaspersky,… Malware attempts to determine privilege of its running process and sets the PRIV_FLAG: SeTcbPrivilege, SeDebugPrivilege, SeShutdownPrivilege. Operates as a modified version of Mimikatz and uses a named pipe to extract credentials from LSASS.",
+   "refs": [
+    "attack:T1518.001",
+    "attack:T1057",
+    "attack:T1003.001"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (Security Software Discovery). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "Active Directory Configuration: Implement robust Active Directory (AD) configurations using group policies to secure user accounts, control access, and minimize the attack surface.",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: Implement robust Active Directory (AD) configurations using group policies to secure user accounts, control access, and minimize the attack surface. This mitigation applies to 1 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M1015"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques.",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: User Training involves educating employees and contractors on recognizing, reporting, and preventing cyber threats that rely on human interaction, such as phishing, social engineering, and other manipulative techniques. It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M1017"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i3",
+   "round": 3,
+   "at": "T+08:00",
+   "kind": "ops",
+   "title": "Token Impersonation/Theft",
+   "text": "Duplicates another user's token and allows attacker to escalate privileges and impersonate another user to spread the malware. To move laterally, NotPetya tests for vulnerable SMBv1 condition (Eternal Blue/Romance exploit) and deploys an SMB backdoor. NotPetya will not encrypt the MFT and will simply overwrite the first 10 sectors of the physical disk with uninitialized data. It will still render…",
+   "refs": [
+    "attack:T1134.001",
+    "attack:T0866",
+    "attack:T1561.002"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (Token Impersonation/Theft). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "Vulnerability scanning is used to find potentially exploitable software vulnerabilities to remediate them.",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: Vulnerability scanning is used to find potentially exploitable software vulnerabilities to remediate them. This mitigation applies to 1 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M0916",
+       "nist-800-53:AC-2",
+       "nist-800-53:AC-3"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "Threat Intelligence Program: A threat intelligence program helps an organization generate their own threat intelligence information and track trends to inform defensive priorities to mitigate risk.",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: A threat intelligence program helps an organization generate their own threat intelligence information and track trends to inform defensive priorities to mitigate risk. It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M0919"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i4",
+   "round": 4,
+   "at": "T+12:00",
+   "kind": "alert",
+   "title": "Bootkit",
+   "text": "Malware reads and encodes MBR with a custom boot loader that will encrypt the MFT. To move laterally, the malware logs into any version of SMB with the stolen tokens or harvested credentials and does a UNC write to Admin$ to execute. Malware issues commands to gather list of known IP addresses and TCP endpoints and enumerate domain controllers.",
+   "refs": [
+    "attack:T1542.003",
+    "attack:T1021.002",
+    "attack:T1016"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (Bootkit). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts).",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). This mitigation applies to 2 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M1026",
+       "nist-800-53:AC-2",
+       "nist-800-53:AC-3"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "Limit Access to Resource Over Network: Restrict access to network resources, such as file shares, remote systems, and services, to only those users, accounts, or systems with a legitimate business requirement.",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: Restrict access to network resources, such as file shares, remote systems, and services, to only those users, accounts, or systems with a legitimate business requirement. It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M1035"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i5",
+   "round": 5,
+   "at": "T+16:00",
+   "kind": "ops",
+   "title": "Dynamic-link Library Injection",
+   "text": "To deploy NotPetya on the system, a staging DLL is injected into lsass.exe. NotPetya creates a scheduled task that triggers a reboot 60 min after execution by default. Malware executes either using PsExec or WMIC as rundll32.exe.",
+   "refs": [
+    "attack:T1055.001",
+    "attack:T1053.005",
+    "attack:T1218.011"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (Dynamic-link Library Injection). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts).",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: Privileged Account Management focuses on implementing policies, controls, and tools to securely manage privileged accounts (e.g., SYSTEM, root, or administrative accounts). This mitigation applies to 3 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M1026",
+       "nist-800-53:AC-6",
+       "nist-800-53:SC-18"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation.",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: User Account Management involves implementing and enforcing policies for the lifecycle of user accounts, including creation, modification, and deactivation. It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M1018"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i6",
+   "round": 6,
+   "at": "T+20:00",
+   "kind": "alert",
+   "title": "System Shutdown/Reboot",
+   "text": "System reboots, displays decoy message. The custom boot loader encrypts the MFT. NotPetya also encrypted files with specific extensions. The malware clears setup, system, security, application, and USN journal logs.",
+   "refs": [
+    "attack:T1529",
+    "attack:T1486",
+    "attack:T1070.001"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ],
+   "decision": {
+    "prompt": "Responders see this activity (System Shutdown/Reboot). What do they do?",
+    "choices": [
+     {
+      "id": "a",
+      "quality": "best",
+      "label": "Restrict File and Directory Permissions: Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files.",
+      "fx": [
+       {
+        "op": "reveal",
+        "n": 2
+       },
+       {
+        "op": "shieldAll",
+        "n": 1
+       }
+      ],
+      "lesson": "ATT&CK: Restricting file and directory permissions involves setting access controls at the file system level to limit which users, groups, or processes can read, write, or execute files. This mitigation applies to 1 behaviour(s) in this stage.",
+      "refs": [
+       "attack:M1022"
+      ]
+     },
+     {
+      "id": "b",
+      "quality": "ok",
+      "label": "Remote Data Storage focuses on moving critical data, such as security logs and sensitive files, to secure, off-host locations to minimize unauthorized access, tampering, or destruction by adversaries.",
+      "fx": [
+       {
+        "op": "intel",
+        "n": 1
+       }
+      ],
+      "lesson": "A partial fix: Remote Data Storage focuses on moving critical data, such as security logs and sensitive files, to secure, off-host locations to minimize unauthorized access, tampering, or destruction by adversaries. It helps, but misses the primary control for this behaviour.",
+      "refs": [
+       "attack:M1029"
+      ]
+     },
+     {
+      "id": "c",
+      "quality": "poor",
+      "label": "Treat it as noise and continue business as usual.",
+      "fx": [
+       {
+        "op": "plant"
+       },
+       {
+        "op": "resilience",
+        "n": -3
+       }
+      ],
+      "lesson": "Early-stage activity is usually the last cheap moment to intervene; waiting converts a contained event into an incident.",
+      "refs": [
+       "nist:800-61"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "i7",
+   "round": 7,
+   "at": "T+24:00",
+   "kind": "alert",
+   "title": "Data Destruction",
+   "text": "The data is not recoverable.",
+   "refs": [
+    "attack:T1485"
+   ],
+   "fx": [
+    {
+     "op": "intel",
+     "n": 1
+    }
+   ]
+  }
+ ],
+ "objectives": [
+  {
+   "id": "o1",
+   "kind": "detectBy",
+   "round": 4,
+   "text": "Detect the intrusion by round 4",
+   "points": 30
+  },
+  {
+   "id": "o2",
+   "kind": "keepJewel",
+   "text": "Keep the crown jewels intact",
+   "points": 40
+  },
+  {
+   "id": "o3",
+   "kind": "decisions",
+   "text": "Make the best call on at least half of the decisions",
+   "points": 30
+  }
+ ],
+ "sources": [
+  {
+   "n": "CrowdStrike",
+   "u": "https://www.crowdstrike.com/blog/petrwrap-ransomware-technical-analysis-triple-threat-file-encryption-mft-encryption-credential-theft/"
+  },
+  {
+   "n": "CrowdStrike",
+   "u": "https://www.crowdstrike.com/blog/petrwrap-technical-analysis-part-2-further-findings-and-potential-for-mbr-recovery/"
+  },
+  {
+   "n": "LogRhythm",
+   "u": "https://gallery.logrhythm.com/threat-intelligence-reports/notpetya-technical-analysis-logrhythm-labs-threat-intelligence-report.pdf"
+  },
+  {
+   "n": "Department of Justice",
+   "u": "https://www.justice.gov/opa/press-release/file/1328521/download"
+  }
+ ],
+ "goal": "destroy"
+}

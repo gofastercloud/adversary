@@ -1,0 +1,17 @@
+# Local AWS-like backing services for ADVERSARY. The game itself needs none of this to run:
+#   npm run dev            -> static SPA + in-process API with an in-memory store (no Docker)
+# Use this file when you want the real DynamoDB code path or the deployed topology:
+#   docker compose up -d dynamodb && npm run local:table && npm run dev:ddb
+#   docker compose --profile floci up -d floci   (full emulator: Lambda + API Gateway + DynamoDB on :4566)
+# NOTE: the DynamoDB code path is tested in CI against Dynalite (test/dynamo.test.mjs). These containers were not run in the
+# authoring sandbox (no Docker daemon there), so treat the compose wiring as unverified until you run it once.
+services:
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb", "-inMemory"]
+    ports: ["8000:8000"]
+  floci:
+    profiles: ["floci"]
+    image: floci/floci:latest
+    ports: ["4566:4566"]
+    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]

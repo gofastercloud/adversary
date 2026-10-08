@@ -1,0 +1,2763 @@
+{
+ "schema": 2,
+ "achievements": [
+  {
+   "id": "ach.first-win",
+   "cat": "Combat",
+   "tier": "bronze",
+   "icon": "shield-check",
+   "name": "First Containment",
+   "desc": "Win your first battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true
+    },
+    "gte": 1
+   },
+   "order": 0
+  },
+  {
+   "id": "ach.first-evict",
+   "cat": "Combat",
+   "tier": "bronze",
+   "icon": "door-closed",
+   "name": "Eviction Notice",
+   "desc": "Remove your first foothold.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "evict",
+    "gte": 1
+   },
+   "order": 1,
+   "unlocks": [
+    {
+     "doctrine": "hunter"
+    }
+   ],
+   "reward": "Unlocks the Threat Hunter doctrine."
+  },
+  {
+   "id": "ach.quick-draw",
+   "cat": "Combat",
+   "tier": "bronze",
+   "icon": "zap",
+   "name": "Quick Draw",
+   "desc": "Evict a foothold in the same round you revealed it.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "evict",
+    "where": {
+     "quick": true
+    },
+    "gte": 1
+   },
+   "order": 2,
+   "lesson": "Mean time to respond starts when you detect. Rehearse the first move.",
+   "refs": [
+    "nist-csf:RS.MA-01"
+   ]
+  },
+  {
+   "id": "ach.contain-5",
+   "cat": "Combat",
+   "tier": "bronze",
+   "icon": "fence",
+   "name": "Containment Specialist",
+   "desc": "Isolate assets 5 times.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "isolate",
+    "where": {},
+    "gte": 5
+   },
+   "order": 3,
+   "unlocks": [
+    {
+     "doctrine": "responder"
+    }
+   ],
+   "reward": "Unlocks the Incident Commander doctrine."
+  },
+  {
+   "id": "ach.evict-25",
+   "cat": "Combat",
+   "tier": "silver",
+   "icon": "door-open",
+   "name": "Persistent Housekeeping",
+   "desc": "Remove 25 footholds.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "evict",
+    "where": {},
+    "gte": 25
+   },
+   "order": 4
+  },
+  {
+   "id": "ach.evict-100",
+   "cat": "Combat",
+   "tier": "gold",
+   "icon": "skull",
+   "name": "Threat Hunter",
+   "desc": "Remove 100 footholds.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "evict",
+    "where": {},
+    "gte": 100
+   },
+   "order": 5,
+   "lesson": "Dwell time is the metric adversaries fear most.",
+   "refs": [
+    "nist-csf:DE.AE-02"
+   ]
+  },
+  {
+   "id": "ach.block-25",
+   "cat": "Combat",
+   "tier": "bronze",
+   "icon": "shield",
+   "name": "Wall of Wards",
+   "desc": "Block 25 adversary plays.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "blocked",
+    "where": {},
+    "gte": 25
+   },
+   "order": 6
+  },
+  {
+   "id": "ach.block-150",
+   "cat": "Combat",
+   "tier": "silver",
+   "icon": "shield-half",
+   "name": "Bastion",
+   "desc": "Block 150 adversary plays.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "blocked",
+    "where": {},
+    "gte": 150
+   },
+   "order": 7
+  },
+  {
+   "id": "ach.block-600",
+   "cat": "Combat",
+   "tier": "gold",
+   "icon": "castle",
+   "name": "Fortress",
+   "desc": "Block 600 adversary plays.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "blocked",
+    "where": {},
+    "gte": 600
+   },
+   "order": 8
+  },
+  {
+   "id": "ach.flawless",
+   "cat": "Combat",
+   "tier": "silver",
+   "icon": "sparkles",
+   "name": "Flawless",
+   "desc": "Win a battle without losing any Resilience.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "resLost": 0
+    },
+    "gte": 1
+   },
+   "order": 9
+  },
+  {
+   "id": "ach.untouchable",
+   "cat": "Combat",
+   "tier": "gold",
+   "icon": "gem",
+   "name": "Untouchable",
+   "desc": "Win 10 battles without losing any Resilience.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "resLost": 0
+    },
+    "gte": 10
+   },
+   "order": 10
+  },
+  {
+   "id": "ach.early-exit",
+   "cat": "Combat",
+   "tier": "silver",
+   "icon": "timer",
+   "name": "Early Exit",
+   "desc": "Evict an adversary before round 5.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "how": "evicted",
+     "rounds": {
+      "lt": 5
+     }
+    },
+    "gte": 1
+   },
+   "order": 11,
+   "lesson": "Reducing dwell time reduces blast radius.",
+   "refs": [
+    "nist-csf:DE.CM-01"
+   ]
+  },
+  {
+   "id": "ach.last-stand",
+   "cat": "Combat",
+   "tier": "silver",
+   "icon": "heart-pulse",
+   "name": "Last Stand",
+   "desc": "Win a battle with 5 or fewer Resilience left.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "resEnd": {
+      "lte": 5
+     }
+    },
+    "gte": 1
+   },
+   "order": 12
+  },
+  {
+   "id": "ach.seen-it-all",
+   "cat": "Combat",
+   "tier": "silver",
+   "icon": "eye",
+   "name": "Full Visibility",
+   "desc": "Reveal 4 or more footholds in a single battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "reveals": {
+      "gte": 4
+     }
+    },
+    "gte": 1
+   },
+   "order": 13,
+   "lesson": "You cannot respond to what you cannot see.",
+   "refs": [
+    "nist-csf:DE.CM-01"
+   ]
+  },
+  {
+   "id": "ach.sandbagged",
+   "cat": "Combat",
+   "tier": "bronze",
+   "icon": "bomb",
+   "name": "Collateral Damage",
+   "desc": "Lose an asset in battle (and live to tell the tale).",
+   "rule": {
+    "scope": "lifetime",
+    "event": "asset_down",
+    "gte": 1
+   },
+   "order": 14
+  },
+  {
+   "id": "ach.data-guard",
+   "cat": "Combat",
+   "tier": "silver",
+   "icon": "database",
+   "name": "Crown Jewels Intact",
+   "desc": "Win 10 battles without a crown-jewel asset going down.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "jewelSafe": true
+    },
+    "gte": 10
+   },
+   "order": 15
+  },
+  {
+   "id": "ach.first-deploy",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "package-check",
+   "name": "Defence in Depth, Layer One",
+   "desc": "Deploy your first control.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "deploy",
+    "gte": 1
+   },
+   "order": 16
+  },
+  {
+   "id": "ach.fido-wins",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "fingerprint",
+   "name": "Phishing-Resistant",
+   "desc": "Have FIDO2 passkeys negate MFA fatigue (T1621).",
+   "rule": {
+    "scope": "lifetime",
+    "event": "blocked",
+    "where": {
+     "why": {
+      "has": {
+       "kind": "counter",
+       "tech": "T1621"
+      }
+     }
+    },
+    "gte": 1
+   },
+   "order": 17,
+   "lesson": "Plain push MFA fails to MFA-request generation; number matching and FIDO2 do not.",
+   "refs": [
+    "attack:T1621",
+    "attack:M1032"
+   ]
+  },
+  {
+   "id": "ach.allowlist-ace",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "package-check",
+   "name": "Allowlist Ace",
+   "desc": "Block user execution or scripting with application allowlisting.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "blocked",
+    "where": {
+     "why": {
+      "has": {
+       "kind": "counter",
+       "src": "a.allowlist"
+      }
+     }
+    },
+    "gte": 1
+   },
+   "order": 18,
+   "lesson": "Application control is the Essential Eight’s most effective mitigation against commodity malware.",
+   "refs": [
+    "e8:app-control"
+   ]
+  },
+  {
+   "id": "ach.credguard",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "lock-keyhole",
+   "name": "No Dumping",
+   "desc": "Stop OS credential dumping with Credential Guard.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "blocked",
+    "where": {
+     "why": {
+      "has": {
+       "kind": "counter",
+       "tech": "T1003"
+      }
+     }
+    },
+    "gte": 1
+   },
+   "order": 19,
+   "refs": [
+    "attack:T1003",
+    "attack:M1043"
+   ]
+  },
+  {
+   "id": "ach.vault-wins",
+   "cat": "Controls",
+   "tier": "gold",
+   "icon": "database-backup",
+   "name": "Ransomware, Meet Offline Backups",
+   "desc": "Have an air-gapped vault counter recovery inhibition or ransomware.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "blocked",
+    "where": {
+     "why": {
+      "has": {
+       "kind": "counter",
+       "src": "a.airgap"
+      }
+     }
+    },
+    "gte": 1
+   },
+   "order": 20,
+   "lesson": "Ransomware operators delete reachable backups first (T1490). Offline copies sit outside the blast radius.",
+   "refs": [
+    "attack:T1490",
+    "e8:backups"
+   ]
+  },
+  {
+   "id": "ach.full-stack",
+   "cat": "Controls",
+   "tier": "gold",
+   "icon": "layers",
+   "name": "Full Stack",
+   "desc": "Play controls of all six STRIDE properties in one battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "propsPlayed": {
+      "keys": 6
+     }
+    },
+    "gte": 1
+   },
+   "order": 21,
+   "lesson": "STRIDE is a checklist: spoofing, tampering, repudiation, information disclosure, denial of service, elevation of privilege.",
+   "refs": [
+    "stride:overview"
+   ]
+  },
+  {
+   "id": "ach.all-functions",
+   "cat": "Controls",
+   "tier": "gold",
+   "icon": "route",
+   "name": "Full Lifecycle",
+   "desc": "Play cards of all six CSF functions in one battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "fnsPlayed": {
+      "keys": 6
+     }
+    },
+    "gte": 1
+   },
+   "order": 22,
+   "refs": [
+    "nist-csf:overview"
+   ]
+  },
+  {
+   "id": "ach.augmented",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "wand-sparkles",
+   "name": "Augmented Reality",
+   "desc": "Attach 5 augments to controls.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "augment",
+    "where": {},
+    "gte": 5
+   },
+   "order": 23
+  },
+  {
+   "id": "ach.augmented-more",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "sparkles",
+   "name": "Hardened",
+   "desc": "Attach 40 augments to controls.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "augment",
+    "where": {},
+    "gte": 40
+   },
+   "order": 24
+  },
+  {
+   "id": "ach.pqc-ready",
+   "cat": "Controls",
+   "tier": "gold",
+   "icon": "atom",
+   "name": "Quantum Ready",
+   "desc": "Protect an asset with post-quantum hybrid crypto when the adversary tries to steal its data.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "exfil_pqc",
+    "gte": 1
+   },
+   "order": 25,
+   "hidden": true,
+   "lesson": "Harvest-now-decrypt-later makes today’s encrypted theft tomorrow’s plaintext. NIST has standardised ML-KEM (FIPS 203).",
+   "refs": [
+    "nist:fips-203",
+    "nist:ir-8547"
+   ]
+  },
+  {
+   "id": "ach.policy-wonk",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "scroll-text",
+   "name": "Policy Wonk",
+   "desc": "Enact 10 policies.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "policy",
+    "where": {},
+    "gte": 10
+   },
+   "order": 26,
+   "unlocks": [
+    {
+     "doctrine": "governor"
+    }
+   ],
+   "reward": "Unlocks the GRC Lead doctrine."
+  },
+  {
+   "id": "ach.restore-hero",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "database-backup",
+   "name": "Restore Hero",
+   "desc": "Restore 30 integrity across your assets.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "heal",
+    "where": {},
+    "gte": 30,
+    "sum": "n"
+   },
+   "order": 27,
+   "unlocks": [
+    {
+     "doctrine": "phoenix"
+    }
+   ],
+   "reward": "Unlocks the Resilience Engineer doctrine."
+  },
+  {
+   "id": "ach.mature",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "trending-up",
+   "name": "Mature Programme",
+   "desc": "Raise 10 cards to a higher maturity level.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "upgraded",
+    "where": {},
+    "gte": 10
+   },
+   "order": 28
+  },
+  {
+   "id": "ach.ml3-army",
+   "cat": "Controls",
+   "tier": "gold",
+   "icon": "award",
+   "name": "Maturity Level 3",
+   "desc": "Finish a run with 5 or more ML3 cards.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "deck.ml3": {
+      "gte": 5
+     }
+    },
+    "gte": 1
+   },
+   "order": 29
+  },
+  {
+   "id": "ach.minimalist",
+   "cat": "Controls",
+   "tier": "gold",
+   "icon": "eraser",
+   "name": "Minimum Viable Security",
+   "desc": "Win a run with 14 or fewer cards.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "deck.size": {
+      "lte": 14
+     }
+    },
+    "gte": 1
+   },
+   "order": 30,
+   "lesson": "Fewer, better controls: every unnecessary tool is attack surface.",
+   "refs": [
+    "nist-800-53:CM-7"
+   ]
+  },
+  {
+   "id": "ach.specialist",
+   "cat": "Controls",
+   "tier": "gold",
+   "icon": "crosshair",
+   "name": "Specialist",
+   "desc": "Win a run where 60% or more of your deck shares one CSF function.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "deck.topFnShare": {
+      "gte": 0.6
+     }
+    },
+    "gte": 1
+   },
+   "order": 31
+  },
+  {
+   "id": "ach.debt-collector",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "trash-2",
+   "name": "Debt Collector",
+   "desc": "Decommission 5 cards.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "card_removed",
+    "where": {},
+    "gte": 5
+   },
+   "order": 32
+  },
+  {
+   "id": "ach.first-workshop",
+   "cat": "Threat Modelling",
+   "tier": "bronze",
+   "icon": "workflow",
+   "name": "Whiteboard Warrior",
+   "desc": "Complete a threat-modelling workshop.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "wb_done",
+    "gte": 1
+   },
+   "order": 33
+  },
+  {
+   "id": "ach.stride-10",
+   "cat": "Threat Modelling",
+   "tier": "silver",
+   "icon": "brain",
+   "name": "STRIDE Apprentice",
+   "desc": "Answer 10 threat-modelling scenarios correctly.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "wb_answer",
+    "where": {
+     "ok": true
+    },
+    "gte": 10
+   },
+   "order": 34
+  },
+  {
+   "id": "ach.stride-50",
+   "cat": "Threat Modelling",
+   "tier": "gold",
+   "icon": "microscope",
+   "name": "STRIDE Master",
+   "desc": "Answer 50 threat-modelling scenarios correctly.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "wb_answer",
+    "where": {
+     "ok": true
+    },
+    "gte": 50
+   },
+   "order": 35
+  },
+  {
+   "id": "ach.perfect-wb",
+   "cat": "Threat Modelling",
+   "tier": "silver",
+   "icon": "badge-check",
+   "name": "Perfect Workshop",
+   "desc": "Get every question right in a workshop.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "wb_perfect",
+    "gte": 1
+   },
+   "order": 36
+  },
+  {
+   "id": "ach.perfect-wb-5",
+   "cat": "Threat Modelling",
+   "tier": "gold",
+   "icon": "crown",
+   "name": "Facilitator",
+   "desc": "Get 5 perfect workshops.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "wb_perfect",
+    "where": {},
+    "gte": 5
+   },
+   "order": 37
+  },
+  {
+   "id": "ach.stride-s",
+   "cat": "Threat Modelling",
+   "tier": "bronze",
+   "icon": "fingerprint",
+   "name": "Spoofing Spotter",
+   "desc": "Correctly identify 3 spoofing threats (Authentication).",
+   "rule": {
+    "scope": "lifetime",
+    "event": "wb_answer",
+    "where": {
+     "ok": true,
+     "letter": "S"
+    },
+    "gte": 3
+   },
+   "order": 38
+  },
+  {
+   "id": "ach.stride-t",
+   "cat": "Threat Modelling",
+   "tier": "bronze",
+   "icon": "wrench",
+   "name": "Tampering Spotter",
+   "desc": "Correctly identify 3 tampering threats (Integrity).",
+   "rule": {
+    "scope": "lifetime",
+    "event": "wb_answer",
+    "where": {
+     "ok": true,
+     "letter": "T"
+    },
+    "gte": 3
+   },
+   "order": 39
+  },
+  {
+   "id": "ach.stride-r",
+   "cat": "Threat Modelling",
+   "tier": "bronze",
+   "icon": "scroll-text",
+   "name": "Repudiation Spotter",
+   "desc": "Correctly identify 3 repudiation threats (Non-repudiation).",
+   "rule": {
+    "scope": "lifetime",
+    "event": "wb_answer",
+    "where": {
+     "ok": true,
+     "letter": "R"
+    },
+    "gte": 3
+   },
+   "order": 40
+  },
+  {
+   "id": "ach.stride-i",
+   "cat": "Threat Modelling",
+   "tier": "bronze",
+   "icon": "eye-off",
+   "name": "Information Disclosure Spotter",
+   "desc": "Correctly identify 3 information disclosure threats (Confidentiality).",
+   "rule": {
+    "scope": "lifetime",
+    "event": "wb_answer",
+    "where": {
+     "ok": true,
+     "letter": "I"
+    },
+    "gte": 3
+   },
+   "order": 41
+  },
+  {
+   "id": "ach.stride-d",
+   "cat": "Threat Modelling",
+   "tier": "bronze",
+   "icon": "zap",
+   "name": "Denial of Service Spotter",
+   "desc": "Correctly identify 3 denial of service threats (Availability).",
+   "rule": {
+    "scope": "lifetime",
+    "event": "wb_answer",
+    "where": {
+     "ok": true,
+     "letter": "D"
+    },
+    "gte": 3
+   },
+   "order": 42
+  },
+  {
+   "id": "ach.stride-e",
+   "cat": "Threat Modelling",
+   "tier": "bronze",
+   "icon": "key-round",
+   "name": "Elevation of Privilege Spotter",
+   "desc": "Correctly identify 3 elevation of privilege threats (Authorisation).",
+   "rule": {
+    "scope": "lifetime",
+    "event": "wb_answer",
+    "where": {
+     "ok": true,
+     "letter": "E"
+    },
+    "gte": 3
+   },
+   "order": 43
+  },
+  {
+   "id": "ach.stride-complete",
+   "cat": "Threat Modelling",
+   "tier": "gold",
+   "icon": "dices",
+   "name": "Six Out of Six",
+   "desc": "Correctly identify every STRIDE category at least once.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "wb_answer",
+    "where": {
+     "ok": true
+    },
+    "gte": 1,
+    "distinct": "letter",
+    "distinctGte": 6
+   },
+   "order": 44,
+   "hidden": true
+  },
+  {
+   "id": "ach.slay-g1017",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "ghost",
+   "name": "Volt Typhoon Down",
+   "desc": "Defeat Volt Typhoon (G1017) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G1017"
+    },
+    "gte": 1
+   },
+   "order": 45,
+   "adv": "G1017",
+   "lesson": "PRC state-sponsored actor that lives off the land inside critical-infrastructure networks, often for years, and has been assessed as pre-positioning for disruptive action against OT.",
+   "refs": [
+    "attack:G1017"
+   ]
+  },
+  {
+   "id": "ach.slay-g0034",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "bomb",
+   "name": "Sandworm Team Down",
+   "desc": "Defeat Sandworm Team (G0034) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0034"
+    },
+    "gte": 1
+   },
+   "order": 46,
+   "adv": "G0034",
+   "lesson": "GRU-linked actor responsible for the Ukrainian grid attacks, NotPetya and numerous destructive operations; combines supply-chain access, valid accounts and wipers.",
+   "refs": [
+    "attack:G0034"
+   ]
+  },
+  {
+   "id": "ach.slay-g0016",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "eye",
+   "name": "APT29 Down",
+   "desc": "Defeat APT29 (G0016) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0016"
+    },
+    "gte": 1
+   },
+   "order": 47,
+   "adv": "G0016",
+   "lesson": "SVR-linked actor known for SolarWinds, extensive cloud and identity abuse, and exceptional operational security.",
+   "refs": [
+    "attack:G0016"
+   ]
+  },
+  {
+   "id": "ach.slay-g0032",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "coins",
+   "name": "Lazarus Group Down",
+   "desc": "Defeat Lazarus Group (G0032) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0032"
+    },
+    "gte": 1
+   },
+   "order": 48,
+   "adv": "G0032",
+   "lesson": "DPRK-linked group behind destructive attacks, large-scale cryptocurrency theft and long-running social-engineering campaigns such as Operation Dream Job.",
+   "refs": [
+    "attack:G0032"
+   ]
+  },
+  {
+   "id": "ach.slay-g0096",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "package",
+   "name": "APT41 Down",
+   "desc": "Defeat APT41 (G0096) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0096"
+    },
+    "gte": 1
+   },
+   "order": 49,
+   "adv": "G0096",
+   "lesson": "Chinese state-sponsored actor that also conducts financially motivated operations; known for supply-chain compromise and rapid exploitation of internet-facing software.",
+   "refs": [
+    "attack:G0096"
+   ]
+  },
+  {
+   "id": "ach.slay-g0007",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "mail-warning",
+   "name": "APT28 Down",
+   "desc": "Defeat APT28 (G0007) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0007"
+    },
+    "gte": 1
+   },
+   "order": 50,
+   "adv": "G0007",
+   "lesson": "GRU-linked actor known for credential harvesting, password spraying and exploiting edge devices.",
+   "refs": [
+    "attack:G0007"
+   ]
+  },
+  {
+   "id": "ach.slay-g0045",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "handshake",
+   "name": "menuPass Down",
+   "desc": "Defeat menuPass (G0045) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0045"
+    },
+    "gte": 1
+   },
+   "order": 51,
+   "adv": "G0045",
+   "lesson": "Chinese state-linked actor known for “Operation Cloud Hopper”: compromising managed service providers to reach their customers’ networks.",
+   "refs": [
+    "attack:G0045"
+   ]
+  },
+  {
+   "id": "ach.slay-g0129",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "link",
+   "name": "Mustang Panda Down",
+   "desc": "Defeat Mustang Panda (G0129) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0129"
+    },
+    "gte": 1
+   },
+   "order": 52,
+   "adv": "G0129",
+   "lesson": "PRC-linked actor with a large toolset and broad targeting, frequently using phishing and removable-media propagation.",
+   "refs": [
+    "attack:G0129"
+   ]
+  },
+  {
+   "id": "ach.slay-g0046",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "credit-card",
+   "name": "FIN7 Down",
+   "desc": "Defeat FIN7 (G0046) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0046"
+    },
+    "gte": 1
+   },
+   "order": 53,
+   "adv": "G0046",
+   "lesson": "Financially motivated group known for phishing, point-of-sale malware and later ransomware affiliations.",
+   "refs": [
+    "attack:G0046"
+   ]
+  },
+  {
+   "id": "ach.slay-g0102",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "lock",
+   "name": "Wizard Spider Down",
+   "desc": "Defeat Wizard Spider (G0102) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0102"
+    },
+    "gte": 1
+   },
+   "order": 54,
+   "adv": "G0102",
+   "lesson": "Cybercriminal group behind TrickBot, Ryuk and Conti: human-operated ransomware against large organisations.",
+   "refs": [
+    "attack:G0102"
+   ]
+  },
+  {
+   "id": "ach.slay-g1015",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "phone",
+   "name": "Scattered Spider Down",
+   "desc": "Defeat Scattered Spider (G1015) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G1015"
+    },
+    "gte": 1
+   },
+   "order": 55,
+   "adv": "G1015",
+   "lesson": "Native-English-speaking group that social-engineers help desks, abuses MFA fatigue and SIM swapping, then pivots through cloud and SaaS.",
+   "refs": [
+    "attack:G1015"
+   ]
+  },
+  {
+   "id": "ach.slay-g0035",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "factory",
+   "name": "Dragonfly Down",
+   "desc": "Defeat Dragonfly (G0035) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0035"
+    },
+    "gte": 1
+   },
+   "order": 56,
+   "adv": "G0035",
+   "lesson": "Long-running actor targeting energy and industrial organisations, using trusted-relationship and watering-hole access.",
+   "refs": [
+    "attack:G0035"
+   ]
+  },
+  {
+   "id": "ach.slay-g0117",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "unplug",
+   "name": "Fox Kitten Down",
+   "desc": "Defeat Fox Kitten (G0117) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0117"
+    },
+    "gte": 1
+   },
+   "order": 57,
+   "adv": "G0117",
+   "lesson": "Iran-linked actor that exploits VPN and other edge appliances to gain and sell access.",
+   "refs": [
+    "attack:G0117"
+   ]
+  },
+  {
+   "id": "ach.slay-g0082",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "landmark",
+   "name": "APT38 Down",
+   "desc": "Defeat APT38 (G0082) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0082"
+    },
+    "gte": 1
+   },
+   "order": 58,
+   "adv": "G0082",
+   "lesson": "DPRK-linked group targeting banks and SWIFT-connected payment infrastructure.",
+   "refs": [
+    "attack:G0082"
+   ]
+  },
+  {
+   "id": "ach.slay-g1057",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "cloud-off",
+   "name": "ShinyHunters Down",
+   "desc": "Defeat ShinyHunters (G1057) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G1057"
+    },
+    "gte": 1
+   },
+   "order": 59,
+   "adv": "G1057",
+   "lesson": "Data-extortion crew that abuses stolen credentials and OAuth/API access to bulk-export SaaS data.",
+   "refs": [
+    "attack:G1057"
+   ]
+  },
+  {
+   "id": "ach.slay-g0125",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "mail",
+   "name": "HAFNIUM Down",
+   "desc": "Defeat HAFNIUM (G0125) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0125"
+    },
+    "gte": 1
+   },
+   "order": 60,
+   "adv": "G0125",
+   "lesson": "State-sponsored actor that exploited zero-days in on-premises Exchange servers at scale.",
+   "refs": [
+    "attack:G0125"
+   ]
+  },
+  {
+   "id": "ach.slay-g0114",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "cpu",
+   "name": "Chimera Down",
+   "desc": "Defeat Chimera (G0114) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0114"
+    },
+    "gte": 1
+   },
+   "order": 61,
+   "adv": "G0114",
+   "lesson": "Actor known for patient, targeted intrusions against technology firms using stolen credentials and Cobalt Strike.",
+   "refs": [
+    "attack:G0114"
+   ]
+  },
+  {
+   "id": "ach.slay-g0049",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "globe",
+   "name": "OilRig Down",
+   "desc": "Defeat OilRig (G0049) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0049"
+    },
+    "gte": 1
+   },
+   "order": 62,
+   "adv": "G0049",
+   "lesson": "Iran-linked actor with a broad toolset and heavy use of spearphishing and credential theft.",
+   "refs": [
+    "attack:G0049"
+   ]
+  },
+  {
+   "id": "ach.slay-g0088",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "radiation",
+   "name": "TEMP.Veles Down",
+   "desc": "Defeat TEMP.Veles (G0088) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0088"
+    },
+    "gte": 1
+   },
+   "order": 63,
+   "adv": "G0088",
+   "lesson": "Actor associated with the Triton/Trisis malware targeting safety instrumented systems at an industrial facility.",
+   "refs": [
+    "attack:G0088"
+   ]
+  },
+  {
+   "id": "ach.slay-g0139",
+   "cat": "Adversaries",
+   "tier": "bronze",
+   "icon": "pickaxe",
+   "name": "TeamTNT Down",
+   "desc": "Defeat TeamTNT (G0139) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0139"
+    },
+    "gte": 1
+   },
+   "order": 64,
+   "adv": "G0139",
+   "lesson": "Cloud-focused group that exploits exposed Docker/Kubernetes and steals cloud credentials to run cryptominers.",
+   "refs": [
+    "attack:G0139"
+   ]
+  },
+  {
+   "id": "ach.slay-g0106",
+   "cat": "Adversaries",
+   "tier": "bronze",
+   "icon": "pickaxe",
+   "name": "Rocke Down",
+   "desc": "Defeat Rocke (G0106) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0106"
+    },
+    "gte": 1
+   },
+   "order": 65,
+   "adv": "G0106",
+   "lesson": "Cryptojacking group that exploits unpatched public-facing services and persists with cron jobs.",
+   "refs": [
+    "attack:G0106"
+   ]
+  },
+  {
+   "id": "ach.slay-g0092",
+   "cat": "Adversaries",
+   "tier": "bronze",
+   "icon": "mail-warning",
+   "name": "TA505 Down",
+   "desc": "Defeat TA505 (G0092) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0092"
+    },
+    "gte": 1
+   },
+   "order": 66,
+   "adv": "G0092",
+   "lesson": "Financially motivated actor known for large-scale phishing campaigns and distribution of banking trojans and ransomware.",
+   "refs": [
+    "attack:G0092"
+   ]
+  },
+  {
+   "id": "ach.slay-g0037",
+   "cat": "Adversaries",
+   "tier": "bronze",
+   "icon": "credit-card",
+   "name": "FIN6 Down",
+   "desc": "Defeat FIN6 (G0037) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0037"
+    },
+    "gte": 1
+   },
+   "order": 67,
+   "adv": "G0037",
+   "lesson": "Financially motivated actor that compromises point-of-sale systems to steal card data.",
+   "refs": [
+    "attack:G0037"
+   ]
+  },
+  {
+   "id": "ach.slay-g0091",
+   "cat": "Adversaries",
+   "tier": "bronze",
+   "icon": "landmark",
+   "name": "Silence Down",
+   "desc": "Defeat Silence (G0091) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0091"
+    },
+    "gte": 1
+   },
+   "order": 68,
+   "adv": "G0091",
+   "lesson": "Financially motivated group targeting banks in Eastern Europe and beyond.",
+   "refs": [
+    "attack:G0091"
+   ]
+  },
+  {
+   "id": "ach.slay-g0080",
+   "cat": "Adversaries",
+   "tier": "bronze",
+   "icon": "banknote",
+   "name": "Cobalt Group Down",
+   "desc": "Defeat Cobalt Group (G0080) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G0080"
+    },
+    "gte": 1
+   },
+   "order": 69,
+   "adv": "G0080",
+   "lesson": "Financially motivated group known for ATM jackpotting and bank intrusions using Cobalt Strike.",
+   "refs": [
+    "attack:G0080"
+   ]
+  },
+  {
+   "id": "ach.slay-g1004",
+   "cat": "Adversaries",
+   "tier": "bronze",
+   "icon": "users",
+   "name": "LAPSUS$ Down",
+   "desc": "Defeat LAPSUS$ (G1004) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G1004"
+    },
+    "gte": 1
+   },
+   "order": 70,
+   "adv": "G1004",
+   "lesson": "Extortion group known for social engineering, SIM swapping and recruiting insiders to obtain access.",
+   "refs": [
+    "attack:G1004"
+   ]
+  },
+  {
+   "id": "ach.slay-g1051",
+   "cat": "Adversaries",
+   "tier": "bronze",
+   "icon": "lock",
+   "name": "Medusa Group Down",
+   "desc": "Defeat Medusa Group (G1051) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G1051"
+    },
+    "gte": 1
+   },
+   "order": 71,
+   "adv": "G1051",
+   "lesson": "Ransomware operation with a data-leak site and an affiliate model.",
+   "refs": [
+    "attack:G1051"
+   ]
+  },
+  {
+   "id": "ach.slay-g1043",
+   "cat": "Adversaries",
+   "tier": "bronze",
+   "icon": "lock",
+   "name": "BlackByte Down",
+   "desc": "Defeat BlackByte (G1043) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G1043"
+    },
+    "gte": 1
+   },
+   "order": 72,
+   "adv": "G1043",
+   "lesson": "Ransomware group that exploits public-facing services and abuses legitimate tooling.",
+   "refs": [
+    "attack:G1043"
+   ]
+  },
+  {
+   "id": "ach.slay-g1032",
+   "cat": "Adversaries",
+   "tier": "bronze",
+   "icon": "lock",
+   "name": "INC Ransom Down",
+   "desc": "Defeat INC Ransom (G1032) in battle.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G1032"
+    },
+    "gte": 1
+   },
+   "order": 73,
+   "adv": "G1032",
+   "lesson": "Ransomware operation using valid accounts and legitimate remote tools.",
+   "refs": [
+    "attack:G1032"
+   ]
+  },
+  {
+   "id": "ach.hall-5",
+   "cat": "Adversaries",
+   "tier": "bronze",
+   "icon": "trophy",
+   "name": "Rogues’ Gallery",
+   "desc": "Defeat 5 different adversaries.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true
+    },
+    "gte": 1,
+    "distinct": "adv",
+    "distinctGte": 5
+   },
+   "order": 74
+  },
+  {
+   "id": "ach.hall-12",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "trophy",
+   "name": "Hall of Adversaries",
+   "desc": "Defeat 12 different adversaries.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true
+    },
+    "gte": 1,
+    "distinct": "adv",
+    "distinctGte": 12
+   },
+   "order": 75
+  },
+  {
+   "id": "ach.hall-24",
+   "cat": "Adversaries",
+   "tier": "platinum",
+   "icon": "trophy",
+   "name": "Know Your Enemy",
+   "desc": "Defeat 24 different adversaries.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true
+    },
+    "gte": 1,
+    "distinct": "adv",
+    "distinctGte": 24
+   },
+   "order": 76
+  },
+  {
+   "id": "ach.read-dossier",
+   "cat": "Adversaries",
+   "tier": "bronze",
+   "icon": "book-open",
+   "name": "Read the Dossier",
+   "desc": "Open an adversary dossier and follow a source link.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "dossier_view",
+    "gte": 1
+   },
+   "order": 77
+  },
+  {
+   "id": "ach.dossier-10",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "scroll-text",
+   "name": "Analyst Reading List",
+   "desc": "Open 10 different dossiers.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "dossier_view",
+    "gte": 1,
+    "distinct": "adv",
+    "distinctGte": 10
+   },
+   "order": 78
+  },
+  {
+   "id": "ach.typhoon-warning",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "ghost",
+   "name": "Typhoon Warning",
+   "desc": "Defeat Volt Typhoon without losing a single crown-jewel asset.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "adv": "G1017",
+     "jewelSafe": true
+    },
+    "gte": 1
+   },
+   "order": 79,
+   "lesson": "Volt Typhoon lives off the land: hunting for valid-account abuse and LOLBins beats looking for malware.",
+   "refs": [
+    "attack:G1017"
+   ]
+  },
+  {
+   "id": "ach.boss-1",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "swords",
+   "name": "Boss Fight",
+   "desc": "Defeat an apex adversary.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "type": "boss"
+    },
+    "gte": 1
+   },
+   "order": 80
+  },
+  {
+   "id": "ach.boss-10",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "swords",
+   "name": "Boss Hunter",
+   "desc": "Defeat 10 apex adversaries.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "type": "boss"
+    },
+    "gte": 10
+   },
+   "order": 81
+  },
+  {
+   "id": "ach.elite-10",
+   "cat": "Adversaries",
+   "tier": "silver",
+   "icon": "target",
+   "name": "Elite Hunter",
+   "desc": "Defeat 10 intrusion sets.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "type": "elite"
+    },
+    "gte": 10
+   },
+   "order": 82
+  },
+  {
+   "id": "ach.first-ttx",
+   "cat": "Tabletop",
+   "tier": "bronze",
+   "icon": "clipboard-check",
+   "name": "Tabletop Participant",
+   "desc": "Complete a tabletop exercise.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "ttx_complete",
+    "gte": 1
+   },
+   "order": 83
+  },
+  {
+   "id": "ach.ttx-perfect",
+   "cat": "Tabletop",
+   "tier": "gold",
+   "icon": "trophy",
+   "name": "Exercise Director",
+   "desc": "Meet every objective in a tabletop exercise.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "ttx_complete",
+    "where": {
+     "objectivesMet": {
+      "gte": 1
+     },
+     "perfect": true
+    },
+    "gte": 1
+   },
+   "order": 84
+  },
+  {
+   "id": "ach.best-decisions",
+   "cat": "Tabletop",
+   "tier": "silver",
+   "icon": "scale",
+   "name": "Sound Judgement",
+   "desc": "Make 10 best-practice decisions during injects.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "decision",
+    "where": {
+     "quality": "best"
+    },
+    "gte": 10
+   },
+   "order": 85,
+   "lesson": "Good incident decisions come from rehearsed roles, authority and criteria.",
+   "refs": [
+    "nist:800-61"
+   ]
+  },
+  {
+   "id": "ach.inject-20",
+   "cat": "Tabletop",
+   "tier": "bronze",
+   "icon": "megaphone",
+   "name": "Injected",
+   "desc": "Respond to 20 scenario injects.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "inject",
+    "where": {},
+    "gte": 20
+   },
+   "order": 86
+  },
+  {
+   "id": "ach.act1",
+   "cat": "Runs",
+   "tier": "bronze",
+   "icon": "flag",
+   "name": "Act I Cleared",
+   "desc": "Complete Act I.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "act_cleared",
+    "where": {
+     "act": 1
+    },
+    "gte": 1
+   },
+   "order": 87
+  },
+  {
+   "id": "ach.act2",
+   "cat": "Runs",
+   "tier": "silver",
+   "icon": "flag",
+   "name": "Act II Cleared",
+   "desc": "Complete Act II.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "act_cleared",
+    "where": {
+     "act": 2
+    },
+    "gte": 1
+   },
+   "order": 88
+  },
+  {
+   "id": "ach.act3",
+   "cat": "Runs",
+   "tier": "gold",
+   "icon": "flag-triangle-right",
+   "name": "Act III Cleared",
+   "desc": "Complete Act III.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "act_cleared",
+    "where": {
+     "act": 3
+    },
+    "gte": 1
+   },
+   "order": 89
+  },
+  {
+   "id": "ach.win-1",
+   "cat": "Runs",
+   "tier": "gold",
+   "icon": "trophy",
+   "name": "Campaign Won",
+   "desc": "Win a run.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "gte": 1
+   },
+   "order": 90
+  },
+  {
+   "id": "ach.win-5",
+   "cat": "Runs",
+   "tier": "platinum",
+   "icon": "crown",
+   "name": "Seasoned Defender",
+   "desc": "Win 5 runs.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {},
+    "gte": 5
+   },
+   "order": 91
+  },
+  {
+   "id": "ach.win-ml2",
+   "cat": "Runs",
+   "tier": "gold",
+   "icon": "award",
+   "name": "Maturity Level 2",
+   "desc": "Win a run at Maturity Level 2.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "assurance": {
+      "gte": 2
+     }
+    },
+    "gte": 1
+   },
+   "order": 92
+  },
+  {
+   "id": "ach.win-ml3",
+   "cat": "Runs",
+   "tier": "platinum",
+   "icon": "gem",
+   "name": "Maturity Level 3",
+   "desc": "Win a run at Maturity Level 3.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "assurance": 3
+    },
+    "gte": 1
+   },
+   "order": 93
+  },
+  {
+   "id": "ach.win-architect",
+   "cat": "Runs",
+   "tier": "gold",
+   "icon": "shield-ban",
+   "name": "Zero Trust Architect Ascendant",
+   "desc": "Win a run as the Zero Trust Architect.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "doctrine": "architect"
+    },
+    "gte": 1
+   },
+   "order": 94
+  },
+  {
+   "id": "ach.win-hunter",
+   "cat": "Runs",
+   "tier": "gold",
+   "icon": "radar",
+   "name": "Threat Hunter Ascendant",
+   "desc": "Win a run as the Threat Hunter.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "doctrine": "hunter"
+    },
+    "gte": 1
+   },
+   "order": 95
+  },
+  {
+   "id": "ach.win-phoenix",
+   "cat": "Runs",
+   "tier": "gold",
+   "icon": "heart-pulse",
+   "name": "Resilience Engineer Ascendant",
+   "desc": "Win a run as the Resilience Engineer.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "doctrine": "phoenix"
+    },
+    "gte": 1
+   },
+   "order": 96
+  },
+  {
+   "id": "ach.win-governor",
+   "cat": "Runs",
+   "tier": "gold",
+   "icon": "scale",
+   "name": "GRC Lead Ascendant",
+   "desc": "Win a run as the GRC Lead.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "doctrine": "governor"
+    },
+    "gte": 1
+   },
+   "order": 97
+  },
+  {
+   "id": "ach.win-responder",
+   "cat": "Runs",
+   "tier": "gold",
+   "icon": "siren",
+   "name": "Incident Commander Ascendant",
+   "desc": "Win a run as the Incident Commander.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "doctrine": "responder"
+    },
+    "gte": 1
+   },
+   "order": 98
+  },
+  {
+   "id": "ach.relic-hoard",
+   "cat": "Runs",
+   "tier": "silver",
+   "icon": "gem",
+   "name": "Capability Portfolio",
+   "desc": "Hold 8 relics at the end of a run.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "relicCount": {
+      "gte": 8
+     }
+    },
+    "gte": 1
+   },
+   "order": 99
+  },
+  {
+   "id": "ach.rich",
+   "cat": "Runs",
+   "tier": "silver",
+   "icon": "coins",
+   "name": "Healthy Budget",
+   "desc": "Finish a run with $300 or more unspent.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "money": {
+      "gte": 300
+     }
+    },
+    "gte": 1
+   },
+   "order": 100
+  },
+  {
+   "id": "ach.daily-1",
+   "cat": "Runs",
+   "tier": "bronze",
+   "icon": "calendar-check",
+   "name": "Daily Briefing",
+   "desc": "Complete a daily challenge.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "daily_done",
+    "gte": 1
+   },
+   "order": 101
+  },
+  {
+   "id": "ach.daily-7",
+   "cat": "Runs",
+   "tier": "gold",
+   "icon": "flame",
+   "name": "Seven-Day Streak",
+   "desc": "Complete daily challenges 7 days in a row.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "daily_done",
+    "where": {
+     "streak": {
+      "gte": 7
+     }
+    },
+    "gte": 1
+   },
+   "order": 102
+  },
+  {
+   "id": "ach.tutorial",
+   "cat": "Runs",
+   "tier": "bronze",
+   "icon": "graduation-cap",
+   "name": "Orientation Complete",
+   "desc": "Finish the tutorial.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "tutorial_done",
+    "gte": 1
+   },
+   "order": 103
+  },
+  {
+   "id": "ach.clearance-5",
+   "cat": "Runs",
+   "tier": "silver",
+   "icon": "id-card",
+   "name": "Clearance Level 5",
+   "desc": "Reach clearance level 5.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "clearance",
+    "where": {
+     "level": {
+      "gte": 5
+     }
+    },
+    "gte": 1
+   },
+   "order": 104
+  },
+  {
+   "id": "ach.canary",
+   "cat": "Secrets",
+   "tier": "silver",
+   "icon": "bug",
+   "name": "Canary in the Coal Mine",
+   "desc": "Catch an adversary with a canary token.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "canary",
+    "gte": 1
+   },
+   "order": 105,
+   "hidden": true
+  },
+  {
+   "id": "ach.techdebt-3",
+   "cat": "Secrets",
+   "tier": "bronze",
+   "icon": "receipt",
+   "name": "Interest Compounds",
+   "desc": "Hold 3 Technical Debt cards at once.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "deck.techdebt": {
+      "gte": 3
+     }
+    },
+    "gte": 1
+   },
+   "order": 106,
+   "hidden": true,
+   "lesson": "Risk accepted without ownership is debt with a variable rate."
+  },
+  {
+   "id": "ach.monoculture",
+   "cat": "Secrets",
+   "tier": "silver",
+   "icon": "copy-plus",
+   "name": "Monoculture",
+   "desc": "Finish a run with 4 or more copies of the same card.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "run_won",
+    "where": {
+     "deck.maxDup": {
+      "gte": 4
+     }
+    },
+    "gte": 1
+   },
+   "order": 107,
+   "hidden": true,
+   "lesson": "Five identical controls fail identically: common-mode failure."
+  },
+  {
+   "id": "ach.zero-day-gamble",
+   "cat": "Secrets",
+   "tier": "silver",
+   "icon": "dices",
+   "name": "Risk Appetite",
+   "desc": "Leave a known-exploited edge device online.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "event_choice",
+    "where": {
+     "id": "e.zeroday",
+     "index": 2
+    },
+    "gte": 1
+   },
+   "order": 108,
+   "hidden": true,
+   "lesson": "Known-exploited internet-facing services are the quietest way in.",
+   "refs": [
+    "attack:T1190"
+   ]
+  },
+  {
+   "id": "ach.shiny-object",
+   "cat": "Secrets",
+   "tier": "bronze",
+   "icon": "sparkles",
+   "name": "Shiny Object Syndrome",
+   "desc": "Buy the silver-bullet AI SOC.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "event_choice",
+    "where": {
+     "id": "e.vendor",
+     "index": 0
+    },
+    "gte": 1
+   },
+   "order": 109,
+   "hidden": true
+  },
+  {
+   "id": "ach.msp-trust",
+   "cat": "Secrets",
+   "tier": "silver",
+   "icon": "handshake",
+   "name": "Trusted Relationship",
+   "desc": "Accept the MSP’s “free” standing remote access.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "event_choice",
+    "where": {
+     "id": "e.msp",
+     "index": 0
+    },
+    "gte": 1
+   },
+   "order": 110,
+   "hidden": true,
+   "refs": [
+    "attack:T1199"
+   ]
+  },
+  {
+   "id": "ach.phoenix-rises",
+   "cat": "Secrets",
+   "tier": "silver",
+   "icon": "flame",
+   "name": "Phoenix Rises",
+   "desc": "Have an immutable backup revive a downed asset.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "aegis",
+    "gte": 1
+   },
+   "order": 111,
+   "hidden": true
+  },
+  {
+   "id": "ach.golden-image",
+   "cat": "Secrets",
+   "tier": "bronze",
+   "icon": "copy-plus",
+   "name": "Rebuild, Do Not Clean",
+   "desc": "Trigger a revive from golden-image tooling.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "revive",
+    "gte": 1
+   },
+   "order": 112,
+   "hidden": true
+  },
+  {
+   "id": "ach.unbothered",
+   "cat": "Secrets",
+   "tier": "gold",
+   "icon": "leaf",
+   "name": "Unbothered",
+   "desc": "Survive an apex adversary without revealing any footholds and without losing Resilience.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "tier": 3,
+     "noReveal": true,
+     "resLost": 0
+    },
+    "gte": 1
+   },
+   "order": 113,
+   "hidden": true,
+   "lesson": "Sometimes strong wards and good hygiene mean there is nothing to find."
+  },
+  {
+   "id": "ach.long-game",
+   "cat": "Secrets",
+   "tier": "silver",
+   "icon": "hourglass",
+   "name": "The Long Game",
+   "desc": "Survive 9 rounds against an apex adversary.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "tier": 3,
+     "rounds": {
+      "gte": 9
+     }
+    },
+    "gte": 1
+   },
+   "order": 114,
+   "hidden": true
+  },
+  {
+   "id": "ach.quantum-debt",
+   "cat": "Secrets",
+   "tier": "bronze",
+   "icon": "atom",
+   "name": "Harvested",
+   "desc": "Finish a battle with quantum debt.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "debt": {
+      "gte": 1
+     }
+    },
+    "gte": 1
+   },
+   "order": 115,
+   "hidden": true,
+   "lesson": "Encrypted data stolen today may be readable tomorrow. Migrate to post-quantum cryptography.",
+   "refs": [
+    "nist:ir-8547"
+   ]
+  },
+  {
+   "id": "ach.bossrush",
+   "cat": "Secrets",
+   "tier": "gold",
+   "icon": "rocket",
+   "name": "Speed Run",
+   "desc": "Evict an apex adversary in 5 rounds or fewer.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "how": "evicted",
+     "tier": 3,
+     "rounds": {
+      "lte": 5
+     }
+    },
+    "gte": 1
+   },
+   "order": 116,
+   "hidden": true
+  },
+  {
+   "id": "ach.persist-purge",
+   "cat": "Secrets",
+   "tier": "silver",
+   "icon": "refresh-cw",
+   "name": "Pull It Out by the Roots",
+   "desc": "Evict a persistent foothold and watch it return — then evict it again.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "persists",
+    "where": {},
+    "gte": 2
+   },
+   "order": 117,
+   "hidden": true,
+   "lesson": "Persistence mechanisms outlive eviction. Remove the mechanism, not just the process.",
+   "refs": [
+    "attack:TA0003"
+   ]
+  },
+  {
+   "id": "ach.phase-two",
+   "cat": "Secrets",
+   "tier": "bronze",
+   "icon": "swords",
+   "name": "Phase Two",
+   "desc": "Push an adversary into its second phase.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "phase",
+    "gte": 1
+   },
+   "order": 118,
+   "hidden": true
+  },
+  {
+   "id": "ach.assume-breach",
+   "cat": "Secrets",
+   "tier": "silver",
+   "icon": "door-open",
+   "name": "Assume Breach",
+   "desc": "Win a battle while a foothold is still hidden at the end.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "how": "survived",
+     "assetsDown": 0
+    },
+    "gte": 5
+   },
+   "order": 119,
+   "hidden": true,
+   "lesson": "You will not always find everyone. Make sure nothing they hold matters."
+  },
+  {
+   "id": "ach.read-manual",
+   "cat": "Secrets",
+   "tier": "bronze",
+   "icon": "book-open",
+   "name": "RTFM",
+   "desc": "Open the in-game guide.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "docs_open",
+    "gte": 1
+   },
+   "order": 120,
+   "hidden": true
+  },
+  {
+   "id": "ach.insider",
+   "cat": "Secrets",
+   "tier": "bronze",
+   "icon": "user-x",
+   "name": "Insider Threat",
+   "desc": "Ignore the insider tip-off.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "event_choice",
+    "where": {
+     "id": "e.insider",
+     "index": 1
+    },
+    "gte": 1
+   },
+   "order": 121,
+   "hidden": true
+  },
+  {
+   "id": "ach.all-cats",
+   "cat": "Secrets",
+   "tier": "platinum",
+   "icon": "gem",
+   "name": "Completionist",
+   "desc": "Unlock 60 achievements.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "ach_unlocked",
+    "where": {},
+    "gte": 60
+   },
+   "order": 122,
+   "hidden": true
+  },
+  {
+   "id": "ach.photo-finish",
+   "cat": "Combat",
+   "tier": "silver",
+   "icon": "timer",
+   "name": "Photo Finish",
+   "desc": "Win a battle after the adversary reached 80% or more of its goal.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "goalFrac": {
+      "gte": 0.8
+     }
+    },
+    "gte": 1
+   },
+   "order": 123,
+   "lesson": "An adversary that is one step from its objective is still beatable if you can find and remove what it depends on.",
+   "refs": [
+    "attack:TA0040"
+   ]
+  },
+  {
+   "id": "ach.goal-denied-preposition",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "anchor",
+   "name": "Evicted From the Walls",
+   "desc": "Defeat an adversary whose goal is to pre-position inside your systems.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "goal": "preposition"
+    },
+    "gte": 1
+   },
+   "order": 124,
+   "lesson": "Pre-positioning is a win condition even if nothing breaks: the damage is the option value. Only detection and eviction of persistence beat it.",
+   "refs": [
+    "attack:G1017",
+    "nist-csf:DE.CM-01"
+   ]
+  },
+  {
+   "id": "ach.goal-keeper",
+   "cat": "Adversaries",
+   "tier": "gold",
+   "icon": "target",
+   "name": "Every Objective Denied",
+   "desc": "Defeat adversaries pursuing 6 different goals.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": true,
+     "goal": {
+      "exists": true
+     }
+    },
+    "gte": 1,
+    "distinct": "goal",
+    "distinctGte": 6
+   },
+   "order": 125,
+   "lesson": "Adversaries are defined by what they want: data, money, disruption, access, destruction. Controls that work against one goal can be irrelevant to another.",
+   "refs": [
+    "attack:TA0040",
+    "attack:TA0010"
+   ]
+  },
+  {
+   "id": "ach.mission-accomplished",
+   "cat": "Combat",
+   "tier": "bronze",
+   "icon": "flag",
+   "name": "Mission Accomplished (For Them)",
+   "desc": "Lose a battle because the adversary achieved its goal.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "battle_end",
+    "where": {
+     "won": false,
+     "how": "goal"
+    },
+    "gte": 1
+   },
+   "order": 126,
+   "hidden": true,
+   "lesson": "Resilience is not the only way to lose. Know what the adversary is trying to do before it does it."
+  },
+  {
+   "id": "ach.break-glass",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "siren",
+   "name": "Break Glass",
+   "desc": "Play a consumable response card.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "consumed",
+    "gte": 1
+   },
+   "order": 127,
+   "lesson": "Consumables model one-off expert actions: a retainer, a shutdown, a restore. The lesson is when each is worth its cost.",
+   "refs": [
+    "nist:800-61"
+   ]
+  },
+  {
+   "id": "ach.pull-the-plug",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "power",
+   "name": "Pull the Plug",
+   "desc": "Use Disable System to contain an asset.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "consumed",
+    "where": {
+     "card": "x.killswitch"
+    },
+    "gte": 1
+   },
+   "order": 128,
+   "lesson": "Containment by shutdown always works and always costs availability. In OT it can be a safety event, so decide the safe state in advance.",
+   "refs": [
+    "nist:800-82",
+    "nist:800-61"
+   ]
+  },
+  {
+   "id": "ach.restore-dont-pay",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "database-backup",
+   "name": "Restore, Don’t Pay",
+   "desc": "Use Restore from Backup with a working Recovery control on the board.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "consumed",
+    "where": {
+     "card": "x.restore"
+    },
+    "gte": 1
+   },
+   "order": 129,
+   "lesson": "A restore is only as good as the backup you tested. Image first when you can.",
+   "refs": [
+    "e8:backups",
+    "nist-csf:RC.RP-03"
+   ]
+  },
+  {
+   "id": "ach.retainer-called",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "handshake",
+   "name": "Retainer Called",
+   "desc": "Activate a Security Retainer.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "consumed",
+    "where": {
+     "card": "x.retainer"
+    },
+    "gte": 1
+   },
+   "order": 130,
+   "lesson": "An IR retainer buys surge capacity and a priority queue, but the hours are finite and contracted before you need them.",
+   "refs": [
+    "nist:800-61",
+    "nist-csf:GV.SC-08"
+   ]
+  },
+  {
+   "id": "ach.consumables-10",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "package-check",
+   "name": "Spare Parts Budget",
+   "desc": "Play 10 consumable cards.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "consumed",
+    "where": {},
+    "gte": 10
+   },
+   "order": 131
+  },
+  {
+   "id": "ach.embedded-defence",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "cpu",
+   "name": "Embedded Defence",
+   "desc": "Attach an EMB3D device-hardening booster to a control.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "augment",
+    "where": {
+     "card": {
+      "in": [
+       "a.emb-firmware-signing",
+       "a.emb-hw-rot",
+       "a.emb-attest",
+       "a.emb-msgauth",
+       "a.emb-physpresence",
+       "a.emb-signedlogic",
+       "a.emb-nofactory-creds",
+       "a.emb-mfa",
+       "a.emb-acl",
+       "a.emb-pqc"
+      ]
+     }
+    },
+    "gte": 1
+   },
+   "order": 132,
+   "lesson": "MITRE EMB3D catalogues threats and mitigations for embedded devices by maturity: foundational, intermediate and leading.",
+   "refs": [
+    "emb3d:MID-026",
+    "emb3d:MID-040"
+   ]
+  },
+  {
+   "id": "ach.embedded-5",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "circuit-board",
+   "name": "Firmware You Can Trust",
+   "desc": "Attach 5 EMB3D boosters.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "augment",
+    "where": {
+     "card": {
+      "in": [
+       "a.emb-firmware-signing",
+       "a.emb-hw-rot",
+       "a.emb-attest",
+       "a.emb-msgauth",
+       "a.emb-physpresence",
+       "a.emb-signedlogic",
+       "a.emb-nofactory-creds",
+       "a.emb-mfa",
+       "a.emb-acl",
+       "a.emb-pqc"
+      ]
+     }
+    },
+    "gte": 5
+   },
+   "order": 133,
+   "refs": [
+    "emb3d:MID-002",
+    "emb3d:MID-003"
+   ]
+  },
+  {
+   "id": "ach.embedded-all",
+   "cat": "Controls",
+   "tier": "gold",
+   "icon": "microscope",
+   "name": "Device Hardening Complete",
+   "desc": "Attach 8 different EMB3D boosters.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "augment",
+    "where": {
+     "card": {
+      "in": [
+       "a.emb-firmware-signing",
+       "a.emb-hw-rot",
+       "a.emb-attest",
+       "a.emb-msgauth",
+       "a.emb-physpresence",
+       "a.emb-signedlogic",
+       "a.emb-nofactory-creds",
+       "a.emb-mfa",
+       "a.emb-acl",
+       "a.emb-pqc"
+      ]
+     }
+    },
+    "gte": 1,
+    "distinct": "card",
+    "distinctGte": 8
+   },
+   "order": 134,
+   "hidden": true,
+   "lesson": "Embedded devices live for decades. Boot integrity, signed logic, authenticated messages and physical presence are the controls that still work in 2045.",
+   "refs": [
+    "emb3d:MID-029",
+    "nist:fips-203"
+   ]
+  },
+  {
+   "id": "ach.scored-coverage",
+   "cat": "Controls",
+   "tier": "silver",
+   "icon": "scale",
+   "name": "Scored Coverage",
+   "desc": "Have a CTID-scored control block an attack.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "blocked",
+    "where": {
+     "why": {
+      "has": {
+       "kind": "mitigation",
+       "cov": {
+        "exists": true
+       }
+      }
+     }
+    },
+    "gte": 1
+   },
+   "order": 135,
+   "lesson": "CTID’s Mappings Explorer scores how well a security capability protects, detects or responds to each ATT&CK technique. The scores are evidence, not marketing.",
+   "refs": [
+    "ctid:aws"
+   ]
+  },
+  {
+   "id": "ach.mapped-control",
+   "cat": "Controls",
+   "tier": "bronze",
+   "icon": "link",
+   "name": "Mapped Control",
+   "desc": "Have a NIST 800-53 control, as mapped by CTID, help stop a technique.",
+   "rule": {
+    "scope": "lifetime",
+    "event": "blocked",
+    "where": {
+     "why": {
+      "has": {
+       "kind": "mitigation",
+       "ctl": {
+        "exists": true
+       }
+      }
+     }
+    },
+    "gte": 1
+   },
+   "order": 136,
+   "lesson": "Mapping controls to adversary behaviour turns a compliance checklist into a threat-informed defence.",
+   "refs": [
+    "ctid:nist",
+    "nist-800-53:AC-6"
+   ]
+  }
+ ]
+}

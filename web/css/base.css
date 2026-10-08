@@ -78,3 +78,5 @@ label:has(> input) { display: flex; align-items: center; gap: .55rem; flex-wrap:
 @media (max-width: 480px) { .btn { min-height: 36px; } }
 a.reflink, .reflink { display: inline-flex; align-items: center; min-height: 24px; }
 .chip { min-height: 24px; display: inline-flex; align-items: center; }
+.reflink { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.row.wrap > * { max-width: 100%; }

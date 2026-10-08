@@ -53,9 +53,9 @@ for (const [w, h] of VIEWPORTS) {
   const next = async () => { await click('.coach .btn.primary'); await page.waitForTimeout(350); };
   for (let i = 0; i < 4; i++) await next();
   const tutOk = await (async () => {
-    if (!(await click('[data-card="c.protect.spoofing"]'))) return 'mfa card missing';
+    if (!(await click('.hand [data-card="c.protect.spoofing"]'))) return 'mfa card missing';
     await page.waitForTimeout(250); if (!(await click('[data-asset="mail"]'))) return 'mail asset missing'; await page.waitForTimeout(900);
-    if (!(await click('[data-card="c.identify.repudiation"]'))) return 'intel card missing'; await page.waitForTimeout(250); await click('[data-card="c.identify.repudiation"]'); await page.waitForTimeout(900);
+    if (!(await click('.hand [data-card="c.identify.repudiation"]'))) return 'intel card missing'; await page.waitForTimeout(250); await click('.hand [data-card="c.identify.repudiation"]'); await page.waitForTimeout(900);
     await next(); await checkLayout(page, vp, 'tutorial'); return null;
   })();
   if (tutOk) bad(vp, 'tutorial: ' + tutOk);

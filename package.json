@@ -2,7 +2,7 @@
   "name": "adversary",
   "version": "0.1.0",
   "private": true,
-  "description": "ADVERSARY \u2014 a roguelike deckbuilder that teaches threat modelling and blue-team concepts.",
+  "description": "ADVERSARY — a roguelike deckbuilder that teaches threat modelling and blue-team concepts.",
   "type": "module",
   "license": "MIT",
   "engines": {
@@ -36,6 +36,7 @@
     "@fontsource/jetbrains-mono": "^5.2.0",
     "@fontsource/pixelify-sans": "^5.2.0",
     "@fontsource/vt323": "^5.2.0",
+    "axe-core": "^4.14.0",
     "dynalite": "^4.0.0",
     "esbuild": "^0.25.0",
     "htm": "^3.1.1",

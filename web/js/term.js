@@ -28,7 +28,7 @@ export function Decrypt({ text = '', ms = 650, cls = '', tag = 'span' }) {
     const step = (t) => { if (!live) return; const k = Math.min(1, (t - t0) / ms); if (t - lastT > 40 || k === 1) { lastT = t; setOut(k === 1 ? text : scramble(text, Math.floor(k * text.length))); } if (k < 1) id = raf(step); };
     id = raf(step); return () => { live = false; cancelAnimationFrame(id); };
   }, [text]);
-  return html`<${tag} class=${cx('dec', cls)} aria-label=${text}><span aria-hidden="true">${out}</span><//>`;
+  return html`<${tag} class=${cx('dec', cls)}><span aria-hidden="true">${out}</span><span class="sr">${text}</span><//>`;
 }
 
 /** Counts up to `to` (ease-out). */
@@ -40,7 +40,7 @@ export function Count({ to = 0, ms = 800, prefix = '', suffix = '', delay = 0, c
     const step = (t) => { if (!live) return; const k = Math.max(0, Math.min(1, (t - t0) / ms)); setV(Math.round(to * (1 - (1 - k) ** 3))); if (k < 1) id = raf(step); };
     id = raf(step); return () => { live = false; cancelAnimationFrame(id); };
   }, [to]);
-  return html`<span class=${cls} aria-label=${prefix + to + suffix}><span aria-hidden="true">${prefix}${v}${suffix}</span></span>`;
+  return html`<span class=${cls}><span aria-hidden="true">${prefix}${v}${suffix}</span><span class="sr">${prefix + to + suffix}</span></span>`;
 }
 
 const ART = { hacker: hackerSvg('hk'), analyst: analystSvg('an') };

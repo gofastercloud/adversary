@@ -67,3 +67,12 @@ svg.i.lg { width: 1.6em; height: 1.6em; } svg.i.xl { width: 2.4em; height: 2.4em
 .hide-sm { } @media (max-width: 860px) { .hide-sm { display: none !important; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; transition-duration: .001s !important; scroll-behavior: auto !important; } }
 body.no-motion *, body.no-motion *::before, body.no-motion *::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; transition-duration: .001s !important; }
+
+/* a11y + responsive hardening */
+main#app { display: flex; flex-direction: column; }
+input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); flex: none; }
+input[type=range] { max-width: 100%; min-height: 24px; flex: 1 1 120px; min-width: 0; }
+label:has(> input) { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; min-height: 32px; max-width: 100%; }
+.chip { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.hand:focus-visible, .acts:focus-visible { outline-offset: -2px; }
+@media (max-width: 480px) { .btn { min-height: 36px; } }

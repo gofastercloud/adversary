@@ -45,7 +45,7 @@ for (const [w, h] of VIEWPORTS) {
   page.on('requestfailed', r => { if (!/\/api\//.test(r.url())) bad(vp, 'request failed: ' + r.url()); });
   await page.goto(URL_); await page.waitForTimeout(1200);
   await checkLayout(page, vp, 'title');
-  const store = () => page.evaluate(() => { const s = window.__adv.store.get(); return { screen: s.screen, phase: s.run?.phase, over: s.run?.battle?.over, pending: !!s.run?.battle?.ttx?.pending, round: s.run?.battle?.round, ach: Object.keys(s.profile?.ach?.unlocked || {}).length }; });
+  const store = () => page.evaluate(() => { const s = window.__adv.store.get(); return { screen: s.screen, phase: s.run?.phase, over: s.run?.battle?.over, pending: !!s.run?.battle?.ttx?.pending, round: s.run?.battle?.round, ach: Object.keys(s.profile?.ach?.unlocked || {}).length, rw: s.run?.reward ? [s.run.reward.cardTaken, s.run.reward.relicTaken].join() : '' }; });
   const click = async (sel, opt = {}) => { const l = page.locator(sel).first(); if (await l.count() === 0) return false; try { await l.click({ timeout: 2000, ...opt }); return true; } catch { return false; } };
 
   // ── tutorial, via real clicks
@@ -90,7 +90,7 @@ for (const [w, h] of VIEWPORTS) {
           } else { await checkLayout(page, vp, 'battle'); await click('text=End turn'); await page.waitForTimeout(900); }
           break;
         }
-        case 'reward': { if (!(await click('.reward .cards .card >> nth=0'))) { if (!(await click('.reward .relic'))) await click('text=Continue') || await click('.reward .btn'); } else await page.waitForTimeout(300); break; }
+        case 'reward': { if (!(await click('.reward .cards .card >> nth=0'))) { if (!(await click('.reward .relic-card'))) await click('text=Continue') || await click('.reward .btn'); } else await page.waitForTimeout(300); break; }
         case 'shop': await checkLayout(page, vp, 'shop'); if (rnd() < 0.5) await click('.shop .goods .card >> nth=' + Math.floor(rnd() * 3)); await click('text=Continue') || await click('text=Leave'); break;
         case 'rest': if (!(await click('.rest-opt:not([disabled]) >> nth=0'))) await click('text=Continue'); else { await page.waitForTimeout(250); await click('.modal .card >> nth=0'); await click('text=Continue'); } break;
         case 'event': if (!(await click('.event .choices .btn >> nth=0'))) await click('text=Continue'); break;

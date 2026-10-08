@@ -9,6 +9,11 @@ const N = +arg('n', 60), ARMS = arg('arms', 'A,B').split(',');
 export const DARMS = {
   A: null,
   B: { doctrines: { responder: { power: { cost: 2 } } } },
+  D: { doctrines: { responder: { relic: 'r.zero-trust-seed' } } },
+  E: { doctrines: { responder: { deck: ['c.protect.spoofing','c.protect.tampering','c.protect.elevation','c.protect.disclosure','c.protect.dos','c.detect.spoofing','c.detect.tampering','c.identify.spoofing','c.identify.dos','c.recover.spoofing','c.respond.spoofing','x.patch'] } } },
+  R1: { doctrines: { architect: { relic: 'r.mdr' } } }, R2: { doctrines: { architect: { relic: 'r.golden-image' } } }, R3: { doctrines: { architect: { relic: 'r.board-sponsor' } } },
+  H: { doctrines: { architect: { maxResilience: 60 } } },
+  T1: { doctrines: { architect: { maxResilience: 60 }, phoenix: { maxResilience: 58 }, governor: { maxResilience: 44 }, responder: { maxResilience: 30 } } },
   C: { doctrines: { responder: { power: { cost: 2 } }, architect: { power: { fx: [{ op: 'shield', n: 3 }] } }, phoenix: { power: { fx: [{ op: 'heal', n: 3 }] } } } }
 };
 const pool = new Pool();

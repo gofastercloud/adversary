@@ -66,3 +66,28 @@
 @media (hover: none), (max-height: 700px) { .card-preview { display: none; } }
 .side-toggle { display: none; }
 @media (max-width: 1150px) { .side-toggle { display: inline-flex; } .side.open { display: flex !important; flex-direction: column; gap: .5rem; position: fixed; right: 8px; top: 64px; bottom: 8px; width: min(380px, calc(100vw - 16px)); z-index: 700; overflow: auto; background: rgba(2, 10, 6, .96); border: 1px solid var(--accent, #00ff9c); border-radius: 10px; padding: .5rem; } }
+
+/* short viewports (phone landscape): compact HUD so the board and hand stay on screen */
+@media (max-height: 520px) {
+  .battle { padding: .25rem .5rem .25rem; gap: .25rem; }
+  .hud { display: flex !important; gap: .35rem; } .hud > * { flex: 1 1 0; min-width: 0; display: flex !important; grid-column: auto !important; }
+  .hud-me .intent small, .hud-me .fid { display: none; }
+  .hud .panel { padding: .25rem .5rem; }
+  .hud-me { gap: .15rem; } .hud-row { gap: .4rem; } .hud .lbl { min-width: 0; font-size: .6rem; }
+  .hud .money { font-size: 1.05rem; } .hud .meter, .hud-adv .meter { height: 14px; margin-top: .1rem; }
+  .hud-adv { gap: .4rem; } .hud-adv .sigil { width: 44px; height: 44px; } .hud-adv .nm { font-size: .95rem; }
+  .hud-adv .sub, .hud-adv .traits, .round-pips { display: none; }
+  .power .btn { min-width: 0; } .power small { display: none; }
+  :root { --card-w: 70px; --card-h: 98px; } .card { font-size: 7px; } .card-text { font-size: 6.5px !important; } .card-art { height: 30px; } .card-art svg.big { width: 26px; height: 26px; }
+  .hand { height: calc(var(--card-h) + 12px); }
+  .asset { width: 128px; padding: 4px; }
+  .battle { overflow-y: auto; grid-template-rows: auto minmax(110px, 1fr) auto; }
+  .topbar { padding: .15rem .5rem; } .topbar .iconbtn { width: 32px; height: 32px; }
+  .hud-adv .row .dimmer, .hud-adv .row .chip { display: none; }
+  .bottom { grid-template-columns: 70px 1fr 150px; gap: .4rem; min-height: 0; padding-bottom: 2px; }
+  .pile .stack { width: 40px; height: 54px; } .pile .dimmer { display: none; }
+  .energy-wrap { display: flex; flex-direction: column; gap: .2rem; align-items: stretch; }
+  .energy { width: 46px; height: 46px; font-size: 1.1rem; margin: 0 auto; }
+  .energy-wrap .btn { min-height: 28px; padding: .2rem .4rem; font-size: .7rem; } .energy-wrap .btn.big { font-size: .8rem; }
+}
+@media (max-width: 1150px) { .energy-wrap { min-width: 0; max-width: 100%; } .power .btn, .energy-wrap .btn { min-width: 0; max-width: 100%; white-space: normal; } }

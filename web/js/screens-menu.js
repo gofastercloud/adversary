@@ -85,11 +85,11 @@ export function DailyScreen() {
   const done = s.profile.daily.done?.[cfg.date];
   return html`<div class="screen result"><div class="row"><button class="btn ghost small" onClick=${() => app.goto('title')}>Back</button></div>
     <h1>Daily Challenge</h1><div class="tagline">${cfg.date} · Australia/Sydney</div>
-    <div class="panel" style="padding:1.2rem;max-width:640px"><div class="row" style="justify-content:center;gap:1.2rem"><span class="pk-ic" style="width:60px;height:60px;display:grid;place-items:center"><${Icon} n=${sc.icon} cls="xl"/></span><div style="text-align:left"><h3>${sc.name}</h3><div class="dim">${d.name} · Assurance ML1</div><div class="dimmer mono">seed ${cfg.seed}</div></div></div>
+    <div class="panel" style="padding:1.2rem;max-width:640px"><div class="row" style="justify-content:center;gap:1.2rem"><span class="pk-ic" style="width:60px;height:60px;display:grid;place-items:center"><${Icon} n=${sc.icon} cls="xl"/></span><div style="text-align:left"><h2>${sc.name}</h2><div class="dim">${d.name} · Assurance ML1</div><div class="dimmer mono">seed ${cfg.seed}</div></div></div>
       <p class="dim" style="margin-top:.8rem">Everyone plays the same seed. Your run is replayed on the server to verify the score. Keep your streak alive: ${s.profile.daily.streak || 0} day${(s.profile.daily.streak || 0) === 1 ? '' : 's'}.</p>
       ${done != null && html`<p class="chip good">Completed today: ${done} pts</p>`}
       <button class="btn violet big" onClick=${() => app.startRun({ scenario: cfg.scenario, doctrine: cfg.doctrine, assurance: 1, seed: cfg.seed, daily: true })}><${Icon} n="flame"/>${done != null ? 'Play again' : 'Start daily'}</button></div>
-    ${board?.entries?.length ? html`<div class="panel lb" style="padding:1rem"><h3>Today’s leaderboard</h3><table><tbody>${board.entries.map((e, i) => html`<tr class=${e.playerId === (JSON.parse(localStorage.getItem('adversary.player.v1') || '{}').id) ? 'me' : ''}><td>${i + 1}</td><td>${e.handle}</td><td class="right mono">${e.points}</td></tr>`)}</tbody></table></div>` : html`<p class="dimmer">Leaderboard unavailable offline (the game is fully playable without it).</p>`}</div>`;
+    ${board?.entries?.length ? html`<div class="panel lb" style="padding:1rem"><h2>Today’s leaderboard</h2><table><tbody>${board.entries.map((e, i) => html`<tr class=${e.playerId === (JSON.parse(localStorage.getItem('adversary.player.v1') || '{}').id) ? 'me' : ''}><td>${i + 1}</td><td>${e.handle}</td><td class="right mono">${e.points}</td></tr>`)}</tbody></table></div>` : html`<p class="dimmer">Leaderboard unavailable offline (the game is fully playable without it).</p>`}</div>`;
 }
 
 export function TtxSelect() {

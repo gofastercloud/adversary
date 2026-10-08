@@ -66,10 +66,20 @@ run found a real bug (a replaced policy stayed listed as in play).
 
 ## Balance pass (current baseline)
 
-Rule baseline adopted from the variant search (`scripts/balance.json`): hand 6, ward +1, detection reach +1, adversary energy +2, rounds +2, adversary exposure −3, count-mode goals, no goalAI. Per-adversary goal clocks, energy, power and exposure are then calibrated by `node lab/tune.mjs --n 30 --apply` (RMSE 6.6pp against the standard-player targets).
+Rule baseline (`scripts/balance.json`): hand 6, ward +1, detection reach +1, adversary energy +2, rounds +2, adversary exposure −3, count-mode goals, no goalAI. Per-adversary goal clocks, energy, power and exposure come from `node lab/tune.mjs --n 30 --apply`, then `node lab/adjust.mjs <adversaries.log> --apply` nudges outliers from the adversary matrix.
 
-Full-run clear rate, 100 runs per skill, fresh seeds: random ≈ 1%, novice ≈ 22–25%, standard ≈ 36–38%, sharp ≈ 33–35%.
+Full-run clear rate (enterprise, fresh seeds): random ≈ 0–1%, novice ≈ 17–18%, standard ≈ 38–41%, sharp ≈ 37–39%.
 
-Known gaps:
-- Doctrine spread is wide: responder ≈ 61–68%, hunter ≈ 29%, phoenix ≈ 14%, governor ≈ 10%, architect ≈ 6%. Resilience tweaks barely move it, so the cause is card economy and how the agents play each starter deck, not hit points. Treat as open design work.
-- `sharp` does not beat `standard`; the ceiling is the planner (`lite`/`expert`), not the heuristic agents.
+### What the doctrine experiments (`lab/doctrine.mjs`) showed
+- Hero powers do not move win rates: capping Contain at cost 2, +1 Harden and +1 Failover left every doctrine's standard clear rate unchanged to the percentage point. The design-review hypothesis that powers drive the spread was falsified.
+- The Runbooks relic (first Respond card each round −1) was responsible for most of the responder's lead: swapping it out took responder from 82% to 45%. It now never reduces a card below 1 (82% → 55%).
+- Starting resilience is a strong lever (about 1.4pp per HP at the margin). Architect 60, phoenix 58, governor 44, hunter 36, responder 30 gives a standard-skill spread of 22–47% (was 6–68%).
+
+### Mechanics ablation (standard agent, one capability banned)
+Evict −8pp, isolate −7pp, detect −6pp. Ward, heal, policies, augments, intel and consumables are within ±1.5pp: they are inert at the margin for this player. That is the main source of low decision depth.
+
+### Skill expression
+sharp ≤ standard and lite (the Monte-Carlo planner) = standard over full runs. Better play than the heuristic is not rewarded. Candidates: retain-1 card, interest economy, boss pools (see docs/DESIGN_REVIEW_2.md).
+
+### Known outliers
+Adversaries still under 65% for standard: G0007, G0129 (Mustang Panda), C0028, C0024, C0063 (Poland wiper). Their goal-clock knobs are at or near their limits, so the cause is structural (destroy/disrupt payoffs against few defender answers). About 15 T1/T2 adversaries are flat (random ≥ 85%): they never threaten a good deck.

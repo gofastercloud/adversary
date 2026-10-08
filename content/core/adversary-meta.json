@@ -51,7 +51,10 @@
    }
   ],
   "note": "Destructive impact is an *assessed intent* (CISA AA24-038A), not an observed technique — its Strike card is marked as such.",
-  "goal": "preposition"
+  "goal": "preposition",
+  "balance": {
+   "goalNeed": 1
+  }
  },
  "G0034": {
   "name": "Sandworm Team",
@@ -87,7 +90,7 @@
   ],
   "goal": "disrupt",
   "balance": {
-   "goalNeed": -1,
+   "goalNeed": 0,
    "energy": -2,
    "power": -2,
    "exposure": -4
@@ -235,7 +238,7 @@
   ],
   "goal": "exfil",
   "balance": {
-   "goalNeed": -2,
+   "goalNeed": 1,
    "energy": 1
   }
  },
@@ -263,7 +266,10 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "goalNeed": 1
+  }
  },
  "G0129": {
   "name": "Mustang Panda",
@@ -291,7 +297,7 @@
   ],
   "goal": "exfil",
   "balance": {
-   "goalNeed": -1,
+   "goalNeed": 2,
    "power": 1
   }
  },
@@ -412,7 +418,8 @@
   ],
   "goal": "preposition",
   "balance": {
-   "energy": -2
+   "energy": -1,
+   "power": 1
   }
  },
  "G0117": {
@@ -623,7 +630,9 @@
   ],
   "goal": "resource",
   "balance": {
-   "goalNeed": 1
+   "goalNeed": 1,
+   "power": 1,
+   "energy": 1
   }
  },
  "G0106": {
@@ -646,7 +655,11 @@
     "n": 1
    }
   ],
-  "goal": "resource"
+  "goal": "resource",
+  "balance": {
+   "power": 1,
+   "energy": 1
+  }
  },
  "G0092": {
   "name": "TA505",
@@ -717,7 +730,11 @@
     "n": 1
    }
   ],
-  "goal": "fraud"
+  "goal": "fraud",
+  "balance": {
+   "power": 1,
+   "energy": 1
+  }
  },
  "G0080": {
   "name": "Cobalt Group",
@@ -737,7 +754,8 @@
     "round": 3
    }
   ],
-  "goal": "fraud"
+  "goal": "fraud",
+  "balance": {}
  },
  "G1004": {
   "name": "LAPSUS$",
@@ -783,8 +801,8 @@
   ],
   "goal": "ransom",
   "balance": {
-   "energy": -2,
-   "power": -1,
+   "energy": -1,
+   "power": 0,
    "exposure": -2
   }
  },
@@ -906,7 +924,11 @@
     "n": 1
    }
   ],
-  "goal": "disrupt"
+  "goal": "disrupt",
+  "balance": {
+   "goalNeed": 4,
+   "energy": -1
+  }
  },
  "C0028": {
   "name": "2015 Ukraine Electric Power Attack",
@@ -925,7 +947,11 @@
     "n": 1
    }
   ],
-  "goal": "disrupt"
+  "goal": "disrupt",
+  "balance": {
+   "goalNeed": 5,
+   "energy": -1
+  }
  },
  "C0030": {
   "name": "Triton Safety Instrumented System Attack",
@@ -949,7 +975,8 @@
   ],
   "goal": "disrupt",
   "balance": {
-   "power": 1
+   "power": 1,
+   "goalNeed": 1
   }
  },
  "C0024": {
@@ -976,7 +1003,10 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "goalNeed": 2
+  }
  },
  "C0034": {
   "name": "2022 Ukraine Electric Power Attack",
@@ -996,7 +1026,11 @@
     "round": 5
    }
   ],
-  "goal": "disrupt"
+  "goal": "disrupt",
+  "balance": {
+   "power": 1,
+   "energy": 1
+  }
  },
  "C0063": {
   "name": "2025 Poland Wiper Attacks",
@@ -1016,7 +1050,11 @@
     "round": 4
    }
   ],
-  "goal": "destroy"
+  "goal": "destroy",
+  "balance": {
+   "goalNeed": 6,
+   "energy": -2
+  }
  },
  "C0057": {
   "name": "3CX Supply Chain Attack",
@@ -1037,7 +1075,8 @@
   ],
   "goal": "fraud",
   "balance": {
-   "power": 1
+   "power": 2,
+   "energy": 1
   }
  },
  "C0029": {
@@ -1060,7 +1099,11 @@
     "n": 1
    }
   ],
-  "goal": "access"
+  "goal": "access",
+  "balance": {
+   "power": 1,
+   "energy": 1
+  }
  },
  "C0012": {
   "name": "Operation CuckooBees",
@@ -1108,7 +1151,11 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "power": 1,
+   "energy": 1
+  }
  },
  "C0058": {
   "name": "SharePoint ToolShell Exploitation",
@@ -1157,7 +1204,9 @@
   ],
   "goal": "disrupt",
   "balance": {
-   "goalNeed": -2
+   "goalNeed": -2,
+   "power": 1,
+   "energy": 1
   }
  },
  "C0031": {
@@ -1190,7 +1239,8 @@
   "goal": "disrupt",
   "balance": {
    "energy": 1,
-   "power": -1
+   "power": -1,
+   "goalNeed": 1
   }
  },
  "C0049": {
@@ -1213,7 +1263,8 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {}
  },
  "C0014": {
   "name": "Operation Wocao",
@@ -1235,7 +1286,11 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "power": 1,
+   "energy": 1
+  }
  },
  "C0041": {
   "name": "FrostyGoop Incident",
@@ -1257,7 +1312,11 @@
     "n": 1
    }
   ],
-  "goal": "disrupt"
+  "goal": "disrupt",
+  "balance": {
+   "power": 1,
+   "energy": 1
+  }
  },
  "C0022": {
   "name": "Operation Dream Job",
@@ -1277,6 +1336,10 @@
     "n": 1
    }
   ],
-  "goal": "exfil"
+  "goal": "exfil",
+  "balance": {
+   "power": 1,
+   "energy": 1
+  }
  }
 }

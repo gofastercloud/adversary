@@ -10,11 +10,11 @@
     "battleStart": [
      {
       "op": "wardRandomAsset",
-      "n": 1
+      "n": 2
      }
     ]
    },
-   "desc": "Battle start: a random asset gains a permanent +1 ward (all properties).",
+   "desc": "Battle start: a random asset gains a permanent +2 ward (all properties).",
    "lesson": "A roadmap beats a product: start by protecting the assets that matter most.",
    "refs": [
     "nist:800-207"
@@ -92,7 +92,7 @@
      }
     }
    },
-   "desc": "The first Respond card you play each round costs 1 less.",
+   "desc": "The first Respond card you play each round costs 1 less (never below 1).",
    "lesson": "Rehearsed runbooks make the first ten minutes of an incident boringly fast.",
    "refs": [
     "nist-csf:RS.MA-01",

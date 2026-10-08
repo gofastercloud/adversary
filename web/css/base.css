@@ -70,9 +70,11 @@ body.no-motion *, body.no-motion *::before, body.no-motion *::after { animation-
 
 /* a11y + responsive hardening */
 main#app { display: flex; flex-direction: column; }
-input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--accent); flex: none; }
+input[type=checkbox] { width: 24px; height: 24px; accent-color: var(--accent); flex: none; }
 input[type=range] { max-width: 100%; min-height: 24px; flex: 1 1 120px; min-width: 0; }
 label:has(> input) { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; min-height: 32px; max-width: 100%; }
 .chip { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
 .hand:focus-visible, .acts:focus-visible { outline-offset: -2px; }
 @media (max-width: 480px) { .btn { min-height: 36px; } }
+a.reflink, .reflink { display: inline-flex; align-items: center; min-height: 24px; }
+.chip { min-height: 24px; display: inline-flex; align-items: center; }

@@ -133,7 +133,7 @@ body.no-glitch .logo::before, body.no-glitch .logo::after { display: none; }
 .pick.on { box-shadow: 0 0 0 1px var(--c), 0 0 26px color-mix(in srgb, var(--c) 40%, transparent); }
 .pick { background: var(--panel); }
 .settings select, .settings input:not([type=range]):not([type=checkbox]) { padding: .4em .7em; border-radius: 6px; border: 1px solid var(--line2); background: rgba(0, 0, 0, .5); color: var(--ink); font: inherit; }
-.settings input[type=checkbox] { accent-color: var(--accent); width: 1.1em; height: 1.1em; }
+.settings input[type=checkbox] { accent-color: var(--accent); width: 24px; height: 24px; }
 
 /* fx layer */
 .pc.pg { width: auto; height: auto; background: none; border-radius: 0; box-shadow: none; font-family: var(--font-num); line-height: 1; }

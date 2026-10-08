@@ -351,7 +351,7 @@ export function cardCost(content, b, iid) {
   let c = e.cost;
   if (e.type === 'policy' && b.policyFree) c = 0;
   const df = relicObj(content, b, 'discountFirst')[0];
-  if (df && !b.discountUsed && e.fn === df.fn) c = Math.max(0, c - df.n);
+  if (df && !b.discountUsed && e.fn === df.fn) c = c > 0 ? Math.max(1, c - df.n) : 0;
   return c;
 }
 export function targetKind(content, b, iid) { return def(content, b, iid).target || 'none'; }

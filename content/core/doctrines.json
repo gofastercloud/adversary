@@ -10,7 +10,7 @@
     "protect",
     "identify"
    ],
-   "maxResilience": 48,
+   "maxResilience": 60,
    "money": 60,
    "power": {
     "name": "Harden",
@@ -90,7 +90,7 @@
     "recover",
     "protect"
    ],
-   "maxResilience": 52,
+   "maxResilience": 58,
    "money": 60,
    "unlock": "ach.restore-hero",
    "power": {
@@ -130,7 +130,7 @@
     "govern",
     "identify"
    ],
-   "maxResilience": 38,
+   "maxResilience": 44,
    "money": 75,
    "unlock": "ach.policy-wonk",
    "power": {
@@ -173,7 +173,7 @@
     "respond",
     "recover"
    ],
-   "maxResilience": 34,
+   "maxResilience": 30,
    "money": 60,
    "unlock": "ach.contain-5",
    "power": {

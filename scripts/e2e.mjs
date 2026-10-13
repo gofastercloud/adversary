@@ -47,10 +47,14 @@ for (const [w, h] of VIEWPORTS) {
   await checkLayout(page, vp, 'title');
   const store = () => page.evaluate(() => { const s = window.__adv.store.get(); return { screen: s.screen, phase: s.run?.phase, over: s.run?.battle?.over, pending: !!s.run?.battle?.ttx?.pending, round: s.run?.battle?.round, ach: Object.keys(s.profile?.ach?.unlocked || {}).length, rw: s.run?.reward ? [s.run.reward.cardTaken, s.run.reward.relicTaken].join() : '' }; });
   const click = async (sel, opt = {}) => { const l = page.locator(sel).first(); if (await l.count() === 0) return false; try { await l.click({ timeout: 2000, ...opt }); return true; } catch { return false; } };
+  // overlays that swallow clicks: the full-screen level-up card (covers the hand and End turn) and an open Feed drawer or its scrim (phone and narrow widths)
+  const clearOverlays = async () => {
+    for (const sel of ['.levelup', '.side.open .side-head .iconbtn', '.side-scrim.open']) { const l = page.locator(sel).first(); if (await l.count()) await l.click({ timeout: 1000 }).catch(() => {}); }
+  };
 
   // ── tutorial, via real clicks
   await page.evaluate(() => window.__adv.app.startTutorial()); await page.waitForTimeout(900);
-  const next = async () => { await click('.coach .btn.primary'); await page.waitForTimeout(350); };
+  const next = async () => { await clearOverlays(); await click('.coach .btn.primary'); await page.waitForTimeout(350); };
   for (let i = 0; i < 4; i++) await next();
   const tutOk = await (async () => {
     if (!(await click('.hand [data-card="c.protect.spoofing"]'))) return 'mfa card missing';
@@ -65,20 +69,28 @@ for (const [w, h] of VIEWPORTS) {
   for (let run = 0; run < RUNS; run++) {
     await page.evaluate(() => window.__adv.app.goto('setup')); await page.waitForTimeout(500);
     if (run % 2 === 1) await click('.scn-card >> nth=' + (1 + run), {});          // vary scenario when the picker is present
-    if (!(await click('text=Begin operation'))) { bad(vp, 'setup: Begin operation not clickable'); continue; }
+    await clearOverlays();   // a level-up from the previous run can fire after we have left it
+    if (!(await click('button:has-text("Begin operation")'))) { bad(vp, 'setup: Begin operation not clickable'); continue; }
     await page.waitForTimeout(700);
     let stuck = 0, lastKey = '';
     for (let step = 0; step < STEPS; step++) {
+      await clearOverlays();
       const st = await store(); const key = JSON.stringify(st);
       if (st.phase === 'won' || st.phase === 'lost' || st.screen === 'result') { await page.screenshot({ path: `${SHOTS}/${vp}-result-${run}.png` }); break; }
       stuck = key === lastKey ? stuck + 1 : 0; lastKey = key;
-      if (stuck > 25) { bad(vp, `stuck at ${JSON.stringify(st)}`); await page.screenshot({ path: `${SHOTS}/${vp}-stuck-${run}.png` }); await page.evaluate(() => window.__adv.app.act({ type: 'FORFEIT' })); break; }
+      if (stuck > 25) {
+        bad(vp, `stuck at ${JSON.stringify(st)}`); await page.screenshot({ path: `${SHOTS}/${vp}-stuck-${run}.png` });
+        // end the live run so the next game starts clean. ABANDON is the top-level action; FORFEIT only exists inside a battle, so it was a no-op
+        const ab = await page.evaluate(() => { const r = window.__adv.app.act({ type: 'ABANDON' }); return { ok: r.ok, error: r.error, phase: window.__adv.store.get().run?.phase }; });
+        if (!ab.ok || ab.phase !== 'lost') console.log(`[${vp}] stuck recovery failed: ${ab.ok ? 'phase ' + ab.phase : ab.error}`);
+        break;
+      }
       if (st.over && await click('button:has-text("Debrief")')) { await page.waitForTimeout(400); continue; }
       switch (st.phase) {
         case 'map': await click('.node.avail >> nth=' + Math.floor(rnd() * 2)) || await click('.node.avail'); break;
-        case 'briefing': await checkLayout(page, vp, 'briefing'); await click('text=Begin battle'); break;
+        case 'briefing': await checkLayout(page, vp, 'briefing'); await click('button:has-text("Begin battle")'); break;
         case 'battle': {
-          if (st.over) { await click('text=Continue') || await click('.modal .btn'); break; }
+          if (st.over) { await click('button:has-text("Continue")') || await click('.modal .btn'); break; }
           if (st.pending) { await click('.ttx .choice >> nth=0') || await click('.modal .btn'); break; }
           const n = await page.locator('.hand .card.playable').count();
           if (n && rnd() < 0.75) {
@@ -87,14 +99,15 @@ for (const [w, h] of VIEWPORTS) {
             if (tn) await t.nth(Math.floor(rnd() * tn)).click({ timeout: 2000, force: true }).catch(() => {});
             else await page.locator('.hand .card.selected').first().click({ timeout: 1500 }).catch(() => {});
             await page.waitForTimeout(300);
-          } else { await checkLayout(page, vp, 'battle'); await click('text=End turn'); await page.waitForTimeout(900); }
+          } else { await checkLayout(page, vp, 'battle'); await click('button:has-text("End turn")'); await page.waitForTimeout(900); }
           break;
         }
-        case 'reward': { if (!(await click('.reward .cards .card >> nth=0'))) { if (!(await click('.reward .relic-card'))) await click('text=Continue') || await click('.reward .btn'); } else await page.waitForTimeout(300); break; }
-        case 'shop': await checkLayout(page, vp, 'shop'); if (rnd() < 0.5) await click('.shop .goods .card >> nth=' + Math.floor(rnd() * 3)); await click('text=Continue') || await click('text=Leave'); break;
-        case 'rest': if (!(await click('.rest-opt:not([disabled]) >> nth=0'))) await click('text=Continue'); else { await page.waitForTimeout(250); await click('.modal .card >> nth=0'); await click('text=Continue'); } break;
-        case 'event': if (!(await click('.event .choices .btn >> nth=0'))) await click('text=Continue'); break;
-        case 'whiteboard': { await checkLayout(page, vp, 'whiteboard'); if (!(await click('.stride-btns .btn >> nth=' + Math.floor(rnd() * 6)))) { (await click('text=Next')) || (await click('text=Finish')); } break; }
+        case 'reward': { if (!(await click('.reward .cards .card >> nth=0'))) { if (!(await click('.reward .relic-card'))) await click('button:has-text("Continue")') || await click('.reward .btn'); } else await page.waitForTimeout(300); break; }
+        case 'shop': await checkLayout(page, vp, 'shop'); if (rnd() < 0.5) await click('.shop .goods .card >> nth=' + Math.floor(rnd() * 3)); await click('button:has-text("Continue")') || await click('button:has-text("Leave")'); break;
+        case 'rest': if (!(await click('.rest-opt:not([disabled]) >> nth=0'))) await click('button:has-text("Continue")'); else { await page.waitForTimeout(250); await click('.modal .card >> nth=0'); await click('button:has-text("Continue")'); } break;
+        case 'event': if (!(await click('.event .choices .btn >> nth=0'))) await click('button:has-text("Continue")'); break;
+        // the workshop's Next and Finish are buttons. Bare text=Next is a substring match and resolved to the blurb paragraph ("your next battle"), so the click did nothing and the run stuck
+        case 'whiteboard': { await checkLayout(page, vp, 'whiteboard'); if (!(await click('.stride-btns .btn >> nth=' + Math.floor(rnd() * 6)))) { (await click('button:has-text("Next"):visible')) || (await click('button:has-text("Finish workshop"):visible')); } break; }
         default: await page.waitForTimeout(200);
       }
       await page.waitForTimeout(60);

@@ -72,12 +72,22 @@
 
 /* tutorial coach */
 .coach { position: fixed; z-index: 800; width: 340px; padding: .9rem 1rem; border-radius: 14px; background: rgba(3, 11, 8, .97); border: 2px solid var(--accent); box-shadow: 0 0 40px color-mix(in srgb, var(--accent) 50%, transparent), var(--shadow); animation: rise .3s var(--ease); } .coach h4 { color: var(--accent); margin-bottom: .3em; } .coach p { font-size: .9rem; }
+/* phone: full-width strip at the top or bottom edge (docs.js sets top or bottom), compact so the Round and Resilience row stays visible */
+@media (max-width: 760px) { .coach.dock { left: 8px; right: 8px; width: auto; padding: .55rem .7rem; max-height: calc(100vh - 16px); overflow: auto; } .coach.dock h4 { font-size: .95rem; margin-bottom: .15em; } .coach.dock p { font-size: .8rem; line-height: 1.35; margin: .2em 0 .5em; } }
 .spot { position: fixed; z-index: 790; pointer-events: none; border-radius: 14px; box-shadow: 0 0 0 4000px rgba(1, 4, 3, .62), 0 0 0 3px var(--accent), 0 0 30px var(--accent); transition: all .35s var(--ease); }
 /* result */
 .result { align-items: center; text-align: center; gap: 1rem; } .result h1 { font-size: clamp(2.2rem, 7vw, 5rem); } .result.won h1 { color: #ffd23d; text-shadow: 0 0 40px rgba(255, 210, 61, .6), 4px 4px 0 #a25f00; } .result.lost h1 { color: #ff5470; text-shadow: 0 0 40px rgba(255, 84, 112, .5), 4px 4px 0 #6a0a1c; }
 .statgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .6rem; width: min(900px, 100%); } .stat { padding: .7rem; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); } .stat b { display: block; font-family: var(--font-num); font-size: 2rem; color: var(--accent); line-height: 1; } .stat span { font-size: .72rem; color: var(--ink2); text-transform: uppercase; letter-spacing: .1em; }
 .lb { width: min(640px, 100%); text-align: left; } .lb table { width: 100%; border-collapse: collapse; font-size: .85rem; } .lb td, .lb th { padding: .35rem .6rem; border-bottom: 1px solid var(--line); } .lb tr.me td { background: rgba(90, 209, 255, .12); }
-.settings label { display: flex; align-items: center; gap: .7rem; padding: .5rem 0; } .settings input[type=range] { accent-color: var(--accent); }
+/* base.css lets labels wrap (flex-wrap: wrap), which drops a checkbox onto its own line on phone: keep each row on one line and let only the text wrap inside its own box */
+.settings label { display: flex; align-items: center; flex-wrap: nowrap; gap: .7rem; padding: .5rem 0; } .settings input[type=range] { accent-color: var(--accent); }
+.settings label > input[type=checkbox] { flex: none; }
+.settings select, .settings input:not([type=range]):not([type=checkbox]) { min-width: 0; max-width: 100%; }
+/* Settings groups: "This battle" (live battle only) and "Local data" are separate bordered boxes */
+.settings .setgroup { border: 1px solid var(--line2); border-radius: 12px; padding: .7rem .9rem; margin: .8rem 0; }
+.settings .setgroup h3 { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink2); margin: 0 0 .35rem; font-family: var(--font-display); }
+.settings .setgroup p { font-size: .8rem; margin: 0 0 .5rem; }
+.settings .setgroup.danger { border-color: rgba(255, 84, 112, .45); }
 .reflink { display: inline-flex; align-items: center; gap: .3em; padding: .1em .55em; border-radius: 999px; font-size: .74rem; font-family: var(--font-mono); border: 1px solid; margin: .1em .15em .1em 0; } .reflink.mitre { color: #ff9aad; border-color: rgba(255, 84, 112, .5); } .reflink.nist { color: #9fd8ff; border-color: rgba(90, 209, 255, .5); } .reflink.owasp { color: #9bffb5; border-color: rgba(74, 222, 128, .5); } .reflink.au { color: #ffd9a0; border-color: rgba(255, 176, 46, .5); } .reflink.std { color: #d6c6ff; border-color: rgba(167, 139, 250, .5); } .reflink:hover { background: rgba(255, 255, 255, .08); text-decoration: none; } .reflink svg { width: .95em; height: .95em; }
 
 .spot.soft { box-shadow: 0 0 0 4000px rgba(1, 4, 3, .32), 0 0 0 3px var(--accent), 0 0 30px var(--accent); }

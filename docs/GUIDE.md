@@ -5,8 +5,9 @@
 1. Pick a **scenario** (an organisation and sector), a **doctrine** (your starting deck and hero power) and an
    **assurance level** (Training, ML1, ML2, ML3).
 2. Walk the **map**: battles, elites, a boss per act, shops, rest sites, events and whiteboard sessions.
-3. In a **battle** you have 3 energy a turn and draw 5 cards. Deploy controls onto assets (they stay), play actions, enact
-   policies (two Programme slots), and augment controls. Then end the turn.
+3. In a **battle** you have 3 energy a turn and draw 6 cards at the start of each round (draw relics add more; unplayed
+   cards are discarded at the end of your turn). Deploy controls onto assets (they stay), play actions, enact policies
+   (two Programme slots), and augment controls. Then end the turn.
 4. Between battles pick one of three cards, buy relics, upgrade card maturity (ML1 to ML3), remove clutter and answer a
    threat-modelling whiteboard.
 
@@ -49,8 +50,8 @@ references, scored against objectives. Use it in a workshop: project it, discuss
 
 ## Progress
 
-Clearance XP, a codex that fills as you meet adversaries and techniques (every entry links to the source), 122 achievements
-(20 hidden), and a daily challenge with a verified leaderboard (every score is recomputed by replaying your actions).
+Clearance XP, a codex that fills as you meet adversaries and techniques (every entry links to the source), 137 achievements
+(22 hidden), and a daily challenge with a verified leaderboard (every score is recomputed by replaying your actions).
 
 ## Tutorial walkthrough
 

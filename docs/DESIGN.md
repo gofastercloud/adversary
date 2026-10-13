@@ -67,7 +67,7 @@ board), **Engage Breach Counsel**, **ISAC/ACSC Tip-off**.
 - **Assurance levels** 0–3 (Training, ML1, ML2, ML3) scale difficulty.
 - **Whiteboard**: STRIDE-per-element threat modelling on a data-flow diagram. Each pack ships two DFDs of 8 scenarios.
 - **TTX mode**: facilitator-style exercises with timed injects, decisions rated best/ok/poor with lessons, and objectives.
-- **Progress**: clearance XP, codex (adversaries, techniques, controls), 122 achievements (20 hidden), daily challenge.
+- **Progress**: clearance XP, codex (adversaries, techniques, controls), 137 achievements (22 hidden), daily challenge.
 
 ## Determinism and verification
 

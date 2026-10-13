@@ -22,18 +22,31 @@ node lab/report.mjs                              # lab/out/report.html (heat map
 | `novice` | Heuristic with large score noise, skips turns, holds no consumables | A first-hour player |
 | `standard` | Heuristic that reads the briefing (adversary mitigations, goal, intent), values reveals/evictions by goal relevance, holds consumables for emergencies | An attentive player |
 | `sharp` | Same heuristic with almost no noise | A careful player |
+| `lite` | Monte-Carlo planner with 4 candidate plays, 2 rollouts and one adversary turn of lookahead | Cheap planner, used in the skill-expression check |
 | `expert` | Determinised Monte-Carlo planner: for each candidate play it clones the battle, re-seeds future randomness, finishes with the `sharp` policy and averages outcomes | Skill ceiling |
 
 The expert sees hidden footholds and the adversary's current hand, so it is an upper bound, not a human proxy. It is also
 about 150x slower, so it is used on samples. Run-level agents (`lab/agents/run.mjs`) add map routing, card picks that balance the
 deck and cover the act's mitigations, shop spending, rest/upgrade choices, event scoring and whiteboard accuracy.
 
+**Default skills.** `ladder` runs `random`, `novice`, `standard` and `sharp` unless you pass `--skills`. `lite` and `expert`
+are not in the default set, so add them explicitly:
+
+```bash
+node lab/cli.mjs ladder --n 40 --scenarios all --skills standard,sharp,lite,expert
+```
+
+`expert` is slow: expect minutes rather than seconds, even for a small sample. As a rough guide, `--n 1` on one scenario with
+`standard,lite,expert` took about two minutes in a test run, so use a small `--n` and one scenario when you include it. The
+`adversaries` command defaults to `random,standard,sharp`, also set with `--skills`, and draws fewer samples for `expert`.
+
 ## What it measures
 
 - **Skill ladder**: win rate of full runs per skill with 95% Wilson intervals. Target shape: random about 0%, novice single digits,
   standard 15-20%, sharp about 30%, expert 50%+.
 - **Adversary matrix**: win rate by adversary and skill at *realistic* decks (`lab/decks.mjs` builds the deck a player has by
-  act and node). Flags: easy (>95%), brutal (<25%), flat (play barely matters).
+  act and node). Flags: easy (standard above 95%), brutal (standard below 25%), flat (sharp minus random
+  under 15pp: play barely matters).
 - **Card and relic power**: paired ablation on identical seeds, one slot swapped for the card; reports win-rate lift with a CI.
 - **Loss causes**: goal vs resilience vs crown-jewel loss, which tells you whether a clock or attrition is the problem.
 - **Where runs die**: pass rate by act and node (battle/elite/boss).
@@ -82,4 +95,4 @@ Evict −8pp, isolate −7pp, detect −6pp. Ward, heal, policies, augments, int
 sharp ≤ standard and lite (the Monte-Carlo planner) = standard over full runs. Better play than the heuristic is not rewarded. Candidates: retain-1 card, interest economy, boss pools (see docs/DESIGN_REVIEW_2.md).
 
 ### Known outliers
-Adversaries still under 65% for standard: G0007, G0129 (Mustang Panda), C0028, C0024, C0063 (Poland wiper). Their goal-clock knobs are at or near their limits, so the cause is structural (destroy/disrupt payoffs against few defender answers). About 15 T1/T2 adversaries are flat (random ≥ 85%): they never threaten a good deck.
+Adversaries still under 65% for standard: G0007, G0129 (Mustang Panda), C0028, C0024, C0063 (Poland wiper). Their goal-clock knobs are at or near their limits, so the cause is structural (destroy/disrupt payoffs against few defender answers). About 15 T1/T2 adversaries let the random agent win 85% or more of the time: they never threaten a good deck.

@@ -167,6 +167,8 @@ export function BattleScreen() {
   const dossier = () => store.set({ modal: { type: 'dossier', id: b.adv.id } });
   const hint = s.settings.hints;
   const playedStage = stage && stage.i >= 0 ? stage.plays[stage.i] : null;
+  // no hover (touch): the preview follows the selection, so it opens on the first tap and closes on deselect, play or cancel
+  const touch = matchMedia('(hover: none)').matches; const shown = touch ? (iid || null) : preview;
 
   return html`<div class="battle" style=${`--advc:${advc}`}>
     <div class="hud">
@@ -209,7 +211,7 @@ export function BattleScreen() {
       </div>
     </div>
 
-    ${preview && b.cards[preview] && html`<div class="card-preview" aria-hidden="true"><${Card} content=${content} def=${content.cards[b.cards[preview].id]} ml=${b.cards[preview].ml} cost=${B.cardCost(content, b, preview)} tiltOn=${false} cls="big-preview"/></div>`}
+    ${shown && b.cards[shown] && html`<div class=${cx('card-preview', touch && 'sheet')} aria-hidden="true"><${Card} content=${content} def=${content.cards[b.cards[shown].id]} ml=${b.cards[shown].ml} cost=${B.cardCost(content, b, shown)} tiltOn=${false} cls="big-preview"/></div>`}
     <div class="bottom">
       <div class="pile" ...${tip('Draw pile · cards left before your discard is reshuffled')}>Deck<div class="stack"><i/><b>${b.draw.length}</b></div><span class="dimmer">${b.discard.length} discard</span></div>
       <div class="hand" tabindex="0" role="group" aria-label="Your hand">${b.hand.map((id, i) => { const d = content.cards[b.cards[id].id]; const c = B.cardCost(content, b, id); const base = B.effCard(content, b, id).cost; const ok = !d.unplayable && c <= b.energy.cur; const rot = (i - (n - 1) / 2) * Math.min(4, 22 / Math.max(n, 1)); const lift = Math.abs(i - (n - 1) / 2) ** 2 * 1.6; return html`<${Card} key=${id} content=${content} def=${d} ml=${b.cards[id].ml} cost=${c} discounted=${c < base} playable=${ok} unaffordable=${!ok} selected=${sel?.iid === id} onClick=${() => clickCard(id)} onContext=${(e) => { e.preventDefault(); setInspect(id); }} onEnter=${() => setPreview(id)} onLeaveCb=${() => setPreview(p => (p === id ? null : p))} cls="deal" i=${i} iid=${id} style=${{ '--rot': rot + 'deg', '--lift': lift + 'px' }}/>`; })}</div>

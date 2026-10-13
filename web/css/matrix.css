@@ -176,7 +176,7 @@ body.no-glitch .banner .bt::before, body.no-glitch .banner .bt::after { display:
   .hud > :last-child { order: -1; } .hud-adv { order: -2; }
   .hud .panel { padding: .35rem .55rem; }
   .hud-adv .sigil { width: 52px; height: 52px; } .hud-adv .nm { font-size: 1.05rem; } .hud-adv .sub, .hud-adv .traits, .hud-adv .mono, .hud-adv .chip { display: none; }
-  .hud-me:not(:last-child) { flex-direction: row; flex-wrap: wrap; gap: .3rem .8rem; } .hud-me:not(:last-child) .hud-row:nth-child(2) { display: none; }
+  .hud-me:not(:last-child) { flex-direction: row; flex-wrap: wrap; gap: .3rem .8rem; } .hud-me:not(:last-child) .hud-row:first-child { flex: 1 1 100%; }
   .hud .meter, .hud-adv .meter { height: 16px; }
   .hud-me:last-child .row:last-child { display: none; }
   .intent { margin-top: .25rem; padding: .25rem .5rem; } .goalbar { margin-top: .25rem; }
@@ -208,4 +208,6 @@ body.no-glitch .banner .bt::before, body.no-glitch .banner .bt::after { display:
   .brief .sigil.lg { width: 96px; height: 96px; } .brief h2 { font-size: 1.7rem; }
   .begin-bar { flex-wrap: wrap; } .begin-bar input { min-width: 0 !important; width: 100%; flex: 1 1 100%; } .begin-bar .btn { width: 100%; }
   .dossier { grid-template-columns: 1fr; } .wb { grid-template-columns: 1fr; } .screen { padding: .8rem .8rem; }
+  .reward { display: flex; flex-direction: column; } .reward .debrief { order: 5; }
+  .brief > div:last-child > .row:last-child { position: sticky; bottom: .3rem; z-index: 3; justify-content: center; padding: .9rem 0 .3rem; background: linear-gradient(180deg, transparent, rgba(2, 8, 5, .97) 28%); }
 }

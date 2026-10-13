@@ -9,6 +9,7 @@ import { burst, glyphBurst, ripple, glitchScreen, flyClone, accessBanner, bossEn
 import { flashBg } from './bg.js';
 import { tutAllows, tutAllowsEnd } from './docs.js';
 import { Count, Decrypt } from './term.js';
+import { intentWard } from './intent-ward.js';
 
 const TACTIC_ICON = { 'reconnaissance': 'search', 'resource-development': 'package', 'initial-access': 'door-open', 'execution': 'terminal', 'persistence': 'anchor', 'privilege-escalation': 'trending-up', 'stealth': 'ghost', 'defense-evasion': 'ghost', 'defense-impairment': 'shield-off', 'credential-access': 'key-round', 'discovery': 'radar', 'lateral-movement': 'route', 'collection': 'archive', 'command-and-control': 'radio-tower', 'exfiltration': 'upload', 'impact': 'bomb', 'inhibit-response-function': 'siren', 'impair-process-control': 'factory' };
 const tname = (content, t) => content.tactics[t]?.name || t;
@@ -165,6 +166,7 @@ export function BattleScreen() {
   const playable = b.hand.filter(id => { const c = B.effCard(content, b, id); return !c.unplayable && c.type !== 'status' && B.cardCost(content, b, id) <= b.energy.cur && B.validTargets(content, b, id).length; });
   const noMoves = playable.length === 0;
   const intent = B.intentView(content, b);
+  const iward = intentWard(content, b, intent);   // S3: ward-vs-power chip, only on the tile the intent names
 
   // ── view
   const zones = []; for (const a of b.assets) { let z = zones.find(z => z.name === a.zone); if (!z) zones.push(z = { name: a.zone, assets: [] }); z.assets.push(a); }
@@ -209,7 +211,7 @@ export function BattleScreen() {
         ${sel && html`<div class="target-banner">${power ? power.name : card.name}: ${tk === 'asset' ? 'choose an asset' : tk === 'foothold' ? 'choose a revealed foothold' : tk === 'control' ? 'choose a control to augment' : 'click the card again (or press Enter) to play'} <span class="kbd">Esc</span></div>`}
         <div class="field-inner" ref=${innerRef} style=${`transform:scale(${fit})`}>
         <svg class="links">${links.map(l => html`<line x1=${l.a.x} y1=${l.a.y} x2=${l.b.x} y2=${l.b.y} class=${l.hot ? 'hot' : ''}/>`)}</svg>
-        ${zones.map(z => html`<div class=${cx('zone', z.assets.length > 3 && 'two')}><h5>${z.name}</h5>${z.assets.map(a => html`<${AssetTile} a=${a} b=${b} content=${content} showHints=${hint} hit=${hit[a.id] && Date.now() - hit[a.id] < 600} targetable=${tAssets.has(a.id) && tk === 'asset'} untargetable=${sel && tk === 'asset' && !tAssets.has(a.id)} intent=${intentAsset === a.id && intent?.level >= 2} onClick=${() => confirm({ asset: a.id })} targetFids=${tk === 'foothold' ? tFids : null} onFh=${(f) => tk === 'foothold' && tFids.has(f.id) && confirm({ fid: f.id })}/>`)}</div>`)}
+        ${zones.map(z => html`<div class=${cx('zone', z.assets.length > 3 && 'two')}><h5>${z.name}</h5>${z.assets.map(a => html`<${AssetTile} a=${a} b=${b} content=${content} showHints=${hint} hit=${hit[a.id] && Date.now() - hit[a.id] < 600} targetable=${tAssets.has(a.id) && tk === 'asset'} untargetable=${sel && tk === 'asset' && !tAssets.has(a.id)} intent=${intentAsset === a.id && intent?.level >= 2} iward=${iward && iward.asset === a.id ? iward : null} onClick=${() => confirm({ asset: a.id })} targetFids=${tk === 'foothold' ? tFids : null} onFh=${(f) => tk === 'foothold' && tFids.has(f.id) && confirm({ fid: f.id })}/>`)}</div>`)}
         </div>
         ${tk === 'control' && html`<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;z-index:30" class="panel"><span class="dim" style="padding:.4em .8em">Augment which control?</span>${b.controls.filter(k => tKids.has(k.kid)).map(k => html`<button class="btn small" onClick=${() => confirm({ kid: k.kid })}>${content.cards[k.card].name} @ ${b.assets.find(a => a.id === k.asset).name}</button>`)}${!tKids.size && html`<span class="bad" style="padding:.4em .8em">No compatible control deployed.</span>`}</div>`}
       </div>

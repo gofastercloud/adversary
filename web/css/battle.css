@@ -13,8 +13,8 @@
 .tier-badge { font-family: var(--font-display); font-size: .65rem; letter-spacing: .14em; padding: .1em .55em; border-radius: 5px; border: 1px solid; text-transform: uppercase; }
 .tier-badge.t1 { color: #9bffb5; border-color: #4ade80; } .tier-badge.t2 { color: #ffd9a0; border-color: #ffb02e; } .tier-badge.t3 { color: #ffb0c0; border-color: #ff5470; background: rgba(255, 84, 112, .12); }
 .traits { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .35rem; } .trait { font-size: .7rem; padding: .08em .5em; border-radius: 5px; background: color-mix(in srgb, var(--advc, #ff5470) 18%, #05110a); border: 1px solid color-mix(in srgb, var(--advc, #ff5470) 60%, #000); cursor: help; }
-.intent { margin-top: .4rem; padding: .4rem .6rem; border-radius: 9px; background: rgba(255, 84, 112, .1); border: 1px dashed rgba(255, 84, 112, .6); font-size: .78rem; display: flex; gap: .6rem; align-items: center; }
-.intent .iv { font-family: var(--font-display); font-size: .95rem; } .intent small { color: var(--ink2); }
+.intent:not(.asset) { margin-top: .4rem; padding: .4rem .6rem; border-radius: 9px; background: rgba(255, 84, 112, .1); border: 1px dashed rgba(255, 84, 112, .6); font-size: .78rem; display: flex; gap: .6rem; align-items: center; }
+.intent .iv { font-family: var(--font-display); font-size: .95rem; } .intent:not(.asset) small { color: var(--ink2); }
 .intent.hidden-intent { opacity: .7; } .intent .fid { display: flex; gap: 3px; } .intent .fid i { width: 9px; height: 9px; border-radius: 2px; background: rgba(255, 255, 255, .15); } .intent .fid i.on { background: var(--bad); box-shadow: 0 0 6px var(--bad); }
 .clock { white-space: nowrap; font-family: var(--font-num); font-size: 1.5rem; letter-spacing: .06em; color: var(--accent); text-shadow: 0 0 12px color-mix(in srgb, var(--accent) 60%, transparent); }
 .round-pips { display: flex; gap: 4px; } .round-pips i { width: 14px; height: 6px; border-radius: 2px; background: rgba(255, 255, 255, .15); } .round-pips i.done { background: var(--accent); } .round-pips i.now { background: #fff; box-shadow: 0 0 8px #fff; }
@@ -134,3 +134,19 @@
   .energy-wrap .btn { min-height: 28px; padding: .2rem .4rem; font-size: .7rem; } .energy-wrap .btn.big { font-size: .8rem; }
 }
 @media (max-width: 1150px) { .energy-wrap { min-width: 0; max-width: 100%; } .power .btn, .energy-wrap .btn { min-width: 0; max-width: 100%; white-space: normal; } }
+
+/* S3: ward-vs-power chip on the tile the intent names (level 3 only). Holds = calm, breaks = alarm. */
+.asset .a-iward { display: flex; align-items: center; gap: 5px; min-width: 0; height: 18px; margin: 0 0 4px; padding: 0 6px; border-radius: 6px; border: 1px solid var(--iw); background: color-mix(in srgb, var(--iw) 16%, #05110a); color: #fff; font-family: var(--font-mono); font-size: 9.5px; line-height: 1; white-space: nowrap; overflow: hidden; }
+.asset .a-iward.holds { --iw: var(--good); }
+.asset .a-iward.breaks { --iw: var(--bad); box-shadow: 0 0 8px color-mix(in srgb, var(--bad) 45%, transparent); }
+.asset .a-iward .iw-txt { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.asset .a-iward .iw-short { display: none; }
+.asset .a-iward b { margin-left: auto; flex: none; font-family: var(--font-display); font-weight: 700; font-size: 8.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--iw); }
+.asset .w.iw-off { opacity: .28; }
+.asset .w.iw-key { opacity: 1; outline: 2px solid var(--c); outline-offset: 1px; }
+@media (max-width: 760px) {
+  /* the phone board is scaled to fit (about 0.5), so the chip is sized near the ward numerals' rendered size */
+  .asset .a-iward { height: 19px; padding: 0 5px; gap: 4px; font-size: 11px; }
+  .asset .a-iward .iw-long { display: none; } .asset .a-iward .iw-short { display: inline; }
+  .asset .a-iward b { font-size: 9px; }
+}

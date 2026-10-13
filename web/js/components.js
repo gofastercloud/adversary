@@ -54,7 +54,7 @@ export function Foothold({ f, content, targetable, onClick, hint }) {
 }
 
 const KIND_ICON = { identity: 'id-card', email: 'mail', endpoint: 'laptop', server: 'server', data: 'database', network: 'network', cloud: 'cloud', ot: 'factory', backup: 'database-backup', app: 'receipt', vendor: 'handshake' };
-export function AssetTile({ a, b, content, targetable, untargetable, onClick, hit, intent, showHints, targetFids, onFh }) {
+export function AssetTile({ a, b, content, targetable, untargetable, onClick, hit, intent, iward, showHints, targetFids, onFh }) {
   const wards = wardMap(content, b, a.id);
   const ctrls = b.controls.filter(k => k.asset === a.id);
   const feet = b.footholds.filter(f => f.asset === a.id);
@@ -65,7 +65,8 @@ export function AssetTile({ a, b, content, targetable, untargetable, onClick, hi
     <div class="a-badges">${a.isolated && html`<span class="badge iso">Isolated</span>`}${a.staged && html`<span class="badge staged">Data staged</span>`}${a.blocked && html`<span class="badge block">Path pruned</span>`}${a.shield > 0 && html`<span class="badge shield">+${a.shield}</span>`}</div>
     <div class="a-head"><${Icon} n=${a.icon || KIND_ICON[a.kind]}/><span class="a-name">${a.name}</span>${a.jewel && html`<span class="a-jewel" title="Crown jewel"><${Icon} n="gem"/></span>`}</div>
     <div class=${cx('a-hp', hpPct < 35 ? 'low' : hpPct < 65 ? 'mid' : '')}><i style=${`width:${hpPct}%`}/><b>${a.hp}/${a.max}</b></div>
-    <div class="a-wards">${['S', 'T', 'R', 'I', 'D', 'E'].map(s => html`<span class=${cx('w', wards[s] > 0 && 'on', 'tag-' + s)} style=${`--c:var(--st-${s})`}><small>${s}</small>${wards[s] || ''}</span>`)}</div>
+    ${iward && html`<div class=${cx('a-iward', iward.holds ? 'holds' : 'breaks')} role="img" aria-label=${iward.aria} ...${tip(iward.tip)}><span class="iw-txt"><span class="iw-long">${iward.long}</span><span class="iw-short">${iward.short}</span></span><b>${iward.holds ? 'holds' : 'breaks'}</b></div>`}
+    <div class="a-wards">${['S', 'T', 'R', 'I', 'D', 'E'].map(s => html`<span class=${cx('w', wards[s] > 0 && 'on', 'tag-' + s, iward && (iward.stride === s ? 'iw-key' : 'iw-off'))} style=${`--c:var(--st-${s})`}><small>${s}</small>${wards[s] || ''}</span>`)}</div>
     <div class="a-ctrls">${Array.from({ length: a.slots }, (_, i) => { const k = ctrls[i]; if (!k) return html`<div class="slot"/>`; const d = content.cards[k.card]; return html`<div class=${cx('slot', 'filled', k.disabledBy && 'off')} style=${`--fn:${FNCOL[d.fn]}`} ...${tip(() => html`<div style="width:280px"><h4>${d.name}${k.disabledBy ? ' (DISABLED)' : ''}</h4>${k.augs.length ? html`<div class="dim" style="font-size:.78rem">Augments: ${k.augs.map(x => content.cards[x.card].name).join(', ')}</div>` : null}<p style="margin:.4em 0">${d.lesson || d.desc}</p>${k.disabledBy ? html`<p class="bad">Disabled by an adversary foothold. Evict the foothold or restore the control.</p>` : null}<${Refs} list=${d.refs}/></div>`)}><${Icon} n=${cardIcon(d)}/>${k.augs.length ? html`<span class="augs">${k.augs.map(() => html`<i/>`)}</span>` : null}</div>`; })}</div>
     <div class="a-fh">${feet.filter(f => f.revealed).map(f => html`<${Foothold} f=${f} content=${content} targetable=${targetFids?.has(f.id)} onClick=${(e) => { e.stopPropagation(); onFh?.(f); }}/>`)}${showHints && feet.some(f => !f.revealed && f.born <= b.round - 2) ? html`<${Foothold} f=${{}} content=${content} hint=${true}/>` : null}</div>
   </div>`;

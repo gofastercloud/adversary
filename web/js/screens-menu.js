@@ -38,6 +38,7 @@ export function Title() {
   const decor = useMemo(() => core ? ['c.protect.spoofing', 'a.fido2', 'c.detect.tampering', 'x.edr'].map((id, i) => ({ id, left: [1, 87, 2, 86][i], top: [6, 8, 56, 54][i], r: [-8, 7, 6, -6][i] })) : [], [core]);
   const c = s.content;
   const doneToday = s.profile.daily?.done?.[sydneyDate()] != null;
+  const tut = !s.settings?.tutorialSeen; // first launch: Tutorial is the way in
   return html`<div class="screen title"><div class="title-cards">${c && decor.map(d => html`<div style=${`position:absolute;left:${d.left}%;top:${d.top}%;--r:${d.r}deg;transform:rotate(${d.r}deg);animation:floaty 9s ${d.r}s ease-in-out infinite`}><${Card} content=${c} def=${c.cards[d.id]} tiltOn=${false}/></div>`)}</div>
     <div class="title-main">
     <div class="logo" data-t="ADVERSARY">ADVERSARY</div>
@@ -45,10 +46,11 @@ export function Title() {
     <div class="title-row"><${Art} kind="hacker" cls="art-title"/>
     <div class="menu">
       ${s.saved && html`<button class="btn good big pulse" onClick=${async () => { unlock(); if (!(await app.resumeRun())) return; }}><${Icon} n="play"/>Continue run</button>`}
-      <button class="btn primary big" onClick=${() => { unlock(); app.goto('setup'); }}><${Icon} n="swords"/>New run</button>
+      ${tut && html`<button class="btn primary big" onClick=${() => app.goto('tutorial')}><${Icon} n="graduation-cap"/>Tutorial</button>`}
+      <button class=${cx('btn', !tut && 'primary big')} onClick=${() => { unlock(); app.goto('setup'); }}><${Icon} n="swords"/>New run</button>
       <button class="btn violet" onClick=${() => { unlock(); app.goto('daily'); }}><${Icon} n="flame"/>Daily challenge${doneToday ? html` <span class="chip good" style="margin-left:.4em">Done today</span>` : ''}</button>
       <button class="btn warn" onClick=${() => app.goto('ttx')}><${Icon} n="clipboard-check"/>Tabletop exercises</button>
-      <div class="row" style="gap:.6rem"><button class="btn ghost" style="flex:1" onClick=${() => app.goto('tutorial')}><${Icon} n="graduation-cap"/>Tutorial</button><button class="btn ghost" style="flex:1" onClick=${() => app.goto('docs')}><${Icon} n="book-open"/>Guide</button></div>
+      <div class="row" style="gap:.6rem">${!tut && html`<button class="btn ghost" style="flex:1" onClick=${() => app.goto('tutorial')}><${Icon} n="graduation-cap"/>Tutorial</button>`}<button class="btn ghost" style="flex:1" onClick=${() => app.goto('docs')}><${Icon} n="book-open"/>Guide</button></div>
     </div></div>
     <div class="ticker" key=${fi}><b class="glowtext" style="color:var(--accent)">${FACTS[fi][0]}</b> <span class="dimmer">//</span> <${Typed} text=${FACTS[fi][1]} cps=${150}/></div>
     ${s.notice && html`<div class="chip warn">${s.notice}</div>`}
@@ -58,7 +60,8 @@ export function Title() {
 export function Setup() {
   const s = useStore(); const core = getCore(); const man = getManifest();
   const [scn, setScn] = useState(s.scenario || (man.scenarios.find(x => x.id === 'enterprise') || man.scenarios[0]).id);
-  const [doc, setDoc] = useState('architect'); const [as, setAs] = useState(1); const [seed, setSeed] = useState('');
+  const [doc, setDoc] = useState('architect'); const [as, setAs] = useState(s.profile.stats?.wins > 0 ? 1 : 0); // Training (ML0) until the first run win; any level stays selectable
+  const [seed, setSeed] = useState('');
   const sc = man.scenarios.find(x => x.id === scn);
   useEffect(() => { setPalette(sc.theme); }, [scn]);
   const unlocked = s.profile.unlocks.doctrines; const maxAs = s.profile.unlocks.assurance;
@@ -74,7 +77,7 @@ export function Setup() {
     <div class="picker">${D.map(d => { const lock = !unlocked.includes(d.id); const ach = lock && core.achievements.achievements.find(a => a.id === d.unlock); return html`<button class=${cx('pick', doc === d.id && 'on')} style="--c:var(--accent2)" onClick=${() => !lock && (sfx.click(), setDoc(d.id))}><h3><span class="pk-ic"><${Icon} n=${d.icon}/></span>${d.name}</h3><p>${d.blurb}</p><p class="dimmer"><b>${d.power.name}</b>: ${d.power.text}</p><div class="deckmini">${d.deck.map(id => html`<i style=${`--fn:${FNCOL[id.startsWith('c.') ? id.split('.')[1] : ({ 'x.patch': 'protect', 'x.threathunt': 'detect', 'x.training': 'govern', 'x.soar': 'respond' }[id] || 'protect')]}`}/>`)}</div>${lock && html`<div class="lock"><div><${Icon} n="lock" cls="lg"/><br/>Locked<br/><small>${ach ? ach.desc : 'Earn an achievement'}</small></div></div>`}</button>`; })}</div>
     <h3 class="dim">3 · Assurance — maturity level of the adversaries</h3>
     <div class="picker">${core.tuning.assurance.map(a => html`<button class=${cx('pick', as === a.id && 'on')} style="--c:var(--warn)" onClick=${() => a.id <= maxAs && (sfx.click(), setAs(a.id))}><h3>${a.name}</h3><p>${a.note}</p>${a.id > maxAs && html`<div class="lock">Win a run at ML${a.id - 1} to unlock</div>`}</button>`)}</div>
-    <div class="begin-bar"><input placeholder="Seed (optional — share it for the same run)" value=${seed} onInput=${e => setSeed(e.target.value)} style="flex:1;min-width:220px;padding:.7em 1em;border-radius:10px;border:1px solid var(--line2);background:rgba(0,0,0,.4);color:var(--ink);font-family:var(--font-mono)"/><button class="btn primary big" onClick=${start}><${Icon} n="rocket"/>Begin operation</button></div></div>`;
+    <div class="begin-bar"><details style="flex:1;min-width:220px"><summary class="dim" style="cursor:pointer;font-family:var(--font-display);letter-spacing:.12em;font-size:.78rem;padding:.4em 0">Advanced</summary><input placeholder="Seed (optional — share it for the same run)" value=${seed} onInput=${e => setSeed(e.target.value)} style="width:100%;margin-top:.4rem;padding:.7em 1em;border-radius:10px;border:1px solid var(--line2);background:rgba(0,0,0,.4);color:var(--ink);font-family:var(--font-mono)"/></details><button class="btn primary big" onClick=${start}><${Icon} n="rocket"/>Begin operation</button></div></div>`;
 }
 
 export function DailyScreen() {

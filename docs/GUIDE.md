@@ -51,7 +51,7 @@ references, scored against objectives. Use it in a workshop: project it, discuss
 ## Progress
 
 Clearance XP, a codex that fills as you meet adversaries and techniques (every entry links to the source), 137 achievements
-(22 hidden), and a daily challenge with a verified leaderboard (every score is recomputed by replaying your actions).
+(22 hidden), and a daily challenge with a verified leaderboard (every score is recomputed by replaying your actions). The daily challenge shows a running count of dailies completed and your best daily score. The count never resets.
 
 ## Tutorial walkthrough
 

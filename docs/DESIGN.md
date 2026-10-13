@@ -67,7 +67,7 @@ board), **Engage Breach Counsel**, **ISAC/ACSC Tip-off**.
 - **Assurance levels** 0–3 (Training, ML1, ML2, ML3) scale difficulty.
 - **Whiteboard**: STRIDE-per-element threat modelling on a data-flow diagram. Each pack ships two DFDs of 8 scenarios.
 - **TTX mode**: facilitator-style exercises with timed injects, decisions rated best/ok/poor with lessons, and objectives.
-- **Progress**: clearance XP, codex (adversaries, techniques, controls), 137 achievements (22 hidden), daily challenge.
+- **Progress**: clearance XP, codex (adversaries, techniques, controls), 137 achievements (22 hidden), daily challenge. The daily challenge shows a running count of dailies completed and your best daily score; the count never resets.
 
 ## Determinism and verification
 
@@ -89,8 +89,10 @@ Difficulty is data, tuned by simulation rather than by feel (see [PLAYTEST_LAB.m
 - **Global card knobs** (`tuning.balance`): `wardAdd`, `detectStrAdd`, `detectNAdd`, `evictAdd`, `healAdd`, `shieldAdd`, applied at content build.
 - **Per-adversary residuals** (`adversaryMeta[id].balance`): `goalNeed`, `energy`, `power`, `exposure`; small by design, so the
   *kind* of threat (what its goal is, which techniques it has) shapes difficulty, not a patch number.
-- **Targets**: a standard-skill player with a realistic deck should beat normal fights about 90-96% of the time, elites 80-90%
-  and bosses 70-88% depending on the act, giving a full-run clear rate of roughly 15-20%. Sharper play and the expert planner
-  should do materially better; random play should almost never clear a fight with a developed deck.
+- **Targets**: per node, a standard-skill player with a realistic deck should beat normal fights about 90-96% of the time, elites 80-90%
+  and bosses 70-88% depending on the act. Full-run targets are set per assurance level (see [PLAYTEST_LAB.md](PLAYTEST_LAB.md)): at ML1, standard 35-45%;
+  at ML3, standard 12-20%. Sharper play and the expert planner should do materially better. Random play clears about 0% of full runs,
+  but it wins about 60% [56-65] of single battles with a developed deck at ML1 (`node lab/cli.mjs adversaries --n 10 --skills random`,
+  n=470 battles), so the claim "random almost never clears a fight" no longer holds for single fights.
 - Calibrated numbers live in `scripts/balance.json` and are merged into `content/core` by the generators, so they are reviewed
   like any other content change.

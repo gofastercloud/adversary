@@ -15,6 +15,8 @@ docs**. Almost all hands-on work goes to Haiku 5.5 subagents, with Sonnet 5.5 as
 | Default worker | Haiku 5.5 (`model: haiku`) | Implement, author content, write and update docs, run checks, run sims and e2e | Yes |
 | Escalation | Sonnet 5.5 (`model: sonnet`) | Tricky problems (see escalation triggers), root-causing, design trade-offs with code attached | Yes |
 
+`game-designer` is a Sonnet specialist, not an escalation tier: use it directly for design questions, and its proposals are implemented by Haiku agents.
+
 The subagents in `.claude/agents/` pin these models in their frontmatter, so use them rather than passing `model` by hand:
 
 | Agent | Model | Use for |
@@ -23,6 +25,7 @@ The subagents in `.claude/agents/` pin these models in their frontmatter, so use
 | `content-author` | haiku | Cards, relics, packs, adversaries, TTX in `scripts/packs/*.mjs` and `scripts/gen-*.mjs`, then regenerate and validate |
 | `doc-writer` | haiku | Anything in `docs/`, `README.md`, code comments that are the whole task, and this file when the user asks |
 | `senior-engineer` | sonnet | Escalations only (see below) |
+| `game-designer` | sonnet | Game design, playability, pacing, reward loops, balance intent, onboarding; produces lab-backed proposals, not code. |
 | `Explore` (built-in) | haiku | Broad read-only searches when Opus needs a conclusion, not file dumps |
 
 The `haiku` and `sonnet` aliases resolve to the latest models in each family (currently Haiku 5.5 and Sonnet 5.5). If
@@ -99,11 +102,29 @@ Default every task to a Haiku agent. Escalate to `senior-engineer` when any of t
 - **Non-obvious root cause.** Flaky e2e, nondeterminism, a test that fails only in CI, a performance regression.
 - **Interpretation, not execution.** Reading lab/sim output to decide a balance change, or weighing design
   trade-offs where the answer needs code-level judgement. Haiku runs the sims; Sonnet interprets them when the call
-  isn't obvious.
+  isn't obvious. If the question is about feel, fairness or what the target should be, use `game-designer` instead.
 
 Escalation is per task, not per session: once the hard part is solved, hand follow-up mechanical work back to Haiku. If
 Sonnet also fails, the orchestrator re-plans (split the task smaller, gather missing context, or ask the user); it does
 not escalate implementation to Opus.
+
+### Game design work
+
+Use `game-designer` directly (not via escalation) for:
+- new mechanics, cards, relics, doctrines or packs at the design stage;
+- balance intent ("what should this feel like", "which win rate is right");
+- onboarding and tutorial;
+- reward, progression and feedback/juice;
+- reviewing playtest or e2e output for feel.
+
+The loop:
+1. `game-designer` proposes, with a measurable hypothesis and the lab metric that would confirm or refute it.
+2. The orchestrator turns the implementation sketch into Haiku briefs.
+3. `implementer` or `content-author` builds it and runs the lab commands the proposal names.
+4. `game-designer` reviews the results against the hypothesis.
+
+Statistical or code-level root-causing of odd lab results still goes to `senior-engineer`. The designer does not write
+code, and the no-dark-patterns guardrail in its definition applies to every proposal.
 
 ### Cost and context discipline
 

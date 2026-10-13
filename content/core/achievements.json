@@ -2007,13 +2007,13 @@
    "cat": "Runs",
    "tier": "gold",
    "icon": "flame",
-   "name": "Seven-Day Streak",
-   "desc": "Complete daily challenges 7 days in a row.",
+   "name": "Seven Dailies",
+   "desc": "Complete the daily challenge on 7 different days.",
    "rule": {
     "scope": "lifetime",
     "event": "daily_done",
     "where": {
-     "streak": {
+     "days": {
       "gte": 7
      }
     },

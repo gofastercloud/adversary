@@ -91,7 +91,7 @@ function content_icon(d) { return { architect: 'shield-ban', hunter: 'radar', ph
 a('relic-hoard', 'Runs', 'silver', 'gem', 'Capability Portfolio', 'Hold 8 relics at the end of a run.', L('run_won', { relicCount: { gte: 8 } }));
 a('rich', 'Runs', 'silver', 'coins', 'Healthy Budget', 'Finish a run with $300 or more unspent.', L('run_won', { money: { gte: 300 } }));
 a('daily-1', 'Runs', 'bronze', 'calendar-check', 'Daily Briefing', 'Complete a daily challenge.', L('daily_done'));
-a('daily-7', 'Runs', 'gold', 'flame', 'Seven-Day Streak', 'Complete daily challenges 7 days in a row.', L('daily_done', { streak: { gte: 7 } }));
+a('daily-7', 'Runs', 'gold', 'flame', 'Seven Dailies', 'Complete the daily challenge on 7 different days.', L('daily_done', { days: { gte: 7 } }));
 a('tutorial', 'Runs', 'bronze', 'graduation-cap', 'Orientation Complete', 'Finish the tutorial.', L('tutorial_done'));
 a('clearance-5', 'Runs', 'silver', 'id-card', 'Clearance Level 5', 'Reach clearance level 5.', L('clearance', { level: { gte: 5 } }));
 

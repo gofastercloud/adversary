@@ -2,7 +2,7 @@
 import { store, sleep } from './ui.js';
 import { loadBase, loadContent, getManifest } from './loader.js';
 import { newRun, tryRunAction, replay } from '../../engine/run.js';
-import { evaluate, emptyProfile, clearanceOf } from '../../engine/achievements.js';
+import { evaluate, emptyProfile, clearanceOf, recordDaily } from '../../engine/achievements.js';
 import { dailyConfig, sydneyDate } from '../../engine/rng.js';
 import { setAudio, sfx, unlock } from './audio.js';
 import { setPalette, initBg, setBgEnabled, setBgQuality, setRain, setBgMotion, setIntensity, flashBg } from './bg.js';
@@ -56,7 +56,7 @@ function mergeProfiles(a, b) {
   out.unlocks.doctrines = [...new Set([...a.unlocks.doctrines, ...(b.unlocks?.doctrines || [])])];
   out.unlocks.assurance = Math.max(a.unlocks.assurance, b.unlocks?.assurance || 1);
   out.stats = { ...a.stats, runs: Math.max(a.stats.runs, b.stats?.runs || 0), wins: Math.max(a.stats.wins, b.stats?.wins || 0), battles: Math.max(a.stats.battles, b.stats?.battles || 0), bestPoints: Math.max(a.stats.bestPoints, b.stats?.bestPoints || 0) };
-  if ((b.daily?.best || 0) > (out.daily.best || 0)) out.daily = { ...out.daily, ...b.daily };
+  if ((b.daily?.best || 0) > (out.daily.best || 0)) out.daily = { ...out.daily, best: b.daily.best };
   return out;
 }
 export function saveProfile(profile) { store.set({ profile }); jset(K.profile, profile); }
@@ -136,16 +136,13 @@ async function finalizeRun(r) {
   let board = null;
   if (isDaily) {
     const date = sydneyDate();
-    const prev = S().profile.daily; const streak = prev.last && daysBetween(prev.last, date) === 1 ? prev.streak + 1 : prev.last === date ? prev.streak : 1;
-    const profile = { ...S().profile, daily: { ...prev, streak, best: Math.max(prev.best, res.points), last: date, done: { ...prev.done, [date]: res.points } } };
-    saveProfile(profile);
-    emitUi({ t: 'daily_done', streak, points: res.points });
+    const { profile, days } = recordDaily(S().profile, date, res.points); saveProfile(profile);
+    emitUi({ t: 'daily_done', days, points: res.points });
   }
   const submit = await api.submitRun({ init, scenario: S().scenario, log: runLog, fingerprint: content.fingerprint, version: getManifest().version, daily: isDaily ? sydneyDate() : null });
   store.set({ submitted: submit });
   syncProfile();
 }
-const daysBetween = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / 86400000);
 
 export function goto(screen, extra = {}) { sfx.click(); store.set({ screen, ...extra }); }
 export function quitToTitle() { store.set({ screen: 'title', run: null, content: S().content, saved: jget(K.run) ? { scenario: jget(K.run).scenario, doctrine: jget(K.run).init.doctrine, n: jget(K.run).log.length } : null }); }

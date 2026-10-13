@@ -3,7 +3,8 @@ import * as app from './app.js';
 import { getCore, getManifest, loadContent } from './loader.js';
 import { setPalette } from './bg.js';
 import { sfx, unlock } from './audio.js';
-import { clearanceOf } from '../../engine/achievements.js';
+import { clearanceOf, dailiesCompleted } from '../../engine/achievements.js';
+import { sydneyDate } from '../../engine/rng.js';
 import { Card } from './components.js';
 import { Typed, Art } from './term.js';
 
@@ -36,7 +37,7 @@ export function Title() {
   const core = getCore();
   const decor = useMemo(() => core ? ['c.protect.spoofing', 'a.fido2', 'c.detect.tampering', 'x.edr'].map((id, i) => ({ id, left: [1, 87, 2, 86][i], top: [6, 8, 56, 54][i], r: [-8, 7, 6, -6][i] })) : [], [core]);
   const c = s.content;
-  const streak = s.profile.daily?.streak || 0;
+  const doneToday = s.profile.daily?.done?.[sydneyDate()] != null;
   return html`<div class="screen title"><div class="title-cards">${c && decor.map(d => html`<div style=${`position:absolute;left:${d.left}%;top:${d.top}%;--r:${d.r}deg;transform:rotate(${d.r}deg);animation:floaty 9s ${d.r}s ease-in-out infinite`}><${Card} content=${c} def=${c.cards[d.id]} tiltOn=${false}/></div>`)}</div>
     <div class="title-main">
     <div class="logo" data-t="ADVERSARY">ADVERSARY</div>
@@ -45,7 +46,7 @@ export function Title() {
     <div class="menu">
       ${s.saved && html`<button class="btn good big pulse" onClick=${async () => { unlock(); if (!(await app.resumeRun())) return; }}><${Icon} n="play"/>Continue run</button>`}
       <button class="btn primary big" onClick=${() => { unlock(); app.goto('setup'); }}><${Icon} n="swords"/>New run</button>
-      <button class="btn violet" onClick=${() => { unlock(); app.goto('daily'); }}><${Icon} n="flame"/>Daily challenge${streak > 1 ? html` <span class="chip" style="margin-left:.4em">${streak} day streak</span>` : ''}</button>
+      <button class="btn violet" onClick=${() => { unlock(); app.goto('daily'); }}><${Icon} n="flame"/>Daily challenge${doneToday ? html` <span class="chip good" style="margin-left:.4em">Done today</span>` : ''}</button>
       <button class="btn warn" onClick=${() => app.goto('ttx')}><${Icon} n="clipboard-check"/>Tabletop exercises</button>
       <div class="row" style="gap:.6rem"><button class="btn ghost" style="flex:1" onClick=${() => app.goto('tutorial')}><${Icon} n="graduation-cap"/>Tutorial</button><button class="btn ghost" style="flex:1" onClick=${() => app.goto('docs')}><${Icon} n="book-open"/>Guide</button></div>
     </div></div>
@@ -86,7 +87,7 @@ export function DailyScreen() {
   return html`<div class="screen result"><div class="row"><button class="btn ghost small" onClick=${() => app.goto('title')}>Back</button></div>
     <h1>Daily Challenge</h1><div class="tagline">${cfg.date} · Australia/Sydney</div>
     <div class="panel" style="padding:1.2rem;max-width:640px"><div class="row" style="justify-content:center;gap:1.2rem"><span class="pk-ic" style="width:60px;height:60px;display:grid;place-items:center"><${Icon} n=${sc.icon} cls="xl"/></span><div style="text-align:left"><h2>${sc.name}</h2><div class="dim">${d.name} · Assurance ML1</div><div class="dimmer mono">seed ${cfg.seed}</div></div></div>
-      <p class="dim" style="margin-top:.8rem">Everyone plays the same seed. Your run is replayed on the server to verify the score. Keep your streak alive: ${s.profile.daily.streak || 0} day${(s.profile.daily.streak || 0) === 1 ? '' : 's'}.</p>
+      <p class="dim" style="margin-top:.8rem">Everyone plays the same seed. Your run is replayed on the server to verify the score. Dailies completed: ${dailiesCompleted(s.profile)}. Best daily score: ${s.profile.daily.best || 0}.</p>
       ${done != null && html`<p class="chip good">Completed today: ${done} pts</p>`}
       <button class="btn violet big" onClick=${() => app.startRun({ scenario: cfg.scenario, doctrine: cfg.doctrine, assurance: 1, seed: cfg.seed, daily: true })}><${Icon} n="flame"/>${done != null ? 'Play again' : 'Start daily'}</button></div>
     ${board?.entries?.length ? html`<div class="panel lb" style="padding:1rem"><h2>Today’s leaderboard</h2><table><tbody>${board.entries.map((e, i) => html`<tr class=${e.playerId === (JSON.parse(localStorage.getItem('adversary.player.v1') || '{}').id) ? 'me' : ''}><td>${i + 1}</td><td>${e.handle}</td><td class="right mono">${e.points}</td></tr>`)}</tbody></table></div>` : html`<p class="dimmer">Leaderboard unavailable offline (the game is fully playable without it).</p>`}</div>`;

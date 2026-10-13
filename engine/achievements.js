@@ -9,6 +9,15 @@ export function emptyProfile() {
   return { v: 1, xp: 0, ach: { unlocked: {}, progress: {} }, stats: { runs: 0, wins: 0, battles: 0, bestPoints: 0, playSeconds: 0 }, codex: { adv: {}, tech: {}, card: {}, relic: {}, ref: {} }, unlocks: { doctrines: ['architect'], assurance: 1 }, daily: { streak: 0, best: 0, last: null, done: {} }, settings: {} };
 }
 
+// Daily challenge record: a count that only rises. `done` maps Sydney date to the best points for that date;
+// `streak` (deprecated) is no longer written. Pure: the caller passes the date.
+export function recordDaily(profile, date, points) {
+  const prev = profile.daily || {};
+  const done = { ...(prev.done || {}) }; done[date] = Math.max(done[date] || 0, points);
+  return { profile: { ...profile, daily: { ...prev, best: Math.max(prev.best || 0, points), last: date, done } }, days: Object.keys(done).length };
+}
+export const dailiesCompleted = (profile) => Object.keys(profile.daily?.done || {}).length;
+
 // where-matcher: { key: value | {gte,lte,gt,lt,in,has,not,eq,exists} } with dotted keys
 function get(o, path) { return path.split('.').reduce((x, k) => (x == null ? undefined : x[k]), o); }
 function match(v, m) {

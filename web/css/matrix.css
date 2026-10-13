@@ -166,20 +166,30 @@ body.no-glitch .banner .bt::before, body.no-glitch .banner .bt::after { display:
 /* battle HUD: the clearance / XP bar is not a decision input during a fight (it stays on the title, map and other screens) */
 body[data-view="battle"] .topbar .clr { display: none; }
 
-/* HUD: never hide the goal meter or intent line on smaller screens */
+/* HUD at tablet widths (761-1150, e.g. 1024x768): two slim rows so the board keeps at least 300px of height.
+   Row 1 is one strip: Resilience, Round and Feed. Row 2 is the adversary (left) beside the goal and next move (right), with goal and intent side by side.
+   The goal and intent are never hidden at these widths. */
 @media (max-width: 1150px) {
-  .hud { grid-template-columns: 1fr 1fr; }
-  .hud-adv { grid-column: 1 / -1; order: -1; }
-  .hud > :last-child { display: flex; flex-direction: column; }
-  .bottom { grid-template-columns: 90px minmax(0, 1fr) 140px; }
+  .hud { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: .35rem; }
+  .hud .panel { padding: .35rem .6rem; }
+  .hud-strip { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: .6rem; padding: .25rem .6rem; }
+  .hud-strip > .hud-row:first-child { flex: 1 1 auto; min-width: 0; }
+  .hud-strip > .hud-row:last-child { flex: none; gap: .5rem; }
+  .hud-adv { gap: .6rem; } .hud-adv .sigil { width: 56px; height: 56px; border-radius: 12px; } .hud-adv .nm { font-size: 1.1rem; } .hud-adv .meter.expo { height: 18px; margin-top: .3rem; }
+  .hud-next { flex-direction: row; flex-wrap: wrap; align-items: center; gap: .25rem .6rem; }
+  .hud-next > .goalbar { flex: 1 1 200px; margin-top: 0; min-width: 0; } .hud-next > .goalbar b { white-space: normal; min-width: 0; } .hud-next > .intent { flex: 1.4 1 260px; margin-top: 0; min-width: 0; padding: .25rem .5rem; } .hud-next > .row { flex-basis: 100%; }
+  .bottom { grid-template-columns: 112px minmax(0, 1fr) 140px; }
 }
+@media (max-width: 1150px) and (min-height: 521px) { .energy { width: 80px; height: 80px; font-size: 2.6rem; } }
 @media (max-width: 760px) {
   .battle { padding: .35rem .4rem .3rem; gap: .35rem; }
   .hud { grid-template-columns: 1fr; gap: .35rem; }
   .hud > :last-child { order: -1; } .hud-adv { order: -2; }
   .hud .panel { padding: .35rem .55rem; }
   .hud-adv .sigil { width: 52px; height: 52px; } .hud-adv .nm { font-size: 1.05rem; } .hud-adv .sub, .hud-adv .traits, .hud-adv .mono, .hud-adv .chip { display: none; }
+  .hud-adv .adv-top .tl { display: none; } .hud-adv .adv-top .trait { padding: .08em .35em; }
   .hud-me:not(:last-child) { flex-direction: row; flex-wrap: wrap; gap: .3rem .8rem; } .hud-me:not(:last-child) .hud-row:first-child { flex: 1 1 100%; }
+  .hud-next { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: .35rem; } .hud-next > .goalbar, .hud-next > .intent { flex: none; margin-top: .25rem; }
   .hud .meter, .hud-adv .meter { height: 16px; }
   .hud-me:last-child .row:last-child { display: none; }
   .intent { margin-top: .25rem; padding: .25rem .5rem; } .goalbar { margin-top: .25rem; }
@@ -187,7 +197,8 @@ body[data-view="battle"] .topbar .clr { display: none; }
   .bottom .energy-wrap { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; gap: .5rem; order: 3; }
   .bottom .energy-wrap .power { flex-direction: row; } .bottom .energy-wrap .btn.big { font-size: 1rem; padding: .5em 1.2em; }
   .energy { width: 46px; height: 46px; font-size: 1.7rem; border-width: 3px; } .energy small { display: none; }
-  .pile .stack { width: 44px; height: 60px; } .pile .stack b { font-size: 1.3rem; }
+  .pile .stack { width: 40px; height: 48px; } .pile .stack b { font-size: 1.2rem; }
+  .deckcol { gap: .3rem; } .chips { gap: .25rem; } .pile .dimmer { display: none; } .chip-t { display: none; } .chip-btn { justify-content: center; padding: .2rem .1rem; } .chip-btn b { margin: 0; font-size: .8rem; }
   .hand { justify-content: flex-start; overflow-x: auto; overflow-y: hidden; padding: 38px 18px 4px; margin-top: -32px; scroll-snap-type: x proximity; } .hand .card { scroll-snap-align: center; margin: 0 -9px; }
   .hand .card.playable:hover { transform: translateY(-8px); } .hand .card.selected { transform: translateY(-14px) scale(1.06) !important; }
   .field { padding: .2rem; }

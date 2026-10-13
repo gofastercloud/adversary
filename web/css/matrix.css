@@ -163,6 +163,9 @@ body.no-glitch .banner .bt::before, body.no-glitch .banner .bt::after { display:
 .bottom { grid-template-columns: 110px minmax(0, 1fr) 190px; }
 .hand { min-width: 0; }
 
+/* battle HUD: the clearance / XP bar is not a decision input during a fight (it stays on the title, map and other screens) */
+body[data-view="battle"] .topbar .clr { display: none; }
+
 /* HUD: never hide the goal meter or intent line on smaller screens */
 @media (max-width: 1150px) {
   .hud { grid-template-columns: 1fr 1fr; }

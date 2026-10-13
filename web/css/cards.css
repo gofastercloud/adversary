@@ -32,6 +32,9 @@
 .card .shine { position: absolute; inset: 0; pointer-events: none; border-radius: 11px; background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, .22) 48%, transparent 58%); transform: translateX(-120%); }
 .card:hover .shine { animation: shine .9s ease; } @keyframes shine { to { transform: translateX(120%); } }
 
+/* hand cards: the type line, mitigation and note lines and the footer stay in the preview and the inspector (QW6) */
+.hand .card .card-type, .hand .card .card-foot, .hand .card .card-text .k-mit, .hand .card .card-text .k-note { display: none; }
+
 /* states */
 .card.playable:hover, .card.hover-lift:hover { transform: translateY(-34px) scale(1.18); z-index: 50; }
 .card.selected { transform: translateY(-46px) scale(1.2) !important; z-index: 60; filter: drop-shadow(0 0 16px var(--accent)); }

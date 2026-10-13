@@ -106,6 +106,9 @@ export function TtxSelect() {
 
 export function Settings() {
   const s = useStore(); const st = s.settings; const set = app.saveSettings;
+  // Abandon is offered only while a battle is live (the tutorial cannot be abandoned); it forfeits the battle and shows the battle-end card
+  const live = !!s.run?.battle && !s.run.battle.over && !s.tutorial && !s.run.battle.ttx?.pending;
+  const abandon = () => { if (!confirm('Abandon this operation? The run ends.')) return; store.set({ holdBattle: true }); const r = app.act({ type: 'BATTLE', action: { type: 'FORFEIT' } }); if (!r.ok) { store.set({ holdBattle: false }); return; } app.goto('run'); };
   return html`<div class="screen setup settings"><div class="row"><button class="btn ghost small" onClick=${() => app.goto(s.run ? 'run' : 'title')}>Back</button><h2>Settings</h2></div>
     <div class="panel" style="padding:1rem 1.2rem;max-width:640px">
       <label>Volume <input type="range" min="0" max="1" step=".05" value=${st.volume} onInput=${e => set({ volume: +e.target.value })}/><span>${Math.round(st.volume * 100)}%</span></label>
@@ -119,6 +122,7 @@ export function Settings() {
       <label>Rain density <select value=${st.bg} onChange=${e => set({ bg: e.target.value })}><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
       <label>Leaderboard handle <input value=${st.handle || ''} placeholder="Defender-XXXX" maxlength="20" onChange=${e => { import('./api.js').then(a => a.setHandle(e.target.value)); set({ handle: e.target.value }); }} style="padding:.4em .7em;border-radius:8px;border:1px solid var(--line2);background:rgba(0,0,0,.4);color:var(--ink)"/></label>
       <p class="dimmer" style="font-size:.78rem">Progress is stored in your browser. If the backend is reachable, verified runs and your profile are also saved to the cloud under an anonymous player id — no email or personal data.</p>
+      ${live && html`<div class="row" style="margin-bottom:.6rem"><button class="btn bad small" onClick=${abandon}>Abandon run</button></div>`}
       <div class="row"><button class="btn bad small" onClick=${() => { if (confirm('Erase all local progress?')) { localStorage.clear(); location.reload(); } }}>Erase local data</button></div>
     </div></div>`;
 }

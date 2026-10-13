@@ -162,7 +162,7 @@ export function BattleScreen() {
   const zones = []; for (const a of b.assets) { let z = zones.find(z => z.name === a.zone); if (!z) zones.push(z = { name: a.zone, assets: [] }); z.assets.push(a); }
   const resP = pct(b.res.cur, b.res.max), exP = pct(b.expo.cur, b.expo.max);
   const advc = adv.color || '#ff5470';
-  const n = b.hand.length;
+  const n = b.hand.length; const rounds = content.tuning.adversary.tiers[b.adv.tier].rounds;
   const intentAsset = intent?.asset;
   const dossier = () => store.set({ modal: { type: 'dossier', id: b.adv.id } });
   const hint = s.settings.hints;
@@ -173,25 +173,24 @@ export function BattleScreen() {
   return html`<div class="battle" style=${`--advc:${advc}`}>
     <div class="hud">
       <div class="panel hud-me">
-        <div class="hud-row"><span class="lbl">Resilience</span><div id="res-bar" class=${cx('meter res', resP < 30 ? 'low' : resP < 60 ? 'mid' : '')}><i style=${`width:${resP}%`}/><b>${b.res.cur} / ${b.res.max}</b></div></div>
-        <div class="hud-row"><span class="lbl">Budget</span><span class="money">$${run.money}</span><span class="spacer"/><button class="btn small ghost side-toggle" onClick=${() => setSideOpen(o => !o)} aria-expanded=${sideOpen}><${Icon} n="terminal"/>Intel</button><span class="chip" ...${tip('Gold earns only between battles: rewards, events, shops.')}><${Icon} n="coins"/>${run.relics.length} relics</span></div>
-        <div class="hud-row"><span class="lbl">Clock</span><span class="clock">${clock(b.round)}</span><span class="spacer"/><div class="round-pips">${Array.from({ length: content.tuning.adversary.tiers[b.adv.tier].rounds }, (_, i) => html`<i class=${i + 1 < b.round ? 'done' : i + 1 === b.round ? 'now' : ''}/>`)}</div></div>
+        <div class="hud-row"><span class="lbl">Resilience</span><div id="res-bar" class=${cx('meter res', resP < 30 ? 'low' : resP < 60 ? 'mid' : '')} ...${tip('Resilience: you lose at 0')}><i style=${`width:${resP}%`}/><b>${b.res.cur} / ${b.res.max}</b></div></div>
+        <div class="hud-row">${b.ttx ? html`<span class="lbl">Clock</span><span class="clock">${clock(b.round)}</span>` : html`<span class="clock">Round ${b.round} / ${rounds}</span>`}<span class="spacer"/><button class="btn small ghost side-toggle" onClick=${() => setSideOpen(o => !o)} aria-expanded=${sideOpen}><${Icon} n="terminal"/>Feed</button><div class="round-pips">${Array.from({ length: rounds }, (_, i) => html`<i class=${i + 1 < b.round ? 'done' : i + 1 === b.round ? 'now' : ''}/>`)}</div></div>
       </div>
       <div class="panel hud-adv glow" style=${`--accent:${advc}`}>
         <div style="cursor:pointer" onClick=${dossier} ...${tip('Click to open the adversary dossier')}><${Sigil} id=${b.adv.id} color=${advc} icon=${adv.icon || 'hood'}/></div>
         <div style="flex:1;min-width:0"><div class="row"><span class=${'tier-badge t' + b.adv.tier}>${content.tuning.adversary.tiers[b.adv.tier].name}</span><span class="dimmer mono" style="font-size:.72rem">${b.adv.id}</span><span class="spacer"/><span class="chip"><${Icon} n="zap"/>${b.adv.hand.length} cards</span></div>
           <div class="nm">${b.adv.name}</div><div class="sub">${adv.role || ''} · ${adv.motive || ''}</div>
-          <div class=${cx('meter expo seg')} style="--seg:${100 / b.expo.max}%"><i style=${`width:${exP}%`}/><b>EXPOSURE ${b.expo.cur} / ${b.expo.max}</b></div>
+          <div class=${cx('meter expo seg')} style="--seg:${100 / b.expo.max}%"><i style=${`width:${exP}%`}/><b>EXPOSURE ${b.expo.cur} / ${b.expo.max} (you win at ${b.expo.max})</b></div>
           <div class="traits">${b.adv.traits.filter(t => t.name).map(t => html`<span class="trait" ...${tip(html`<div style="width:280px"><h4>${t.name}</h4><p>${t.text}</p>${t.note ? html`<p class="dim">${t.note}</p>` : null}</div>`)}>${t.name}</span>`)}</div></div>
       </div>
       <div class="panel hud-me">
         ${b.goal && html`<${GoalMeter} b=${b} content=${content}/>`}
         <div class=${cx('intent', intent?.level < 1 && 'hidden-intent')}>
           <${Icon} n=${TACTIC_ICON[intent?.tactic] || 'circle-help'} cls="lg"/>
-          <div><div class="iv">${intent ? (intent.level >= 1 ? `${intent.tech} ${intent.name}` : tname(content, intent.tactic)) : 'No move planned'}</div>
-          <small>${intent ? `${tname(content, intent.tactic)}${intent.level >= 2 && intent.asset ? ' → ' + b.assets.find(a => a.id === intent.asset)?.name : ''}${intent.level >= 3 ? ` · ${intent.stride} · power ${intent.power}` : ''}${intent.origin === 'baseline' ? ' · baseline tradecraft' : intent.origin === 'signature' ? ' · signature' : intent.origin === 'assessed' ? ' · assessed intent' : ''}` : ''}</small></div>
+          <div><div class="iv">${intent ? (intent.level >= 1 ? `${intent.tech} ${intent.name}` : 'Next move hidden') : 'No move planned'}</div>
+          <small>${!intent ? '' : intent.level >= 1 ? `${tname(content, intent.tactic)}${intent.level >= 2 && intent.asset ? ' → ' + b.assets.find(a => a.id === intent.asset)?.name : ''}${intent.level >= 3 ? ` · ${intent.stride} · power ${intent.power}` : ''}${intent.origin === 'baseline' ? ' · baseline tradecraft' : intent.origin === 'signature' ? ' · signature' : intent.origin === 'assessed' ? ' · assessed intent' : ''}` : `Tactic: ${tname(content, intent.tactic)}. Identify cards and relics reveal the technique, then the target.`}</small></div>
           <span class="spacer"/><div class="fid" ...${tip('Intel level: how much of the adversary’s next move you can see. Identify cards, relics and Assume Breach raise it.')}>${[1, 2, 3].map(i => html`<i class=${i <= (intent?.level || 0) ? 'on' : ''}/>`)}</div></div>
-        <div class="row"><span class="dimmer" style="font-size:.74rem">${b.ttx ? 'TTX · score ' + b.ttx.score : (intent?.level >= 1 ? 'Intent' : 'Intent (fidelity 0)')}</span><span class="spacer"/>${b.ttx?.pending ? '' : html`<button class="btn small ghost" aria-label="Settings" onClick=${() => app.goto('settings')}><${Icon} n="settings"/></button><button class="btn small bad" onClick=${() => { if (confirm('Abandon this operation? The run ends.')) doAction({ type: 'FORFEIT' }); }}>Abandon</button>`}</div>
+        <div class="row"><span class="dimmer" style="font-size:.74rem">${b.ttx ? 'TTX · score ' + b.ttx.score : (intent?.level >= 1 ? 'Intent' : 'Intent (fidelity 0)')}</span></div>
       </div>
     </div>
 
@@ -205,7 +204,7 @@ export function BattleScreen() {
         ${tk === 'control' && html`<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;z-index:30" class="panel"><span class="dim" style="padding:.4em .8em">Augment which control?</span>${b.controls.filter(k => tKids.has(k.kid)).map(k => html`<button class="btn small" onClick=${() => confirm({ kid: k.kid })}>${content.cards[k.card].name} @ ${b.assets.find(a => a.id === k.asset).name}</button>`)}${!tKids.size && html`<span class="bad" style="padding:.4em .8em">No compatible control deployed.</span>`}</div>`}
       </div>
       <div class=${cx('side', sideOpen && 'open')}>
-        <div class="panel"><div class="panel-h"><${Icon} n="scroll-text"/>Programme (${b.policies.length}/${content.tuning.battle.policySlots})</div><div class="prog">${b.policies.map(p => { const d = content.cards[p.id]; return html`<span class="pol" style=${`--fn:${FNCOL[d.fn]}`} ...${tip(html`<${CardTip} content=${content} def=${d} ml=${p.ml}/>`)}><${Icon} n=${cardIcon(d)}/>${d.name}</span>`; })}${!b.policies.length && html`<span class="dimmer" style="font-size:.78rem">Policies you enact stay in force.</span>`}</div></div>
+        <div class="panel"><div class="panel-h"><${Icon} n="scroll-text"/>Policies (${b.policies.length}/${content.tuning.battle.policySlots})</div><div class="prog">${b.policies.map(p => { const d = content.cards[p.id]; return html`<span class="pol" style=${`--fn:${FNCOL[d.fn]}`} ...${tip(html`<${CardTip} content=${content} def=${d} ml=${p.ml}/>`)}><${Icon} n=${cardIcon(d)}/>${d.name}</span>`; })}${!b.policies.length && html`<span class="dimmer" style="font-size:.78rem">Policies you enact stay in force.</span>`}</div></div>
         <div class="panel"><div class="panel-h"><${Icon} n="gem"/>Relics</div><div class="relics">${run.relics.map(id => { const r = content.relics[id]; return html`<span class="relic" ...${tip(html`<div style="width:260px"><h4>${r.name}</h4><p>${r.desc}</p><p class="dim">${r.lesson}</p><${Refs} list=${r.refs}/></div>`)}><${Icon} n=${r.icon}/></span>`; })}</div></div>
         <div class="panel" style="flex:1;min-height:0;display:flex;flex-direction:column"><div class="panel-h"><${Icon} n="terminal"/>SOC feed</div><div class="log" ref=${logRef}>${log.map(l => html`<div class=${l.cls}><span class="t">${l.t}</span>${l.text} ${(l.refs || []).slice(0, 1).map(r => html`<${RefLink} r=${r} label="↗"/>`)}</div>`)}</div></div>
       </div>
@@ -256,5 +255,5 @@ function BattleEnd({ b, content, run }) {
 
 function GoalMeter({ b, content }) {
   const G = b.goal, d = content.tuning.goals[G.kind]; const pct = Math.min(100, Math.round(100 * G.prog / G.need));
-  return html`<div class=${cx('goalbar', pct >= 60 && 'hot', pct >= 85 && 'crit')} role="meter" aria-label=${'Adversary goal: ' + d.name} aria-valuemin="0" aria-valuemax=${G.need} aria-valuenow=${+G.prog.toFixed(1)} ...${tip(d.how + ' ' + d.blurb)}><${Icon} n=${d.icon}/><b>Goal: ${d.name}</b><div class="gm"><i style=${`width:${pct}%`}/></div><span class="gv">${+G.prog.toFixed(1)}/${G.need}</span></div>`;
+  return html`<div class=${cx('goalbar', pct >= 60 && 'hot', pct >= 85 && 'crit')} role="meter" aria-label=${'Adversary goal: ' + d.name} aria-valuemin="0" aria-valuemax=${G.need} aria-valuenow=${+G.prog.toFixed(1)} ...${tip(d.how + ' ' + d.blurb)}><${Icon} n=${d.icon}/><b>Goal: ${d.name}<small>(they win at ${G.need})</small></b><div class="gm"><i style=${`width:${pct}%`}/></div><span class="gv">${+G.prog.toFixed(1)}/${G.need}</span></div>`;
 }

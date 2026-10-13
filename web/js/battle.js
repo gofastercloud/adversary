@@ -151,7 +151,7 @@ export function BattleScreen() {
     sfx.click(); setSel({ iid: id });
   };
   useEffect(() => {
-    const f = (e) => { if (e.target.tagName === 'INPUT') return; if (e.key === 'Escape') setSel(null); if ((e.key === 'e' || e.key === 'E') && !s.stage && !b.over && !b.ttx?.pending) doAction({ type: 'END_TURN' }); if (/^[1-9]$/.test(e.key)) { const id = b.hand[+e.key - 1]; if (id) clickCard(id); } if (e.key === 'Enter' && sel?.iid && tk === 'none') confirm({}); };
+    const f = (e) => { if (e.target.tagName === 'INPUT') return; if (e.key === 'Escape') { if (sideOpen) setSideOpen(false); else setSel(null); } if ((e.key === 'e' || e.key === 'E') && !s.stage && !b.over && !b.ttx?.pending) doAction({ type: 'END_TURN' }); if (/^[1-9]$/.test(e.key)) { const id = b.hand[+e.key - 1]; if (id) clickCard(id); } if (e.key === 'Enter' && sel?.iid && tk === 'none') confirm({}); };
     addEventListener('keydown', f); return () => removeEventListener('keydown', f);
   });
   const playable = b.hand.filter(id => { const c = B.effCard(content, b, id); return !c.unplayable && c.type !== 'status' && B.cardCost(content, b, id) <= b.energy.cur && B.validTargets(content, b, id).length; });
@@ -168,7 +168,7 @@ export function BattleScreen() {
   const hint = s.settings.hints;
   const playedStage = stage && stage.i >= 0 ? stage.plays[stage.i] : null;
   // no hover (touch): the preview follows the selection, so it opens on the first tap and closes on deselect, play or cancel
-  const touch = matchMedia('(hover: none)').matches; const shown = touch ? (iid || null) : preview;
+  const touch = matchMedia('(hover: none)').matches; const shown = sideOpen ? null : touch ? (iid || null) : preview;
 
   return html`<div class="battle" style=${`--advc:${advc}`}>
     <div class="hud">
@@ -203,7 +203,9 @@ export function BattleScreen() {
         </div>
         ${tk === 'control' && html`<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;z-index:30" class="panel"><span class="dim" style="padding:.4em .8em">Augment which control?</span>${b.controls.filter(k => tKids.has(k.kid)).map(k => html`<button class="btn small" onClick=${() => confirm({ kid: k.kid })}>${content.cards[k.card].name} @ ${b.assets.find(a => a.id === k.asset).name}</button>`)}${!tKids.size && html`<span class="bad" style="padding:.4em .8em">No compatible control deployed.</span>`}</div>`}
       </div>
+      <div class=${cx('side-scrim', sideOpen && 'open')} onClick=${() => setSideOpen(false)} aria-hidden="true"/>
       <div class=${cx('side', sideOpen && 'open')}>
+        <div class="side-head"><span>Feed</span><button class="iconbtn" aria-label="Close feed" onClick=${() => setSideOpen(false)}><${Icon} n="x"/></button></div>
         <div class="panel"><div class="panel-h"><${Icon} n="scroll-text"/>Policies (${b.policies.length}/${content.tuning.battle.policySlots})</div><div class="prog">${b.policies.map(p => { const d = content.cards[p.id]; return html`<span class="pol" style=${`--fn:${FNCOL[d.fn]}`} ...${tip(html`<${CardTip} content=${content} def=${d} ml=${p.ml}/>`)}><${Icon} n=${cardIcon(d)}/>${d.name}</span>`; })}${!b.policies.length && html`<span class="dimmer" style="font-size:.78rem">Policies you enact stay in force.</span>`}</div></div>
         <div class="panel"><div class="panel-h"><${Icon} n="gem"/>Relics</div><div class="relics">${run.relics.map(id => { const r = content.relics[id]; return html`<span class="relic" ...${tip(html`<div style="width:260px"><h4>${r.name}</h4><p>${r.desc}</p><p class="dim">${r.lesson}</p><${Refs} list=${r.refs}/></div>`)}><${Icon} n=${r.icon}/></span>`; })}</div></div>
         <div class="panel" style="flex:1;min-height:0;display:flex;flex-direction:column"><div class="panel-h"><${Icon} n="terminal"/>SOC feed</div><div class="log" ref=${logRef}>${log.map(l => html`<div class=${l.cls}><span class="t">${l.t}</span>${l.text} ${(l.refs || []).slice(0, 1).map(r => html`<${RefLink} r=${r} label="↗"/>`)}</div>`)}</div></div>

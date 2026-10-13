@@ -64,10 +64,25 @@
 .card-preview { position: fixed; left: auto; right: 12px; bottom: calc(var(--card-h) + 64px); transform: none; z-index: 900; pointer-events: none; --card-w: 230px; --card-h: 330px; filter: drop-shadow(0 12px 32px rgba(0, 0, 0, .7)); }
 .card-preview .card { font-size: 15px; transform: none !important; margin: 0; } .card-preview .card-text { font-size: 13px !important; } .card-preview .card-art { height: 74px; } .card-preview .card-art svg.big { width: 58px; height: 58px; }
 @media (hover: none), (max-height: 700px) { .card-preview { display: none; } }
-/* touch: the selected hand card's preview is a bottom sheet above the hand (set in battle.js from sel, not hover) */
-@media (hover: none) and (min-height: 521px) { .card-preview.sheet { display: block; left: 50%; right: auto; transform: translateX(-50%); bottom: 268px; --card-w: 200px; --card-h: 286px; } }
+/* touch: the selected hand card's preview is a compact strip docked directly above the hand (set in battle.js from sel, not hover).
+   It keeps the name, cost, ward and full text, drops the art, and stays clear of the goal, the intent and the board so the target can be picked */
+@media (hover: none) and (min-height: 521px) {
+  .card-preview.sheet { display: block; left: 8px; right: 8px; top: auto; bottom: 262px; transform: none; }
+  .card-preview.sheet .card { width: 100%; height: auto; max-height: 130px; font-size: 12px; }
+  .card-preview.sheet .card-in { position: relative; inset: auto; height: auto; max-height: 130px; padding: 4px; }
+  .card-preview.sheet .card-art, .card-preview.sheet .card-type, .card-preview.sheet .card-foot { display: none; }
+  .card-preview.sheet .card-name { min-height: 0; font-size: 14px; margin: 3px 34px 2px; }
+  .card-preview.sheet .card-text { flex: none; font-size: 12px !important; padding: 4px 6px; }
+  .card-preview.sheet .card-text p { font-size: 12px; line-height: 1.25; }
+}
 .side-toggle { display: none; }
 @media (max-width: 1150px) { .side-toggle { display: inline-flex; } .side.open { display: flex !important; flex-direction: column; gap: .5rem; position: fixed; right: 8px; top: 64px; bottom: 8px; width: min(380px, calc(100vw - 16px)); z-index: 700; overflow: auto; background: rgba(2, 10, 6, .96); border: 1px solid var(--accent, #00ff9c); border-radius: 10px; padding: .5rem; } }
+/* drawer chrome: a header with a close control, and a scrim behind the open drawer that a tap closes (Escape is handled in battle.js) */
+.side-head, .side-scrim { display: none; }
+@media (max-width: 1150px) {
+  .side.open .side-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; position: sticky; top: 0; z-index: 1; margin: -.5rem -.5rem 0; padding: .35rem .35rem .35rem .7rem; background: rgba(2, 10, 6, .98); font-family: var(--font-display); font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--ink2); }
+  .side-scrim.open { display: block; position: fixed; inset: 0; z-index: 690; background: rgba(0, 0, 0, .55); animation: fadein .2s; }
+}
 
 /* short viewports (phone landscape): compact HUD so the board and hand stay on screen */
 @media (max-height: 520px) {

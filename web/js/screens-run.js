@@ -1,6 +1,6 @@
 import { html, Icon, useState, useEffect, useMemo, useRef, cx, store, useStore, tip, Refs, RefLink, Modal, Sigil, clock, pct, sleep } from './ui.js';
 import * as app from './app.js';
-import { Card, CardTip, FNCOL, cardIcon } from './components.js';
+import { Card, CardTip, FNCOL, cardIcon, FeedbackLink } from './components.js';
 import { loadDossier } from './loader.js';
 import { NODE_LABEL, wbQuestion } from '../../engine/run.js';
 import { compileDeck } from '../../engine/tactics.js';
@@ -153,5 +153,5 @@ export function ResultScreen() {
       ${seen.length > 0 && html`<p class="dim" style="margin-top:.6rem">Techniques you faced:</p><div>${seen.map(t => html`<${RefLink} r=${'attack:' + t} label=${`${t} ${content.techs[t]?.n || ''}`.slice(0, 44)}/>`)}</div>`}
       ${r.won ? null : html`<p class="dim" style="margin-top:.6rem">Tip: open the adversary dossier before the fight (Briefing → Dossier) and match your controls to the mitigations it lists.</p>`}</div>
     <div class="row"><span class="chip">Clearance L${lvl.level} · ${lvl.name}</span>${submitted?.ok ? html`<span class="chip good">Run verified by server ✓</span>` : submitted && !submitted.ok ? html`<span class="chip warn" title=${submitted.error}>Offline — score not posted</span>` : null}</div>
-    <div class="row wrap" style="justify-content:center"><button class="btn primary big" onClick=${() => { app.quitToTitle(); app.goto('setup'); }}>Another run</button><button class="btn ghost" onClick=${() => { navigator.clipboard?.writeText(`ADVERSARY seed ${app.S().init.seed} · ${content.scenarioId} · ${r.doctrine} · ML${r.assurance}`); floater('Seed copied', innerWidth / 2, 140, '#4ade80'); }}>Copy seed</button><button class="btn ghost" onClick=${() => app.quitToTitle()}>Title</button></div></div>`;
+    <div class="row wrap" style="justify-content:center"><button class="btn primary big" onClick=${() => { app.quitToTitle(); app.goto('setup'); }}>Another run</button><button class="btn ghost" onClick=${() => { navigator.clipboard?.writeText(`ADVERSARY seed ${app.S().init.seed} · ${content.scenarioId} · ${r.doctrine} · ML${r.assurance}`); floater('Seed copied', innerWidth / 2, 140, '#4ade80'); }}>Copy seed</button><button class="btn ghost" onClick=${() => app.quitToTitle()}>Title</button><${FeedbackLink} cls="btn ghost"/></div></div>`;
 }

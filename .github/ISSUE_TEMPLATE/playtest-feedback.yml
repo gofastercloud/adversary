@@ -1,0 +1,75 @@
+name: Playtest feedback
+description: Tell us how your ADVERSARY playtest went. Takes about two minutes.
+title: "Playtest feedback"
+labels: ["playtest"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for playing. Please don't include personal information (names, emails, company details). This playtest build does not send anything to a server.
+  - type: dropdown
+    id: device
+    attributes:
+      label: What device are you on?
+      options:
+        - Desktop
+        - Tablet
+        - Phone
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS (optional)
+      description: For example, Firefox 130 on Windows 11, or Safari on iPadOS 18.
+    validations:
+      required: false
+  - type: dropdown
+    id: progress
+    attributes:
+      label: How far did you get?
+      options:
+        - Tutorial
+        - Act 1
+        - Act 2
+        - Act 3
+        - Won the campaign
+    validations:
+      required: true
+  - type: textarea
+    id: confusing
+    attributes:
+      label: What was confusing?
+      description: Where did you get stuck, or what did you have to guess at?
+    validations:
+      required: true
+  - type: textarea
+    id: fun
+    attributes:
+      label: What was fun?
+    validations:
+      required: true
+  - type: textarea
+    id: bugs
+    attributes:
+      label: Bugs (optional)
+      description: What happened, what did you expect, and what were you doing just before it?
+    validations:
+      required: false
+  - type: dropdown
+    id: play-again
+    attributes:
+      label: Would you play again?
+      options:
+        - "Yes"
+        - "Maybe"
+        - "No"
+    validations:
+      required: true
+  - type: input
+    id: build-version
+    attributes:
+      label: Build version (optional)
+      description: Filled in automatically when you use the "Give feedback" link in the game. Leave it blank if you are not sure.
+    validations:
+      required: false

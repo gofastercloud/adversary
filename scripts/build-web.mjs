@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Builds the static SPA into dist/web: bundled JS/CSS (content-hashed), icon sprite, fonts, content JSON.
 //   node scripts/build-web.mjs [--watch]
+//   API_BASE=off node scripts/build-web.mjs   (static build with no backend: config.json apiBase is null, the SPA makes no /api requests)
 import { build, context } from 'esbuild';
 import { readFileSync, writeFileSync, mkdirSync, rmSync, cpSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
@@ -60,4 +61,4 @@ export async function buildWeb({ apiBase = '/api' } = {}) {
   console.log(`web built: ${js} (${(readFileSync(path.join(dist, 'assets', js)).length / 1024).toFixed(0)} KB), ${css}, content ${version}`);
   return { dist, version };
 }
-if (process.argv[1] === fileURLToPath(import.meta.url)) await buildWeb({ apiBase: process.env.API_BASE || '/api' });
+if (process.argv[1] === fileURLToPath(import.meta.url)) await buildWeb({ apiBase: process.env.API_BASE === 'off' ? null : process.env.API_BASE || '/api' });

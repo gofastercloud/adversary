@@ -5,7 +5,8 @@ import { setPalette } from './bg.js';
 import { sfx, unlock } from './audio.js';
 import { clearanceOf, dailiesCompleted } from '../../engine/achievements.js';
 import { sydneyDate } from '../../engine/rng.js';
-import { Card } from './components.js';
+import { Card, FeedbackLink } from './components.js';
+import { online } from './api.js';
 import { Typed, Art } from './term.js';
 
 const FNCOL = { govern: 'var(--fn-govern)', identify: 'var(--fn-identify)', protect: 'var(--fn-protect)', detect: 'var(--fn-detect)', respond: 'var(--fn-respond)', recover: 'var(--fn-recover)' };
@@ -51,6 +52,7 @@ export function Title() {
       <button class="btn violet" onClick=${() => { unlock(); app.goto('daily'); }}><${Icon} n="flame"/>Daily challenge${doneToday ? html` <span class="chip good" style="margin-left:.4em">Done today</span>` : ''}</button>
       <button class="btn warn" onClick=${() => app.goto('ttx')}><${Icon} n="clipboard-check"/>Tabletop exercises</button>
       <div class="row" style="gap:.6rem">${!tut && html`<button class="btn ghost" style="flex:1" onClick=${() => app.goto('tutorial')}><${Icon} n="graduation-cap"/>Tutorial</button>`}<button class="btn ghost" style="flex:1" onClick=${() => app.goto('docs')}><${Icon} n="book-open"/>Guide</button></div>
+      <div class="row"><${FeedbackLink}/></div>
     </div></div>
     <div class="ticker" key=${fi}><b class="glowtext" style="color:var(--accent)">${FACTS[fi][0]}</b> <span class="dimmer">//</span> <${Typed} text=${FACTS[fi][1]} cps=${150}/></div>
     ${s.notice && html`<div class="chip warn">${s.notice}</div>`}
@@ -83,17 +85,17 @@ export function Setup() {
 export function DailyScreen() {
   const s = useStore(); const [cfg, setCfg] = useState(null); const [board, setBoard] = useState(null);
   const man = getManifest(); const core = getCore();
-  useEffect(() => { app.dailyRunConfig().then(c => { setCfg(c); import('./api.js').then(a => a.getBoard('daily:' + c.date).then(r => r.ok && setBoard(r.data))); }); }, []);
+  useEffect(() => { app.dailyRunConfig().then(c => { setCfg(c); if (online()) import('./api.js').then(a => a.getBoard('daily:' + c.date).then(r => r.ok && setBoard(r.data))); }); }, []);
   if (!cfg) return html`<div class="screen"><p>Loading…</p></div>`;
   const sc = man.scenarios.find(x => x.id === cfg.scenario); const d = core.doctrines.doctrines.find(x => x.id === cfg.doctrine);
   const done = s.profile.daily.done?.[cfg.date];
   return html`<div class="screen result"><div class="row"><button class="btn ghost small" onClick=${() => app.goto('title')}>Back</button></div>
     <h1>Daily Challenge</h1><div class="tagline">${cfg.date} · Australia/Sydney</div>
     <div class="panel" style="padding:1.2rem;max-width:640px"><div class="row" style="justify-content:center;gap:1.2rem"><span class="pk-ic" style="width:60px;height:60px;display:grid;place-items:center"><${Icon} n=${sc.icon} cls="xl"/></span><div style="text-align:left"><h2>${sc.name}</h2><div class="dim">${d.name} · Assurance ML1</div><div class="dimmer mono">seed ${cfg.seed}</div></div></div>
-      <p class="dim" style="margin-top:.8rem">Everyone plays the same seed. Your run is replayed on the server to verify the score. Dailies completed: ${dailiesCompleted(s.profile)}. Best daily score: ${s.profile.daily.best || 0}.</p>
+      <p class="dim" style="margin-top:.8rem">${online() ? 'Everyone plays the same seed. Your run is replayed on the server to verify the score.' : 'Everyone plays the same seed today.'} Dailies completed: ${dailiesCompleted(s.profile)}. Best daily score: ${s.profile.daily.best || 0}.</p>
       ${done != null && html`<p class="chip good">Completed today: ${done} pts</p>`}
       <button class="btn violet big" onClick=${() => app.startRun({ scenario: cfg.scenario, doctrine: cfg.doctrine, assurance: 1, seed: cfg.seed, daily: true })}><${Icon} n="flame"/>${done != null ? 'Play again' : 'Start daily'}</button></div>
-    ${board?.entries?.length ? html`<div class="panel lb" style="padding:1rem"><h2>Today’s leaderboard</h2><table><tbody>${board.entries.map((e, i) => html`<tr class=${e.playerId === (JSON.parse(localStorage.getItem('adversary.player.v1') || '{}').id) ? 'me' : ''}><td>${i + 1}</td><td>${e.handle}</td><td class="right mono">${e.points}</td></tr>`)}</tbody></table></div>` : html`<p class="dimmer">Leaderboard unavailable offline (the game is fully playable without it).</p>`}</div>`;
+    ${!online() ? html`<p class="dimmer">Leaderboards are off in this playtest build.</p>` : board?.entries?.length ? html`<div class="panel lb" style="padding:1rem"><h2>Today’s leaderboard</h2><table><tbody>${board.entries.map((e, i) => html`<tr class=${e.playerId === (JSON.parse(localStorage.getItem('adversary.player.v1') || '{}').id) ? 'me' : ''}><td>${i + 1}</td><td>${e.handle}</td><td class="right mono">${e.points}</td></tr>`)}</tbody></table></div>` : html`<p class="dimmer">Leaderboard unavailable offline (the game is fully playable without it).</p>`}</div>`;
 }
 
 export function TtxSelect() {
@@ -121,8 +123,8 @@ export function Settings() {
       <label><input type="checkbox" checked=${st.shake} onChange=${e => set({ shake: e.target.checked })}/> Screen shake</label>
       <label><input type="checkbox" checked=${st.hints} onChange=${e => set({ hints: e.target.checked })}/> Show “suspicious activity” hints on assets</label>
       <label>Rain density <select value=${st.bg} onChange=${e => set({ bg: e.target.value })}><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
-      <label>Leaderboard handle <input value=${st.handle || ''} placeholder="Defender-XXXX" maxlength="20" onChange=${e => { import('./api.js').then(a => a.setHandle(e.target.value)); set({ handle: e.target.value }); }} style="padding:.4em .7em;border-radius:8px;border:1px solid var(--line2);background:rgba(0,0,0,.4);color:var(--ink)"/></label>
-      <p class="dimmer" style="font-size:.78rem">Progress is stored in your browser. If the backend is reachable, verified runs and your profile are also saved to the cloud under an anonymous player id — no email or personal data.</p>
-      <div class="setgroup danger"><h3>Local data</h3><p>Clears all progress saved in this browser.</p><button class="btn bad small" onClick=${() => { if (confirm('Erase all local progress?')) { localStorage.clear(); location.reload(); } }}>Erase local data</button></div>
+      ${online() && html`<label>Leaderboard handle <input value=${st.handle || ''} placeholder="Defender-XXXX" maxlength="20" onChange=${e => { import('./api.js').then(a => a.setHandle(e.target.value)); set({ handle: e.target.value }); }} style="padding:.4em .7em;border-radius:8px;border:1px solid var(--line2);background:rgba(0,0,0,.4);color:var(--ink)"/></label>`}
+      <p class="dimmer" style="font-size:.78rem">${online() ? 'Progress is stored in your browser. If the backend is reachable, verified runs and your profile are also saved to the cloud under an anonymous player id — no email or personal data.' : 'Progress is stored in your browser. This playtest build sends nothing to a server.'}</p>
+      <div class="setgroup danger"><h3>Local data</h3><p>Clears all game progress saved in this browser.</p><button class="btn bad small" onClick=${() => { if (confirm('Erase all local progress?')) { try { Object.keys(localStorage).filter(k => k.startsWith('adversary.')).forEach(k => localStorage.removeItem(k)); } catch { /* ignore */ } location.reload(); } }}>Erase local data</button></div>
     </div></div>`;
 }

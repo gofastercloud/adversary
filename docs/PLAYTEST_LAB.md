@@ -22,18 +22,30 @@ node lab/report.mjs                              # lab/out/report.html (heat map
 | `novice` | Heuristic with large score noise, skips turns, holds no consumables | A first-hour player |
 | `standard` | Heuristic that reads the briefing (adversary mitigations, goal, intent), values reveals/evictions by goal relevance, holds consumables for emergencies | An attentive player |
 | `sharp` | Same heuristic with almost no noise | A careful player |
+| `lite` | Monte-Carlo planner with 4 candidate plays, 2 rollouts and one adversary turn of lookahead | Cheap planner, used in the skill-expression check |
 | `expert` | Determinised Monte-Carlo planner: for each candidate play it clones the battle, re-seeds future randomness, finishes with the `sharp` policy and averages outcomes | Skill ceiling |
 
 The expert sees hidden footholds and the adversary's current hand, so it is an upper bound, not a human proxy. It is also
 about 150x slower, so it is used on samples. Run-level agents (`lab/agents/run.mjs`) add map routing, card picks that balance the
 deck and cover the act's mitigations, shop spending, rest/upgrade choices, event scoring and whiteboard accuracy.
 
+**Default skills.** `ladder` runs `random`, `novice`, `standard` and `sharp` unless you pass `--skills`. `lite` and `expert`
+are not in the default set, so add them explicitly:
+
+```bash
+node lab/cli.mjs ladder --n 40 --scenarios all --skills standard,sharp,lite,expert
+```
+
+`expert` is slow: expect minutes rather than seconds, even for a small sample. As a rough guide, `--n 1` on one scenario with
+`standard,lite,expert` took about two minutes in a test run, so use a small `--n` and one scenario when you include it. The
+`adversaries` command defaults to `random,standard,sharp`, also set with `--skills`, and draws fewer samples for `expert`.
+
 ## What it measures
 
-- **Skill ladder**: win rate of full runs per skill with 95% Wilson intervals. Target shape: random about 0%, novice single digits,
-  standard 15-20%, sharp about 30%, expert 50%+.
+- **Skill ladder**: win rate of full runs per skill with 95% Wilson intervals, per assurance level (`--assurance 0..3`). Targets for the default level (ML1, "the intended experience"): random at most 2%, novice 10-20%, standard 35-45%, sharp at least 5pp above standard, expert 60% or more. Training (ML0): novice 60-80%, standard 80-90%. ML2: standard 25-35%. ML3: standard 12-20% with sharp above standard. Players are practitioners and students, so the default should let an attentive player win about two runs in five; the 15-20% curve belongs to ML3.
 - **Adversary matrix**: win rate by adversary and skill at *realistic* decks (`lab/decks.mjs` builds the deck a player has by
-  act and node). Flags: easy (>95%), brutal (<25%), flat (play barely matters).
+  act and node). Flags: easy (standard above 95%), brutal (standard below 25%), flat (sharp minus random
+  under 15pp: play barely matters).
 - **Card and relic power**: paired ablation on identical seeds, one slot swapped for the card; reports win-rate lift with a CI.
 - **Loss causes**: goal vs resilience vs crown-jewel loss, which tells you whether a clock or attrition is the problem.
 - **Where runs die**: pass rate by act and node (battle/elite/boss).
@@ -68,7 +80,7 @@ run found a real bug (a replaced policy stayed listed as in play).
 
 Rule baseline (`scripts/balance.json`): hand 6, ward +1, detection reach +1, adversary energy +2, rounds +2, adversary exposure −3, count-mode goals, no goalAI. Per-adversary goal clocks, energy, power and exposure come from `node lab/tune.mjs --n 30 --apply`, then `node lab/adjust.mjs <adversaries.log> --apply` nudges outliers from the adversary matrix.
 
-Full-run clear rate (enterprise, fresh seeds): random ≈ 0–1%, novice ≈ 17–18%, standard ≈ 38–41%, sharp ≈ 37–39%.
+Full-run clear rate (enterprise, fresh seeds, n=100 per skill, 95% Wilson interval, measured 2026-10-13). ML1: random 0% [0-4], novice 18% [12-27], standard 39% [30-49], sharp 36% [27-46]. ML0: novice 76%, standard 85%, sharp 91%. ML2: novice 22%, standard 31%, sharp 34%. ML3 (current rules; the ML3 tuning proposed in [DESIGN_REVIEW_3.md](DESIGN_REVIEW_3.md) is not applied): novice 3%, standard 3%, sharp 6%.
 
 ### What the doctrine experiments (`lab/doctrine.mjs`) showed
 - Hero powers do not move win rates: capping Contain at cost 2, +1 Harden and +1 Failover left every doctrine's standard clear rate unchanged to the percentage point. The design-review hypothesis that powers drive the spread was falsified.
@@ -76,10 +88,10 @@ Full-run clear rate (enterprise, fresh seeds): random ≈ 0–1%, novice ≈ 17�
 - Starting resilience is a strong lever (about 1.4pp per HP at the margin). Architect 60, phoenix 58, governor 44, hunter 36, responder 30 gives a standard-skill spread of 22–47% (was 6–68%).
 
 ### Mechanics ablation (standard agent, one capability banned)
-Evict −8pp, isolate −7pp, detect −6pp. Ward, heal, policies, augments, intel and consumables are within ±1.5pp: they are inert at the margin for this player. That is the main source of low decision depth.
+Evict −8pp, isolate −7pp, detect −6pp. Ward, heal, policies, augments, intel and consumables are within ±1.5pp: they are inert at the margin for this player. That is the main source of low decision depth. At ML3 (paired, 170 battles per arm) banning Protect cards raised the standard bot's win rate by 10.6pp ±7.9; see [DESIGN_REVIEW_3.md](DESIGN_REVIEW_3.md) B1. That ML3 arm came from a scratch script outside the repo: `mechanics` hard-codes ML1 (`lab/cli.mjs` line 43), so the number is not reproducible from the CLI until it gains an `--assurance` flag.
 
 ### Skill expression
-sharp ≤ standard and lite (the Monte-Carlo planner) = standard over full runs. Better play than the heuristic is not rewarded. Candidates: retain-1 card, interest economy, boss pools (see docs/DESIGN_REVIEW_2.md).
+Standard to sharp is +6pp, -3pp and +3pp at ML0, ML1 and ML2 (n=100, intervals overlap), and `lite` equals `standard` at ML1 (n=50). Novice to standard is +9 to +21pp. Better play than the heuristic is not demonstrated. The three ML1 counts at n=50 are identical (21 of 50 each), which has not been checked, so treat the `lite` result as provisional. See [DESIGN_REVIEW_3.md](DESIGN_REVIEW_3.md) for retain-1 and the ML3 power finding.
 
 ### Known outliers
-Adversaries still under 65% for standard: G0007, G0129 (Mustang Panda), C0028, C0024, C0063 (Poland wiper). Their goal-clock knobs are at or near their limits, so the cause is structural (destroy/disrupt payoffs against few defender answers). About 15 T1/T2 adversaries are flat (random ≥ 85%): they never threaten a good deck.
+Adversaries still under 65% for standard: G0007, G0129 (Mustang Panda), C0028, C0024, C0063 (Poland wiper). Their goal-clock knobs are at or near their limits, so the cause is structural (destroy/disrupt payoffs against few defender answers). About 15 T1/T2 adversaries let the random agent win 85% or more of the time: they never threaten a good deck.

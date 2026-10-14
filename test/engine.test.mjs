@@ -5,7 +5,7 @@ import { playBattle, starterDeck } from '../scripts/lib/bot.mjs';
 import { playRun } from '../scripts/lib/runbot.mjs';
 import * as B from '../engine/battle.js';
 import * as R from '../engine/run.js';
-import { evaluate, emptyProfile, clearanceOf, matches } from '../engine/achievements.js';
+import { evaluate, emptyProfile, clearanceOf, matches, recordDaily, dailiesCompleted } from '../engine/achievements.js';
 import { resolveRef } from '../engine/refs.js';
 import { validateAll } from '../scripts/validate-content.mjs';
 
@@ -133,6 +133,40 @@ test('achievement distinct counters work', () => {
   p = evaluate(content, p, {}, evs).profile;
   assert.ok(p.ach.unlocked['ach.hall-5']);
   assert.ok(!p.ach.unlocked['ach.hall-12']);
+});
+
+test('daily: dailies completed counts distinct days and never resets after a gap', () => {
+  const r1 = recordDaily(emptyProfile(), '2026-10-01', 100);
+  const r2 = recordDaily(r1.profile, '2026-10-06', 120);
+  assert.equal(r2.days, 2);
+  assert.equal(r2.profile.daily.done['2026-10-01'], 100);
+  assert.equal(dailiesCompleted(r2.profile), 2);
+});
+
+test('daily: the same date twice keeps one entry with the higher points', () => {
+  const r1 = recordDaily(emptyProfile(), '2026-10-01', 100);
+  const r2 = recordDaily(r1.profile, '2026-10-01', 80);
+  assert.equal(r2.days, 1);
+  assert.equal(r2.profile.daily.done['2026-10-01'], 100);
+  const r3 = recordDaily(r2.profile, '2026-10-01', 150);
+  assert.equal(r3.days, 1);
+  assert.equal(r3.profile.daily.done['2026-10-01'], 150);
+});
+
+test('daily: a legacy streak profile keeps its deprecated streak and gains the new date', () => {
+  const dates = ['2026-09-01', '2026-09-02', '2026-09-03', '2026-09-04', '2026-09-05', '2026-09-06'];
+  const legacy = { ...emptyProfile(), daily: { streak: 5, best: 50, last: dates[5], done: Object.fromEntries(dates.map(d => [d, 50])) } };
+  const r = recordDaily(legacy, '2026-10-01', 70);
+  assert.equal(r.days, 7);
+  assert.equal(r.profile.daily.streak, 5);
+  assert.equal(dailiesCompleted(r.profile), 7);
+});
+
+test('daily: Seven Dailies unlocks on the seventh distinct day and not before', () => {
+  const seven = evaluate(content, emptyProfile(), {}, [{ t: 'daily_done', days: 7, points: 10 }]);
+  assert.ok(seven.profile.ach.unlocked['ach.daily-7']);
+  const six = evaluate(content, emptyProfile(), {}, [{ t: 'daily_done', days: 6, points: 10 }]);
+  assert.ok(!six.profile.ach.unlocked['ach.daily-7']);
 });
 
 test('matcher semantics', () => {

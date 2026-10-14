@@ -11,6 +11,8 @@ import { burst, confetti, banner, floater } from './fx.js';
 import { clearanceOf } from '../../engine/achievements.js';
 
 const NODE_ICON = { battle: 'swords', elite: 'skull', boss: 'crown', shop: 'coins', rest: 'heart-pulse', event: 'circle-help', whiteboard: 'workflow', ttx: 'clipboard-check' };
+// one-line gloss under each map node type (what the player gets for choosing it); map types only
+const NODE_SUB = { battle: 'fight, card reward', elite: 'harder fight, relic chance', boss: 'act boss', shop: 'spend budget', rest: 'heal or upgrade', event: 'a security decision', whiteboard: 'STRIDE quiz, earns budget and a ward' };
 
 export function RunHeader({ onDeck }) {
   const { run, content } = useStore();
@@ -35,7 +37,7 @@ export function MapScreen() {
   const choose = (i) => { sfx.click(); const r = app.act({ type: 'CHOOSE', index: i }); };
   return html`<div class="screen map"><${RunHeader} onDeck=${() => setDeck(true)}/>
     <div class="map-head"><h2>${content.org?.name}</h2><span class="dim">${content.org?.sector}</span></div>
-    <div class="acts" tabindex="0" role="group" aria-label="Operation map">${run.map.map((steps, ai) => { const cls = ai + 1 < run.act ? 'past' : ai + 1 === run.act ? 'cur' : 'future'; return html`<div class=${cx('act panel', cls)}><h3>${content.roster.acts[ai].name}</h3><div class="steps">${steps.map((opts, si) => { const isNow = ai + 1 === run.act && si === run.step; const done = ai + 1 < run.act || (ai + 1 === run.act && si < run.step); return html`<div class="step">${opts.map((o, oi) => html`<div class=${cx('node', o.type, isNow && 'avail', done && 'done')} onClick=${isNow ? () => choose(oi) : null} ...${tip(NODE_LABEL[o.type])}><${Icon} n=${NODE_ICON[o.type]}/>${NODE_LABEL[o.type]}</div>`)}</div>`; })}</div></div>`; })}</div>
+    <div class="acts" tabindex="0" role="group" aria-label="Operation map">${run.map.map((steps, ai) => { const cls = ai + 1 < run.act ? 'past' : ai + 1 === run.act ? 'cur' : 'future'; return html`<div class=${cx('act panel', cls)}><h3>${content.roster.acts[ai].name}</h3><div class="steps">${steps.map((opts, si) => { const isNow = ai + 1 === run.act && si === run.step; const done = ai + 1 < run.act || (ai + 1 === run.act && si < run.step); return html`<div class="step">${opts.map((o, oi) => html`<div class=${cx('node', o.type, isNow && 'avail', done && 'done')} onClick=${isNow ? () => choose(oi) : null} ...${tip(NODE_LABEL[o.type])}><${Icon} n=${NODE_ICON[o.type]}/>${NODE_LABEL[o.type]}<small>${NODE_SUB[o.type]}</small></div>`)}</div>`; })}</div></div>`; })}</div>
     ${deck && html`<${DeckModal} onClose=${() => setDeck(false)}/>`}</div>`;
 }
 

@@ -1,6 +1,6 @@
 import { html, Icon, useState, useEffect, useRef, useLayoutEffect, useMemo, cx, store, useStore, tip, Refs, RefLink, Modal, Sigil, clock, pct, sleep, hideTip } from './ui.js';
 import * as app from './app.js';
-import { Card, CardTip, AssetTile, FNCOL, cardIcon } from './components.js';
+import { Card, CardTip, AssetTile } from './components.js';
 import { logLine, whySummary } from './eventlog.js';
 import * as B from '../../engine/battle.js';
 import { describeCard } from '../../engine/describe.js';
@@ -9,6 +9,7 @@ import { burst, glyphBurst, ripple, glitchScreen, flyClone, accessBanner, bossEn
 import { flashBg } from './bg.js';
 import { tutAllows, tutAllowsEnd } from './docs.js';
 import { Count, Decrypt } from './term.js';
+import { intentWard } from './intent-ward.js';
 
 const TACTIC_ICON = { 'reconnaissance': 'search', 'resource-development': 'package', 'initial-access': 'door-open', 'execution': 'terminal', 'persistence': 'anchor', 'privilege-escalation': 'trending-up', 'stealth': 'ghost', 'defense-evasion': 'ghost', 'defense-impairment': 'shield-off', 'credential-access': 'key-round', 'discovery': 'radar', 'lateral-movement': 'route', 'collection': 'archive', 'command-and-control': 'radio-tower', 'exfiltration': 'upload', 'impact': 'bomb', 'inhibit-response-function': 'siren', 'impair-process-control': 'factory' };
 const tname = (content, t) => content.tactics[t]?.name || t;
@@ -32,6 +33,8 @@ export function BattleScreen() {
   const [hit, setHit] = useState({});
   const [preview, setPreview] = useState(null);
   const [sideOpen, setSideOpen] = useState(false);
+  const [pop, setPop] = useState(null);            // 'pol' | 'relic': which deck-row chip popover is open
+  const popRef = useRef();
   const [inspect, setInspect] = useState(null);
   const fieldRef = useRef(); const [links, setLinks] = useState([]);
   const adv = content.adversaryMeta[b.adv.id] || {}; const advData = content.adversaries[b.adv.id];
@@ -43,6 +46,12 @@ export function BattleScreen() {
   useEffect(() => { if (b.round === 1 && !log.length) addLog([{ t: 'round', n: 1 }]); }, []);
   useEffect(() => { const t = run.node?.type; if (b.round !== 1 || (t !== 'boss' && t !== 'elite')) return; const id = setTimeout(() => { bossEntrance(b.adv.name.toUpperCase(), t === 'boss' ? 'APEX ADVERSARY DETECTED' : 'ELITE INTRUSION SET'); sfx.stinger(); }, 450); return () => clearTimeout(id); }, []);
   const logRef = useRef(); useEffect(() => { if (logRef.current) logRef.current.scrollTop = 1e9; }, [log]);
+  // the policy and relic popovers close on an outside tap (the chips and the popover count as inside)
+  useEffect(() => {
+    if (!pop) return;
+    const away = (e) => { if (!popRef.current?.contains(e.target)) setPop(null); };
+    addEventListener('pointerdown', away); return () => removeEventListener('pointerdown', away);
+  }, [pop]);
 
   // ── adjacency links + scale-to-fit (the battlefield always fits its panel, whatever the scenario)
   const innerRef = useRef(); const [fit, setFit] = useState(1);
@@ -151,45 +160,49 @@ export function BattleScreen() {
     sfx.click(); setSel({ iid: id });
   };
   useEffect(() => {
-    const f = (e) => { if (e.target.tagName === 'INPUT') return; if (e.key === 'Escape') setSel(null); if ((e.key === 'e' || e.key === 'E') && !s.stage && !b.over && !b.ttx?.pending) doAction({ type: 'END_TURN' }); if (/^[1-9]$/.test(e.key)) { const id = b.hand[+e.key - 1]; if (id) clickCard(id); } if (e.key === 'Enter' && sel?.iid && tk === 'none') confirm({}); };
+    const f = (e) => { if (e.target.tagName === 'INPUT') return; if (e.key === 'Escape') { if (pop) { document.getElementById('chip-' + pop)?.focus(); setPop(null); } else if (sideOpen) setSideOpen(false); else setSel(null); } if ((e.key === 'e' || e.key === 'E') && !s.stage && !b.over && !b.ttx?.pending) doAction({ type: 'END_TURN' }); if (/^[1-9]$/.test(e.key)) { const id = b.hand[+e.key - 1]; if (id) clickCard(id); } if (e.key === 'Enter' && sel?.iid && tk === 'none') confirm({}); };
     addEventListener('keydown', f); return () => removeEventListener('keydown', f);
   });
   const playable = b.hand.filter(id => { const c = B.effCard(content, b, id); return !c.unplayable && c.type !== 'status' && B.cardCost(content, b, id) <= b.energy.cur && B.validTargets(content, b, id).length; });
   const noMoves = playable.length === 0;
   const intent = B.intentView(content, b);
+  const iward = intentWard(content, b, intent);   // S3: ward-vs-power chip, only on the tile the intent names
 
   // ── view
   const zones = []; for (const a of b.assets) { let z = zones.find(z => z.name === a.zone); if (!z) zones.push(z = { name: a.zone, assets: [] }); z.assets.push(a); }
   const resP = pct(b.res.cur, b.res.max), exP = pct(b.expo.cur, b.expo.max);
   const advc = adv.color || '#ff5470';
-  const n = b.hand.length;
+  const n = b.hand.length; const rounds = content.tuning.adversary.tiers[b.adv.tier].rounds;
   const intentAsset = intent?.asset;
   const dossier = () => store.set({ modal: { type: 'dossier', id: b.adv.id } });
+  // one compact trait indicator on the adversary panel (traits change draws, energy, costs and bypass mid-fight); the tooltip lists them all
+  const traits = b.adv.traits.filter(t => t.name);
+  const traitTip = tip(html`<div style="width:280px">${traits.map(t => html`<h4>${t.name}</h4><p>${t.text}</p>${t.note ? html`<p class="dim">${t.note}</p>` : null}`)}</div>`);
   const hint = s.settings.hints;
   const playedStage = stage && stage.i >= 0 ? stage.plays[stage.i] : null;
+  // no hover (touch): the preview follows the selection, so it opens on the first tap and closes on deselect, play or cancel
+  const touch = matchMedia('(hover: none)').matches; const shown = sideOpen ? null : touch ? (iid || null) : preview;
 
   return html`<div class="battle" style=${`--advc:${advc}`}>
     <div class="hud">
-      <div class="panel hud-me">
-        <div class="hud-row"><span class="lbl">Resilience</span><div id="res-bar" class=${cx('meter res', resP < 30 ? 'low' : resP < 60 ? 'mid' : '')}><i style=${`width:${resP}%`}/><b>${b.res.cur} / ${b.res.max}</b></div></div>
-        <div class="hud-row"><span class="lbl">Budget</span><span class="money">$${run.money}</span><span class="spacer"/><button class="btn small ghost side-toggle" onClick=${() => setSideOpen(o => !o)} aria-expanded=${sideOpen}><${Icon} n="terminal"/>Intel</button><span class="chip" ...${tip('Gold earns only between battles: rewards, events, shops.')}><${Icon} n="coins"/>${run.relics.length} relics</span></div>
-        <div class="hud-row"><span class="lbl">Clock</span><span class="clock">${clock(b.round)}</span><span class="spacer"/><div class="round-pips">${Array.from({ length: content.tuning.adversary.tiers[b.adv.tier].rounds }, (_, i) => html`<i class=${i + 1 < b.round ? 'done' : i + 1 === b.round ? 'now' : ''}/>`)}</div></div>
+      <div class="panel hud-me hud-strip">
+        <div class="hud-row"><span class="lbl">Resilience</span><div id="res-bar" class=${cx('meter res', resP < 30 ? 'low' : resP < 60 ? 'mid' : '')} ...${tip('Resilience: you lose at 0')}><i style=${`width:${resP}%`}/><b>${b.res.cur} / ${b.res.max}</b></div></div>
+        <div class="hud-row">${b.ttx ? html`<span class="lbl">Clock</span><span class="clock">${clock(b.round)}</span>` : html`<span class="clock">Round ${b.round} / ${rounds}</span>`}<span class="spacer"/><button class="btn small ghost side-toggle" onClick=${() => setSideOpen(o => !o)} aria-expanded=${sideOpen}><${Icon} n="terminal"/>Feed</button><div class="round-pips">${Array.from({ length: rounds }, (_, i) => html`<i class=${i + 1 < b.round ? 'done' : i + 1 === b.round ? 'now' : ''}/>`)}</div></div>
       </div>
       <div class="panel hud-adv glow" style=${`--accent:${advc}`}>
-        <div style="cursor:pointer" onClick=${dossier} ...${tip('Click to open the adversary dossier')}><${Sigil} id=${b.adv.id} color=${advc} icon=${adv.icon || 'hood'}/></div>
-        <div style="flex:1;min-width:0"><div class="row"><span class=${'tier-badge t' + b.adv.tier}>${content.tuning.adversary.tiers[b.adv.tier].name}</span><span class="dimmer mono" style="font-size:.72rem">${b.adv.id}</span><span class="spacer"/><span class="chip"><${Icon} n="zap"/>${b.adv.hand.length} cards</span></div>
-          <div class="nm">${b.adv.name}</div><div class="sub">${adv.role || ''} · ${adv.motive || ''}</div>
-          <div class=${cx('meter expo seg')} style="--seg:${100 / b.expo.max}%"><i style=${`width:${exP}%`}/><b>EXPOSURE ${b.expo.cur} / ${b.expo.max}</b></div>
-          <div class="traits">${b.adv.traits.filter(t => t.name).map(t => html`<span class="trait" ...${tip(html`<div style="width:280px"><h4>${t.name}</h4><p>${t.text}</p>${t.note ? html`<p class="dim">${t.note}</p>` : null}</div>`)}>${t.name}</span>`)}</div></div>
+        <button type="button" class="adv-open adv-sigil" aria-label=${'Open the dossier for ' + b.adv.name} onClick=${dossier} ...${tip(`Dossier: ${adv.role || ''}${adv.motive ? ' · ' + adv.motive : ''}. Click for procedures and sources.`)}><${Sigil} id=${b.adv.id} color=${advc} icon=${adv.icon || 'hood'}/></button>
+        <div class="adv-info">
+          <div class="adv-top"><button type="button" class="adv-open nm" aria-label=${'Open the dossier for ' + b.adv.name} onClick=${dossier}>${b.adv.name}</button><span class=${'tier-badge t' + b.adv.tier}>${content.tuning.adversary.tiers[b.adv.tier].name}</span>${traits.length ? html`<span class="trait" tabIndex="0" aria-label=${'Traits: ' + traits.map(t => t.name).join(', ')} ...${traitTip}><${Icon} n="sparkles"/><span class="tl">${traits[0].name}${traits.length > 1 ? ` +${traits.length - 1}` : ''}</span></span>` : null}</div>
+          <div class=${cx('meter expo seg')} style="--seg:${100 / b.expo.max}%"><i style=${`width:${exP}%`}/><b>EXPOSURE ${b.expo.cur} / ${b.expo.max} (you win at ${b.expo.max})</b></div></div>
       </div>
-      <div class="panel hud-me">
+      <div class="panel hud-me hud-next">
         ${b.goal && html`<${GoalMeter} b=${b} content=${content}/>`}
         <div class=${cx('intent', intent?.level < 1 && 'hidden-intent')}>
           <${Icon} n=${TACTIC_ICON[intent?.tactic] || 'circle-help'} cls="lg"/>
-          <div><div class="iv">${intent ? (intent.level >= 1 ? `${intent.tech} ${intent.name}` : tname(content, intent.tactic)) : 'No move planned'}</div>
-          <small>${intent ? `${tname(content, intent.tactic)}${intent.level >= 2 && intent.asset ? ' → ' + b.assets.find(a => a.id === intent.asset)?.name : ''}${intent.level >= 3 ? ` · ${intent.stride} · power ${intent.power}` : ''}${intent.origin === 'baseline' ? ' · baseline tradecraft' : intent.origin === 'signature' ? ' · signature' : intent.origin === 'assessed' ? ' · assessed intent' : ''}` : ''}</small></div>
+          <div><div class="iv">${intent ? (intent.level >= 1 ? `${intent.tech} ${intent.name}` : 'Next move hidden') : 'No move planned'}</div>
+          <small>${!intent ? '' : intent.level >= 1 ? `${tname(content, intent.tactic)}${intent.level >= 2 && intent.asset ? ' → ' + b.assets.find(a => a.id === intent.asset)?.name : ''}${intent.level >= 3 ? ` · ${intent.stride} · power ${intent.power}` : ''}${intent.origin === 'baseline' ? ' · baseline tradecraft' : intent.origin === 'signature' ? ' · signature' : intent.origin === 'assessed' ? ' · assessed intent' : ''}` : `Tactic: ${tname(content, intent.tactic)}. Identify cards and relics reveal the technique, then the target.`}</small></div>
           <span class="spacer"/><div class="fid" ...${tip('Intel level: how much of the adversary’s next move you can see. Identify cards, relics and Assume Breach raise it.')}>${[1, 2, 3].map(i => html`<i class=${i <= (intent?.level || 0) ? 'on' : ''}/>`)}</div></div>
-        <div class="row"><span class="dimmer" style="font-size:.74rem">${b.ttx ? 'TTX · score ' + b.ttx.score : (intent?.level >= 1 ? 'Intent' : 'Intent (fidelity 0)')}</span><span class="spacer"/>${b.ttx?.pending ? '' : html`<button class="btn small ghost" aria-label="Settings" onClick=${() => app.goto('settings')}><${Icon} n="settings"/></button><button class="btn small bad" onClick=${() => { if (confirm('Abandon this operation? The run ends.')) doAction({ type: 'FORFEIT' }); }}>Abandon</button>`}</div>
+        ${b.ttx && html`<div class="row"><span class="dimmer" style="font-size:.74rem">TTX · score ${b.ttx.score}</span></div>`}
       </div>
     </div>
 
@@ -198,20 +211,32 @@ export function BattleScreen() {
         ${sel && html`<div class="target-banner">${power ? power.name : card.name}: ${tk === 'asset' ? 'choose an asset' : tk === 'foothold' ? 'choose a revealed foothold' : tk === 'control' ? 'choose a control to augment' : 'click the card again (or press Enter) to play'} <span class="kbd">Esc</span></div>`}
         <div class="field-inner" ref=${innerRef} style=${`transform:scale(${fit})`}>
         <svg class="links">${links.map(l => html`<line x1=${l.a.x} y1=${l.a.y} x2=${l.b.x} y2=${l.b.y} class=${l.hot ? 'hot' : ''}/>`)}</svg>
-        ${zones.map(z => html`<div class=${cx('zone', z.assets.length > 3 && 'two')}><h5>${z.name}</h5>${z.assets.map(a => html`<${AssetTile} a=${a} b=${b} content=${content} showHints=${hint} hit=${hit[a.id] && Date.now() - hit[a.id] < 600} targetable=${tAssets.has(a.id) && tk === 'asset'} untargetable=${sel && tk === 'asset' && !tAssets.has(a.id)} intent=${intentAsset === a.id && intent?.level >= 2} onClick=${() => confirm({ asset: a.id })} targetFids=${tk === 'foothold' ? tFids : null} onFh=${(f) => tk === 'foothold' && tFids.has(f.id) && confirm({ fid: f.id })}/>`)}</div>`)}
+        ${zones.map(z => html`<div class=${cx('zone', z.assets.length > 3 && 'two')}><h5>${z.name}</h5>${z.assets.map(a => html`<${AssetTile} a=${a} b=${b} content=${content} showHints=${hint} hit=${hit[a.id] && Date.now() - hit[a.id] < 600} targetable=${tAssets.has(a.id) && tk === 'asset'} untargetable=${sel && tk === 'asset' && !tAssets.has(a.id)} intent=${intentAsset === a.id && intent?.level >= 2} iward=${iward && iward.asset === a.id ? iward : null} onClick=${() => confirm({ asset: a.id })} targetFids=${tk === 'foothold' ? tFids : null} onFh=${(f) => tk === 'foothold' && tFids.has(f.id) && confirm({ fid: f.id })}/>`)}</div>`)}
         </div>
         ${tk === 'control' && html`<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;z-index:30" class="panel"><span class="dim" style="padding:.4em .8em">Augment which control?</span>${b.controls.filter(k => tKids.has(k.kid)).map(k => html`<button class="btn small" onClick=${() => confirm({ kid: k.kid })}>${content.cards[k.card].name} @ ${b.assets.find(a => a.id === k.asset).name}</button>`)}${!tKids.size && html`<span class="bad" style="padding:.4em .8em">No compatible control deployed.</span>`}</div>`}
       </div>
+      <div class=${cx('side-scrim', sideOpen && 'open')} onClick=${() => setSideOpen(false)} aria-hidden="true"/>
       <div class=${cx('side', sideOpen && 'open')}>
-        <div class="panel"><div class="panel-h"><${Icon} n="scroll-text"/>Programme (${b.policies.length}/${content.tuning.battle.policySlots})</div><div class="prog">${b.policies.map(p => { const d = content.cards[p.id]; return html`<span class="pol" style=${`--fn:${FNCOL[d.fn]}`} ...${tip(html`<${CardTip} content=${content} def=${d} ml=${p.ml}/>`)}><${Icon} n=${cardIcon(d)}/>${d.name}</span>`; })}${!b.policies.length && html`<span class="dimmer" style="font-size:.78rem">Policies you enact stay in force.</span>`}</div></div>
-        <div class="panel"><div class="panel-h"><${Icon} n="gem"/>Relics</div><div class="relics">${run.relics.map(id => { const r = content.relics[id]; return html`<span class="relic" ...${tip(html`<div style="width:260px"><h4>${r.name}</h4><p>${r.desc}</p><p class="dim">${r.lesson}</p><${Refs} list=${r.refs}/></div>`)}><${Icon} n=${r.icon}/></span>`; })}</div></div>
+        <div class="side-head"><span>Feed</span><button class="iconbtn" aria-label="Close feed" onClick=${() => setSideOpen(false)}><${Icon} n="x"/></button></div>
         <div class="panel" style="flex:1;min-height:0;display:flex;flex-direction:column"><div class="panel-h"><${Icon} n="terminal"/>SOC feed</div><div class="log" ref=${logRef}>${log.map(l => html`<div class=${l.cls}><span class="t">${l.t}</span>${l.text} ${(l.refs || []).slice(0, 1).map(r => html`<${RefLink} r=${r} label="↗"/>`)}</div>`)}</div></div>
       </div>
     </div>
 
-    ${preview && b.cards[preview] && html`<div class="card-preview" aria-hidden="true"><${Card} content=${content} def=${content.cards[b.cards[preview].id]} ml=${b.cards[preview].ml} cost=${B.cardCost(content, b, preview)} tiltOn=${false} cls="big-preview"/></div>`}
+    ${shown && b.cards[shown] && html`<div class=${cx('card-preview', touch && 'sheet')} aria-hidden="true"><${Card} content=${content} def=${content.cards[b.cards[shown].id]} ml=${b.cards[shown].ml} cost=${B.cardCost(content, b, shown)} tiltOn=${false} cls="big-preview"/></div>`}
     <div class="bottom">
-      <div class="pile" ...${tip('Draw pile · cards left before your discard is reshuffled')}>Deck<div class="stack"><i/><b>${b.draw.length}</b></div><span class="dimmer">${b.discard.length} discard</span></div>
+      <div class="deckcol" ref=${popRef}>
+        <div class="pile" ...${tip(`Draw pile: ${b.draw.length} left. Discard: ${b.discard.length}. The discard is reshuffled when the draw pile runs out.`)}>Deck<div class="stack"><i/><b>${b.draw.length}</b></div><span class="dimmer">${b.discard.length} discard</span></div>
+        <div class="chips">
+          <div class="chip-wrap">
+            <button id="chip-pol" type="button" class=${cx('chip-btn', pop === 'pol' && 'on')} aria-expanded=${pop === 'pol' ? 'true' : 'false'} aria-controls="pop-pol" aria-label=${`Policies ${b.policies.length} of ${content.tuning.battle.policySlots}`} onClick=${() => setPop(p => p === 'pol' ? null : 'pol')}><${Icon} n="scroll-text"/><span class="chip-t">Policies</span><b>${b.policies.length}/${content.tuning.battle.policySlots}</b></button>
+            ${pop === 'pol' && html`<div id="pop-pol" class="pop" role="region" aria-label="Enacted policies"><div class="pop-h">Policies ${b.policies.length}/${content.tuning.battle.policySlots}</div>${b.policies.map(p => html`<div class="pop-item"><${CardTip} content=${content} def=${content.cards[p.id]} ml=${p.ml}/></div>`)}${!b.policies.length && html`<p class="dimmer pop-empty">Policies you enact stay in force.</p>`}</div>`}
+          </div>
+          <div class="chip-wrap">
+            <button id="chip-relic" type="button" class=${cx('chip-btn', pop === 'relic' && 'on')} aria-expanded=${pop === 'relic' ? 'true' : 'false'} aria-controls="pop-relic" aria-label=${`Relics ${run.relics.length}`} onClick=${() => setPop(p => p === 'relic' ? null : 'relic')}><${Icon} n="gem"/><span class="chip-t">Relics</span><b>${run.relics.length}</b></button>
+            ${pop === 'relic' && html`<div id="pop-relic" class="pop" role="region" aria-label="Relics you hold"><div class="pop-h">Relics ${run.relics.length}</div>${run.relics.map(id => { const r = content.relics[id]; return html`<div class="pop-item pop-relic"><span class="relic" ...${tip(html`<div style="width:260px"><h4>${r.name}</h4><p>${r.desc}</p><p class="dim">${r.lesson}</p><${Refs} list=${r.refs}/></div>`)}><${Icon} n=${r.icon}/></span><div><b>${r.name}</b><div class="dim">${r.desc}</div></div></div>`; })}${!run.relics.length && html`<p class="dimmer pop-empty">No relics yet.</p>`}</div>`}
+          </div>
+        </div>
+      </div>
       <div class="hand" tabindex="0" role="group" aria-label="Your hand">${b.hand.map((id, i) => { const d = content.cards[b.cards[id].id]; const c = B.cardCost(content, b, id); const base = B.effCard(content, b, id).cost; const ok = !d.unplayable && c <= b.energy.cur; const rot = (i - (n - 1) / 2) * Math.min(4, 22 / Math.max(n, 1)); const lift = Math.abs(i - (n - 1) / 2) ** 2 * 1.6; return html`<${Card} key=${id} content=${content} def=${d} ml=${b.cards[id].ml} cost=${c} discounted=${c < base} playable=${ok} unaffordable=${!ok} selected=${sel?.iid === id} onClick=${() => clickCard(id)} onContext=${(e) => { e.preventDefault(); setInspect(id); }} onEnter=${() => setPreview(id)} onLeaveCb=${() => setPreview(p => (p === id ? null : p))} cls="deal" i=${i} iid=${id} style=${{ '--rot': rot + 'deg', '--lift': lift + 'px' }}/>`; })}</div>
       <div class="energy-wrap"><div class=${cx('energy', b.energy.cur === 0 && 'empty')} ...${tip('Energy: spent to play cards. Resets each round.')}>${b.energy.cur}<small>/ ${b.energy.max}</small></div>
         ${b.doctrine && html`<div class="power"><button ...${tip(content.doctrines[b.doctrine].power.text)} class=${cx('btn small violet', sel?.power && 'pulse')} disabled=${b.powerUsed || b.energy.cur < content.doctrines[b.doctrine].power.cost || !!s.stage} onClick=${() => { if (sel?.power) setSel(null); else { const p = content.doctrines[b.doctrine].power; if (p.target === 'none') doAction({ type: 'POWER', target: {} }); else setSel({ power: true }); } }}><${Icon} n=${content.doctrines[b.doctrine].icon}/>${content.doctrines[b.doctrine].power.name} · ${content.doctrines[b.doctrine].power.cost}</button></div>`}
@@ -254,5 +279,5 @@ function BattleEnd({ b, content, run }) {
 
 function GoalMeter({ b, content }) {
   const G = b.goal, d = content.tuning.goals[G.kind]; const pct = Math.min(100, Math.round(100 * G.prog / G.need));
-  return html`<div class=${cx('goalbar', pct >= 60 && 'hot', pct >= 85 && 'crit')} role="meter" aria-label=${'Adversary goal: ' + d.name} aria-valuemin="0" aria-valuemax=${G.need} aria-valuenow=${+G.prog.toFixed(1)} ...${tip(d.how + ' ' + d.blurb)}><${Icon} n=${d.icon}/><b>Goal: ${d.name}</b><div class="gm"><i style=${`width:${pct}%`}/></div><span class="gv">${+G.prog.toFixed(1)}/${G.need}</span></div>`;
+  return html`<div class=${cx('goalbar', pct >= 60 && 'hot', pct >= 85 && 'crit')} role="meter" aria-label=${'Adversary goal: ' + d.name} aria-valuemin="0" aria-valuemax=${G.need} aria-valuenow=${+G.prog.toFixed(1)} ...${tip(d.how + ' ' + d.blurb)}><${Icon} n=${d.icon}/><b>Goal: ${d.name}<small>(they win at ${G.need})</small></b><div class="gm"><i style=${`width:${pct}%`}/></div><span class="gv">${+G.prog.toFixed(1)}/${G.need}</span></div>`;
 }

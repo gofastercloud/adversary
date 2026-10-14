@@ -2,11 +2,11 @@
 import { store, sleep } from './ui.js';
 import { loadBase, loadContent, getManifest } from './loader.js';
 import { newRun, tryRunAction, replay } from '../../engine/run.js';
-import { evaluate, emptyProfile, clearanceOf } from '../../engine/achievements.js';
+import { evaluate, emptyProfile, clearanceOf, recordDaily } from '../../engine/achievements.js';
 import { dailyConfig, sydneyDate } from '../../engine/rng.js';
 import { setAudio, sfx, unlock } from './audio.js';
 import { setPalette, initBg, setBgEnabled, setBgQuality, setRain, setBgMotion, setIntensity, flashBg } from './bg.js';
-import { toastAchievement, setFxSettings, confetti, banner, flash } from './fx.js';
+import { toastAchievement, setFxSettings, confetti, banner, flash, holdCombos } from './fx.js';
 import * as api from './api.js';
 
 const K = { profile: 'adversary.profile.v1', run: 'adversary.run.v1', settings: 'adversary.settings.v1' };
@@ -56,7 +56,7 @@ function mergeProfiles(a, b) {
   out.unlocks.doctrines = [...new Set([...a.unlocks.doctrines, ...(b.unlocks?.doctrines || [])])];
   out.unlocks.assurance = Math.max(a.unlocks.assurance, b.unlocks?.assurance || 1);
   out.stats = { ...a.stats, runs: Math.max(a.stats.runs, b.stats?.runs || 0), wins: Math.max(a.stats.wins, b.stats?.wins || 0), battles: Math.max(a.stats.battles, b.stats?.battles || 0), bestPoints: Math.max(a.stats.bestPoints, b.stats?.bestPoints || 0) };
-  if ((b.daily?.best || 0) > (out.daily.best || 0)) out.daily = { ...out.daily, ...b.daily };
+  if ((b.daily?.best || 0) > (out.daily.best || 0)) out.daily = { ...out.daily, best: b.daily.best };
   return out;
 }
 export function saveProfile(profile) { store.set({ profile }); jset(K.profile, profile); }
@@ -114,7 +114,7 @@ export function commit(r, action) {
   // achievements & codex
   const { profile, unlocked, xpGained, levelUp } = evaluate(content, S().profile, S().runCtx, r.events);
   saveProfile(profile);
-  unlocked.forEach((a, i) => setTimeout(() => toastAchievement(a), 700 + i * 1100));
+  toastAchievements(unlocked, 700);
   if (levelUp) setTimeout(() => store.set({ levelup: clearanceOf(content, profile.xp) }), 900 + unlocked.length * 1100);
   persistRun();
   if (['won', 'lost'].includes(r.run.phase) && !S().isTutorial) finalizeRun(r);
@@ -122,10 +122,18 @@ export function commit(r, action) {
 }
 export function act(action) { const r = step(action); if (!r.ok) return r; commit(r, action); return r; }
 
+// Achievement toasts are held while the tutorial is on screen (they would land on the coach) and played in order when it finishes.
+let heldToasts = [];
+function toastAchievements(list, delay) {
+  if (!list.length) return;
+  if (S().tutorial) { heldToasts.push(...list); return; }
+  list.forEach((a, i) => setTimeout(() => toastAchievement(a), delay + i * 1100));
+}
+
 export function emitUi(ev) { // UI-level events (dossier views, tutorial, daily) feed achievements too
   const { content } = S(); if (!content) return;
   const { profile, unlocked } = evaluate(content, S().profile, S().runCtx, [ev]);
-  saveProfile(profile); unlocked.forEach((a, i) => setTimeout(() => toastAchievement(a), 300 + i * 1100));
+  saveProfile(profile); toastAchievements(unlocked, 300);
 }
 
 async function finalizeRun(r) {
@@ -136,16 +144,13 @@ async function finalizeRun(r) {
   let board = null;
   if (isDaily) {
     const date = sydneyDate();
-    const prev = S().profile.daily; const streak = prev.last && daysBetween(prev.last, date) === 1 ? prev.streak + 1 : prev.last === date ? prev.streak : 1;
-    const profile = { ...S().profile, daily: { ...prev, streak, best: Math.max(prev.best, res.points), last: date, done: { ...prev.done, [date]: res.points } } };
-    saveProfile(profile);
-    emitUi({ t: 'daily_done', streak, points: res.points });
+    const { profile, days } = recordDaily(S().profile, date, res.points); saveProfile(profile);
+    emitUi({ t: 'daily_done', days, points: res.points });
   }
   const submit = await api.submitRun({ init, scenario: S().scenario, log: runLog, fingerprint: content.fingerprint, version: getManifest().version, daily: isDaily ? sydneyDate() : null });
   store.set({ submitted: submit });
   syncProfile();
 }
-const daysBetween = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / 86400000);
 
 export function goto(screen, extra = {}) { sfx.click(); store.set({ screen, ...extra }); }
 export function quitToTitle() { store.set({ screen: 'title', run: null, content: S().content, saved: jget(K.run) ? { scenario: jget(K.run).scenario, doctrine: jget(K.run).init.doctrine, n: jget(K.run).log.length } : null }); }
@@ -161,10 +166,13 @@ export async function startTutorial() {
   const content = await loadContent('enterprise');
   const { tutorialRun } = await import('../../engine/tutorial.js');
   setPalette(content.theme);
+  holdCombos(true);
   store.set({ content, run: tutorialRun(content), init: { seed: 'tutorial', doctrine: 'architect', assurance: 0 }, scenario: 'enterprise', isTutorial: true, isDaily: false, runLog: [], screen: 'run', loading: false, tutorial: { i: 0 }, runCtx: { progress: {} }, stage: null, holdBattle: false });
 }
 export function finishTutorial(skipped = false) {
-  if (!skipped) { emitUi({ t: 'tutorial_done' }); confetti(100); sfx.win(); }
+  if (!skipped) { emitUi({ t: 'tutorial_done' }); confetti(100); sfx.win(); }   // emitUi's toasts are still held here
   store.set({ tutorial: null, isTutorial: false, run: null, screen: 'title', holdBattle: false });
+  holdCombos(false);
+  const held = heldToasts; heldToasts = []; toastAchievements(held, 900);   // now the tutorial is closed: play the held toasts in order
   saveSettings({ tutorialSeen: true });
 }

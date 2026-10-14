@@ -3,10 +3,12 @@
 ## The loop in one minute
 
 1. Pick a **scenario** (an organisation and sector), a **doctrine** (your starting deck and hero power) and an
-   **assurance level** (Training, ML1, ML2, ML3).
-2. Walk the **map**: battles, elites, a boss per act, shops, rest sites, events and whiteboard sessions.
-3. In a **battle** you have 3 energy a turn and draw 5 cards. Deploy controls onto assets (they stay), play actions, enact
-   policies (two Programme slots), and augment controls. Then end the turn.
+   **assurance level** (Training, ML1, ML2, ML3). Setup defaults to Training until you have won a run.
+2. Walk the **map**: battles, elites, a boss per act, shops, rest sites, events and whiteboard sessions. Each node has a
+   one-line description, for example Skirmish: "fight, card reward".
+3. In a **battle** you have 3 energy a turn and draw 6 cards at the start of each round (draw relics add more; unplayed
+   cards are discarded at the end of your turn). Deploy controls onto assets (they stay), play actions, enact policies
+   (two policy slots), and augment controls. Then end the turn.
 4. Between battles pick one of three cards, buy relics, upgrade card maturity (ML1 to ML3), remove clutter and answer a
    threat-modelling whiteboard.
 
@@ -21,11 +23,16 @@
 - **Wards** per STRIDE class sit on each asset. When an attack lands or is blocked the event log shows **why**: which
   control, which mitigation or CTID mapping matched, which augment countered the technique.
 - **Exposure** rises when the adversary is blocked or revealed; at the limit its operation is burned and you win.
-- **Resilience** is your hit points. Losing a crown jewel or reaching zero ends the run.
+- **Resilience** is your hit points. Losing a crown jewel or reaching zero ends the run. To give up, use **Abandon** in
+  Settings (open it from the menu button during a run).
+- **Round** shows as Round n / N. N is the battle's round limit; a battle that reaches it is won as survived. Tabletop
+  exercises keep the clock instead.
 
-**Tips**: hover a card in your hand to see it enlarged; right-click it for the full inspector. On narrow screens the Programme,
-Relics and SOC feed live behind the **Intel** button. The Codex has an **Incidents** tab: 40 real intrusions as ordered technique
-chains with source links, a good way to see what the goals mean in practice.
+**Tips**: hover a card in your hand to see it enlarged; on touch screens, tap a card in your hand to see the enlarged
+preview instead. Right-click a card for the full inspector. On narrow screens (1150px wide or less) the Policies, Relics
+and SOC feed sit behind the **Feed** button. On phones (760px or less) the Feed button is visible too. The Codex has
+an **Incidents** tab: 40 real intrusions as ordered technique chains with source links, a good way to see what the goals
+mean in practice.
 
 ## Specialising and deck building
 
@@ -49,11 +56,12 @@ references, scored against objectives. Use it in a workshop: project it, discuss
 
 ## Progress
 
-Clearance XP, a codex that fills as you meet adversaries and techniques (every entry links to the source), 122 achievements
-(20 hidden), and a daily challenge with a verified leaderboard (every score is recomputed by replaying your actions).
+Clearance XP, a codex that fills as you meet adversaries and techniques (every entry links to the source), 137 achievements
+(22 hidden), and a daily challenge with a verified leaderboard (every score is recomputed by replaying your actions). The daily challenge shows a running count of dailies completed and your best daily score. The count never resets.
 
 ## Tutorial walkthrough
 
 The guided first battle is scripted so every message is true: it teaches deploying a ward, why a card shows its STRIDE
-class, how Identify raises intent fidelity, how a hidden foothold is found and evicted, and what ends a battle. Replay it any time
-from the title screen. The Guide screen lists every concept with its sources.
+class, how Identify raises intent fidelity, how a hidden foothold is found and evicted, and what ends a battle. Until
+you have seen it once, the title screen leads with Tutorial. Replay it any time from the title screen. The Guide screen
+lists every concept with its sources.

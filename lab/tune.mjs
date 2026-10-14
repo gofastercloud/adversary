@@ -12,7 +12,7 @@ import { pct } from './stats.mjs';
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > 0 ? process.argv[i + 1] : d; };
 const N = +arg('n', 40), scenarios = arg('scenarios', 'all') === 'all' ? listScenarios() : arg('scenarios').split(',');
 const DOCS = ['architect', 'hunter', 'phoenix', 'governor', 'responder'];
-// target win rate for a standard-skill player with a typical deck, by act and node (full-run clear ≈ 15-20%)
+// target win rate for a standard-skill player with a typical deck, by act and node (per-node aids under the lab's deckAt deck model; the acceptance test is the full-run ladder, see PLAYTEST_LAB.md)
 export const TARGET = { 1: { battle: 0.96, elite: 0.90, boss: 0.88 }, 2: { battle: 0.93, elite: 0.85, boss: 0.80 }, 3: { battle: 0.90, elite: 0.80, boss: 0.70 } };
 
 /** All (scenario, act, node, adversary, tier) appearances. */

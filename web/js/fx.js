@@ -78,7 +78,10 @@ export function banner(text, sub, color = '#00ff9c', ms = 2000) {
 export const accessBanner = (granted, sub, ms = 2600) => { banner(granted ? 'ACCESS GRANTED' : 'ACCESS DENIED', sub, granted ? '#ff2e4e' : '#00ff9c', ms); glitchScreen(granted ? 900 : 450, granted ? '#ff2e4e' : '#00ff9c'); };
 export function shake(big = false) { if (!motionOK() || !settings.shake) return; const c = big ? 'shake-big' : 'shake'; document.body.classList.remove('shake', 'shake-big'); void document.body.offsetWidth; document.body.classList.add(c); setTimeout(() => document.body.classList.remove(c), big ? 720 : 440); }
 export function flash(color = '#fff') { if (!motionOK()) return; document.body.style.setProperty('--flash', color); document.body.classList.remove('flash'); void document.body.offsetWidth; document.body.classList.add('flash'); setTimeout(() => document.body.classList.remove('flash'), 400); }
-export function combo(text, sub) { const root = fxRoot(); if (!root) return; const el = document.createElement('div'); el.className = 'combo'; el.innerHTML = `${text}<small>${sub || ''}</small>`; root.appendChild(el); setTimeout(() => el.remove(), 1700); }
+let combosHeld = false;
+/** The tutorial holds combo banners (e.g. QUICK RESPONSE) so they do not stack on its coach; app.js switches it. */
+export const holdCombos = (on) => { combosHeld = !!on; };
+export function combo(text, sub) { if (combosHeld) return; const root = fxRoot(); if (!root) return; const el = document.createElement('div'); el.className = 'combo'; el.innerHTML = `${text}<small>${sub || ''}</small>`; root.appendChild(el); setTimeout(() => el.remove(), 1700); }
 /** Boss entrance: rain surge, glitch tear, big shake and a decrypting banner. */
 export function bossEntrance(name, kicker = 'APEX ADVERSARY DETECTED') { surge(3200); flashBg(0.9); glitchScreen(1000, '#ff2e6e'); shake(true); banner(kicker, name, '#ff2e6e', 2600); }
 export const centerOf = (el) => { if (!el) return { x: innerWidth / 2, y: innerHeight / 2 }; const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; };

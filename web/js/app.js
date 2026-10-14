@@ -147,7 +147,8 @@ async function finalizeRun(r) {
     const { profile, days } = recordDaily(S().profile, date, res.points); saveProfile(profile);
     emitUi({ t: 'daily_done', days, points: res.points });
   }
-  const submit = await api.submitRun({ init, scenario: S().scenario, log: runLog, fingerprint: content.fingerprint, version: getManifest().version, daily: isDaily ? sydneyDate() : null });
+  // static (no-API) builds post nothing, so the result screen shows no server chip rather than a false claim
+  const submit = api.online() ? await api.submitRun({ init, scenario: S().scenario, log: runLog, fingerprint: content.fingerprint, version: getManifest().version, daily: isDaily ? sydneyDate() : null }) : null;
   store.set({ submitted: submit });
   syncProfile();
 }

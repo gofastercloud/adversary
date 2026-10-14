@@ -1,6 +1,15 @@
 // Backend client. Everything degrades gracefully offline: the game is fully playable without the API.
-let cfg = { apiBase: '/api' };
-export async function initApi() { try { cfg = await (await fetch('config.json', { cache: 'no-cache' })).json(); } catch { /* local */ } }
+// Fails closed: until config.json says otherwise (and if it cannot be read) there is no backend and no request is made.
+let cfg = { apiBase: null };
+export async function initApi() {
+  try {
+    const r = await fetch('config.json', { cache: 'no-cache' });
+    const c = r.ok ? await r.json() : null;
+    cfg = c && typeof c === 'object' && typeof c.apiBase === 'string' ? c : { apiBase: null };
+  } catch { cfg = { apiBase: null }; }
+}
+// false in a static build with no backend (API_BASE=off gives apiBase null): the UI hides leaderboards, handles and cloud sync
+export const online = () => !!cfg.apiBase;
 const LS = 'adversary.player.v1';
 export function player() {
   try { const p = JSON.parse(localStorage.getItem(LS)); if (p?.id && p?.secret) return p; } catch { /* ignore */ }
@@ -11,6 +20,7 @@ export function player() {
 }
 export function setHandle(h) { const p = player(); p.handle = String(h).replace(/[^\w .\-]/g, '').slice(0, 20) || p.handle; try { localStorage.setItem(LS, JSON.stringify(p)); } catch { /* ignore */ } return p; }
 async function call(path, { method = 'GET', body, auth = false, timeout = 8000 } = {}) {
+  if (!cfg.apiBase) return { ok: false, error: 'offline' };
   const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), timeout);
   try {
     const p = player();

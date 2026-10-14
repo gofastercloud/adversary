@@ -9,6 +9,11 @@ the Essential Eight.
 Educational, Australian-context (SOCI, AESCSF, APRA CPS 234/230, Essential Eight, OAIC NDB), with one scenario pack per
 domain: **Enterprise, Utilities, OT & ICS, Banking, Cloud (AWS), Third-Party Risk, AppSec & Supply Chain**.
 
+## Play it
+
+Playtest build: <https://gofastercloud.github.io/adversary/>. It is the full game with no leaderboards, and progress stays in
+your browser. Send feedback with the "Give feedback" link in the game (needs a GitHub account).
+
 ## Run it
 
 ```bash
@@ -38,7 +43,7 @@ Node 22+. First-time players get a guided tutorial battle; the in-game Guide has
 - [docs/CONTENT_AUTHORING.md](docs/CONTENT_AUTHORING.md): pack format, how to add adversaries, cards, scenarios and TTXs
 - [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md): datasets, licences, regeneration order
 - [docs/LOCAL_DEV.md](docs/LOCAL_DEV.md): local tiers (in-process, DynamoDB emulator, Floci), testing
-- [docs/DEPLOY.md](docs/DEPLOY.md): AWS deployment with CDK
+- [docs/DEPLOY.md](docs/DEPLOY.md): GitHub Pages playtest build, and AWS deployment with CDK
 - [docs/PLAYTEST_LAB.md](docs/PLAYTEST_LAB.md): automated playtesting, balance calibration and fuzzing
 - [docs/SECURITY.md](docs/SECURITY.md): threat model of the game itself, and what is and is not protected
 

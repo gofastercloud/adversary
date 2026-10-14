@@ -1,5 +1,6 @@
 import { html, Icon, tip, cx, Refs, hash01 } from './ui.js';
 import { Decrypt } from './term.js';
+import { getManifest } from './loader.js';
 import { describeCard, strideName } from '../../engine/describe.js';
 import { scaleCard, wardMap } from '../../engine/battle.js';
 
@@ -72,3 +73,10 @@ export function AssetTile({ a, b, content, targetable, untargetable, onClick, hi
   </div>`;
 }
 export { KIND_ICON, FNICON };
+
+// Playtest feedback: a plain link to the GitHub issue form (new tab). Only the content build id is pre-filled, never anything personal.
+export const FEEDBACK_REPO = 'https://github.com/gofastercloud/adversary';
+export const feedbackUrl = () => { const v = getManifest()?.version; return `${FEEDBACK_REPO}/issues/new?template=playtest-feedback.yml` + (v ? `&build-version=${encodeURIComponent(v)}` : ''); };
+export function FeedbackLink({ cls = 'btn ghost small' }) {
+  return html`<a class=${cls} href=${feedbackUrl()} target="_blank" rel="noopener noreferrer"><${Icon} n="megaphone"/>Give feedback</a>`;
+}
